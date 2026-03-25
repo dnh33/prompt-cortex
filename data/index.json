@@ -1,0 +1,243 @@
+{
+  "version": "fb602f958d75a56acb87466f67d772c1d0f9dc5bd1035bfc0fa484f3924467d2",
+  "built": "2026-03-25T20:22:38Z",
+  "template_count": 3,
+  "templates": [
+    {
+      "id": "coding-001",
+      "name": "Code Review",
+      "category": "coding",
+      "intent": "review-code",
+      "action": "review",
+      "object": "code",
+      "triggers": [
+        "code review",
+        "review this",
+        "review my code",
+        "review the code",
+        "look at this code",
+        "check this code",
+        "audit this"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(review|audit|check|examine|inspect)(\\\\s|.){0,20}(code|PR|pull request|function|class|module)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])review(\\\\s)(meeting|notes|book|document)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 180,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-003"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-001.md"
+    },
+    {
+      "id": "coding-002",
+      "name": "Debug Error",
+      "category": "coding",
+      "intent": "debug-error",
+      "action": "debug",
+      "object": "error",
+      "triggers": [
+        "debug",
+        "not working",
+        "find the bug",
+        "fix this error",
+        "why is this failing",
+        "troubleshoot",
+        "investigate"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(debug|troubleshoot|investigate|diagnose)(\\\\s|.){0,20}(error|bug|issue|failure|crash|problem)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(not|isn.t|doesn.t|won.t|can.t)(\\\\s)(work|load|compile|run|start|connect|render)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])debug(\\\\s)(mode|flag|log|level|output)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-003"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": [
+        "coding-001"
+      ],
+      "file": "coding/coding-002.md"
+    },
+    {
+      "id": "coding-003",
+      "name": "Write Tests",
+      "category": "coding",
+      "intent": "write-tests",
+      "action": "test",
+      "object": "code",
+      "triggers": [
+        "write tests",
+        "add tests",
+        "test this",
+        "unit test",
+        "test coverage",
+        "write unit tests",
+        "add test cases"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(write|add|create|generate)(\\\\s|.){0,15}(tests?|specs?|test cases?)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(unit|integration|e2e|end.to.end)(\\\\s)(tests?|specs?)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])(test)(\\\\s)(environment|server|database|deploy)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 190,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-001",
+        "coding-002"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-003.md"
+    }
+  ],
+  "inverted_index": {
+    "code review": [
+      "coding-001"
+    ],
+    "code": [
+      "coding-001",
+      "coding-003"
+    ],
+    "review": [
+      "coding-001"
+    ],
+    "review this": [
+      "coding-001"
+    ],
+    "this": [
+      "coding-001",
+      "coding-002",
+      "coding-003"
+    ],
+    "review my code": [
+      "coding-001"
+    ],
+    "review the code": [
+      "coding-001"
+    ],
+    "the": [
+      "coding-001",
+      "coding-002"
+    ],
+    "look at this code": [
+      "coding-001"
+    ],
+    "look": [
+      "coding-001"
+    ],
+    "check this code": [
+      "coding-001"
+    ],
+    "check": [
+      "coding-001"
+    ],
+    "audit this": [
+      "coding-001"
+    ],
+    "audit": [
+      "coding-001"
+    ],
+    "debug": [
+      "coding-002"
+    ],
+    "not working": [
+      "coding-002"
+    ],
+    "not": [
+      "coding-002"
+    ],
+    "working": [
+      "coding-002"
+    ],
+    "find the bug": [
+      "coding-002"
+    ],
+    "find": [
+      "coding-002"
+    ],
+    "bug": [
+      "coding-002"
+    ],
+    "fix this error": [
+      "coding-002"
+    ],
+    "fix": [
+      "coding-002"
+    ],
+    "error": [
+      "coding-002"
+    ],
+    "why is this failing": [
+      "coding-002"
+    ],
+    "why": [
+      "coding-002"
+    ],
+    "failing": [
+      "coding-002"
+    ],
+    "troubleshoot": [
+      "coding-002"
+    ],
+    "investigate": [
+      "coding-002"
+    ],
+    "write tests": [
+      "coding-003"
+    ],
+    "write": [
+      "coding-003"
+    ],
+    "tests": [
+      "coding-003"
+    ],
+    "add tests": [
+      "coding-003"
+    ],
+    "add": [
+      "coding-003"
+    ],
+    "test this": [
+      "coding-003"
+    ],
+    "test": [
+      "coding-003"
+    ],
+    "unit test": [
+      "coding-003"
+    ],
+    "unit": [
+      "coding-003"
+    ],
+    "test coverage": [
+      "coding-003"
+    ],
+    "coverage": [
+      "coding-003"
+    ],
+    "write unit tests": [
+      "coding-003"
+    ],
+    "add test cases": [
+      "coding-003"
+    ],
+    "cases": [
+      "coding-003"
+    ]
+  }
+}
