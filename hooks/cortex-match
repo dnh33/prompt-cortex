@@ -1,0 +1,267 @@
+#!/usr/bin/env bash
+# cortex-match — UserPromptSubmit hook for prompt-cortex
+# Reads user prompt from stdin, matches against template library,
+# injects best template as additionalContext when confident.
+#
+# Stdin: { session_id, prompt, cwd, ... }
+# Stdout: { hookSpecificOutput: { hookEventName, additionalContext } } or {}
+
+set -euo pipefail
+
+# --- Determine paths ---
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
+INDEX="${PLUGIN_ROOT}/data/index.json"
+MATCH_JQ="${PLUGIN_ROOT}/scripts/match.jq"
+
+# --- Read stdin ---
+input=$(cat)
+user_prompt=$(printf '%s' "$input" | jq -r '.prompt // .user_prompt // ""')
+session_id=$(printf '%s' "$input" | jq -r '.session_id // "default"')
+cwd=$(printf '%s' "$input" | jq -r '.cwd // ""')
+
+# --- Early exit: empty prompt ---
+if [[ -z "$user_prompt" ]]; then
+  echo '{}'
+  exit 0
+fi
+
+# --- Early exit: no index ---
+if [[ ! -f "$INDEX" ]]; then
+  echo '{}'
+  exit 0
+fi
+
+# --- State file ---
+# Use cwd for .cortex directory (project-local state)
+CORTEX_DIR="${cwd:-.}/.cortex"
+STATE_FILE="${CORTEX_DIR}/state-${session_id}.json"
+
+# Load state or use null
+state_json="null"
+if [[ -f "$STATE_FILE" ]]; then
+  state_json=$(cat "$STATE_FILE" 2>/dev/null || echo "null")
+fi
+
+# --- Run matching engine ---
+match_result=$(jq -f "$MATCH_JQ" \
+  --arg prompt "$user_prompt" \
+  --arg state "$state_json" \
+  --arg cwd "$cwd" \
+  "$INDEX" 2>/dev/null) || {
+  # jq failed — silent degradation
+  echo '{}'
+  exit 0
+}
+
+action=$(printf '%s' "$match_result" | jq -r '.action // "skip"')
+confidence=$(printf '%s' "$match_result" | jq -r '.confidence // 0')
+template_id=$(printf '%s' "$match_result" | jq -r '.best_match.id // ""')
+leave_alone_reason=$(printf '%s' "$match_result" | jq -r '.leave_alone_reason // ""')
+
+# --- Determine disposition for telemetry ---
+disposition="$action"
+case "$action" in
+  inject)  disposition="injected" ;;
+  defer)   disposition="deferred" ;;
+  suppress) disposition="suppressed" ;;
+  escape)  disposition="user_escaped" ;;
+  skip)    disposition="below_threshold" ;;
+esac
+
+# --- Log telemetry ---
+log_telemetry() {
+  # Ensure .cortex directory exists
+  mkdir -p "$CORTEX_DIR" 2>/dev/null || true
+
+  local prompt_hash
+  prompt_hash=$(printf '%s' "$user_prompt" | cksum | cut -d' ' -f1)
+  local ts
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local project_name
+  project_name=$(basename "${cwd:-.}")
+  local matched_ids
+  matched_ids=$(printf '%s' "$match_result" | jq -c '[.candidates[]?.id // empty]' 2>/dev/null || echo '[]')
+
+  local log_entry
+  log_entry=$(jq -n -c \
+    --arg ts "$ts" \
+    --arg prompt_hash "$prompt_hash" \
+    --argjson matched "$matched_ids" \
+    --arg confidence "$confidence" \
+    --arg injected "$template_id" \
+    --arg disposition "$disposition" \
+    --arg project "$project_name" \
+    '{
+      ts: $ts,
+      prompt_hash: $prompt_hash,
+      matched: $matched,
+      confidence: ($confidence | tonumber),
+      injected: (if $injected == "" then null else $injected end),
+      disposition: $disposition,
+      project: $project
+    }')
+
+  printf '%s\n' "$log_entry" >> "${CORTEX_DIR}/usage.jsonl" 2>/dev/null || true
+}
+
+# --- Update session state ---
+update_state() {
+  mkdir -p "$CORTEX_DIR" 2>/dev/null || true
+
+  local ts
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local prompt_hash
+  prompt_hash=$(printf '%s' "$user_prompt" | cksum | cut -d' ' -f1)
+
+  # Build new state preserving recent injections
+  local recent_injections
+  if [[ -f "$STATE_FILE" ]]; then
+    recent_injections=$(jq -c '.recentInjections // []' "$STATE_FILE" 2>/dev/null || echo '[]')
+  else
+    recent_injections='[]'
+  fi
+
+  # Add current injection and keep last 10
+  if [[ -n "$template_id" ]]; then
+    recent_injections=$(printf '%s' "$recent_injections" | jq -c \
+      --arg tmpl "$template_id" \
+      --arg ts "$ts" \
+      '[{template: $tmpl, ts: $ts}] + . | .[0:10]')
+  fi
+
+  local new_state
+  new_state=$(jq -n \
+    --arg ts "$ts" \
+    --arg hash "$prompt_hash" \
+    --argjson hook_result "$match_result" \
+    --argjson recent "$recent_injections" \
+    '{
+      lastHookRun: $ts,
+      lastPromptHash: $hash,
+      hookResult: $hook_result,
+      recentInjections: $recent,
+      cortex_disabled: false
+    }')
+
+  printf '%s\n' "$new_state" > "$STATE_FILE" 2>/dev/null || true
+}
+
+# --- Escape for JSON embedding ---
+escape_for_json() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\r'/\\r}"
+  s="${s//$'\t'/\\t}"
+  printf '%s' "$s"
+}
+
+# --- Read template body (everything after second ---) ---
+read_template_body() {
+  local file="$1"
+  local in_body=false
+  local dash_count=0
+  local body=""
+
+  while IFS= read -r line; do
+    if [[ "$line" == "---" ]]; then
+      dash_count=$((dash_count + 1))
+      if [[ "$dash_count" -ge 2 ]]; then
+        in_body=true
+        continue
+      fi
+    fi
+    if $in_body; then
+      if [[ -n "$body" ]]; then
+        body+=$'\n'"$line"
+      else
+        body="$line"
+      fi
+    fi
+  done < "$file"
+
+  printf '%s' "$body"
+}
+
+# --- Check first-session onboarding ---
+check_first_injection() {
+  local marker="${CORTEX_DIR}/.onboarded"
+  if [[ ! -f "$marker" ]]; then
+    return 0  # Not yet onboarded
+  fi
+  return 1  # Already onboarded
+}
+
+mark_onboarded() {
+  mkdir -p "$CORTEX_DIR" 2>/dev/null || true
+  printf '%s' "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" > "${CORTEX_DIR}/.onboarded" 2>/dev/null || true
+}
+
+# --- Main output logic ---
+
+# Always log telemetry
+log_telemetry
+
+case "$action" in
+  inject)
+    # Find template file
+    template_file=$(printf '%s' "$match_result" | jq -r '.best_match.id // ""')
+    # Look up file path from index
+    template_path=$(jq -r --arg id "$template_id" \
+      '.templates[] | select(.id == $id) | .file // ""' \
+      "$INDEX" 2>/dev/null)
+
+    if [[ -z "$template_path" ]]; then
+      echo '{}'
+      exit 0
+    fi
+
+    full_path="${PLUGIN_ROOT}/data/prompts/${template_path}"
+    if [[ ! -f "$full_path" ]]; then
+      echo '{}'
+      exit 0
+    fi
+
+    # Read template body
+    template_body=$(read_template_body "$full_path")
+    if [[ -z "$template_body" ]]; then
+      echo '{}'
+      exit 0
+    fi
+
+    # Update state
+    update_state
+
+    # Build context string
+    template_body_escaped=$(escape_for_json "$template_body")
+
+    # Check first-session onboarding
+    onboarding_note=""
+    if check_first_injection; then
+      onboarding_note="\\n\\n[prompt-cortex] Applied template ${template_id} (${confidence} confidence). Use --raw prefix to skip enhancement for any prompt."
+      mark_onboarded
+    fi
+
+    # Output hook response using printf (not heredoc — bash 5.3+ bug)
+    printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"<prompt-cortex match=\\"%s\\" confidence=\\"%s\\">\\n%s\\n</prompt-cortex>%s"}}\n' \
+      "$template_id" "$confidence" "$template_body_escaped" "$onboarding_note"
+    ;;
+
+  defer)
+    # Medium confidence: write state, inject Layer 2 hint
+    update_state
+
+    printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"<prompt-cortex-hint>prompt-cortex detected patterns relevant to this request but confidence was below threshold (%s). Candidates: %s</prompt-cortex-hint>"}}\n' \
+      "$confidence" \
+      "$(printf '%s' "$match_result" | jq -r '[.candidates[]?.id] | join(", ")' 2>/dev/null || echo "none")"
+    ;;
+
+  suppress|escape|skip|*)
+    # No injection
+    echo '{}'
+    ;;
+esac
+
+exit 0
