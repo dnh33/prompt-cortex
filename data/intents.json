@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "actions": [
+    "create",
+    "review",
+    "debug",
+    "refactor",
+    "explain",
+    "test",
+    "document",
+    "optimize",
+    "design",
+    "fix"
+  ],
+  "objects": [
+    "code",
+    "function",
+    "file",
+    "component",
+    "test",
+    "PR",
+    "commit",
+    "API",
+    "schema",
+    "prompt",
+    "config",
+    "error",
+    "architecture",
+    "database"
+  ],
+  "categories": [
+    "coding",
+    "ai-workflows",
+    "research",
+    "automation",
+    "content",
+    "productivity"
+  ],
+  "action_synonyms": {
+    "create": ["build", "make", "generate", "write", "implement", "add", "scaffold"],
+    "review": ["check", "audit", "look at", "examine", "inspect", "evaluate"],
+    "debug": ["fix", "troubleshoot", "investigate", "diagnose", "trace", "find bug"],
+    "refactor": ["clean up", "restructure", "reorganize", "improve", "simplify"],
+    "explain": ["what is", "how does", "why", "describe", "tell me about", "walk through"],
+    "test": ["write tests", "add tests", "test coverage", "unit test", "integration test"],
+    "document": ["add docs", "document", "write docs", "JSDoc", "README"],
+    "optimize": ["speed up", "improve performance", "make faster", "reduce", "profile"],
+    "design": ["architect", "plan", "structure", "model", "blueprint"],
+    "fix": ["resolve", "repair", "patch", "correct", "handle"]
+  },
+  "object_synonyms": {
+    "code": ["codebase", "source", "implementation", "logic"],
+    "function": ["method", "handler", "callback", "routine", "procedure"],
+    "file": ["module", "script", "source file"],
+    "component": ["widget", "element", "view", "page", "screen"],
+    "test": ["spec", "test suite", "test case", "unit test"],
+    "API": ["endpoint", "route", "REST", "GraphQL", "service"],
+    "error": ["bug", "issue", "exception", "crash", "failure"],
+    "config": ["configuration", "settings", "env", "environment"]
+  }
+}
