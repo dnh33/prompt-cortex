@@ -25,21 +25,28 @@ def prompt_bigrams:
   prompt_words as $w |
   [range($w | length - 1) as $i | "\($w[$i]) \($w[$i+1])"];
 
+# Parse state from string (--arg passes strings, not objects)
+def parsed_state:
+  if $state == null or $state == "null" or $state == "" then null
+  elif ($state | type) == "object" then $state
+  else (try ($state | fromjson) catch null)
+  end;
+
 # Check if state has recent injections of a template
 def recently_injected($tmpl_id):
-  if $state == null or $state == "null" then false
-  elif ($state | type) != "object" then false
+  parsed_state as $s |
+  if $s == null then false
   else
-    ($state.recentInjections // []) |
+    ($s.recentInjections // []) |
     map(select(.template == $tmpl_id)) |
     length >= 3
   end;
 
 # Check if cortex is disabled via /cx off
 def cortex_disabled:
-  if $state == null or $state == "null" then false
-  elif ($state | type) != "object" then false
-  else ($state.cortex_disabled // false)
+  parsed_state as $s |
+  if $s == null then false
+  else ($s.cortex_disabled // false)
   end;
 
 # ===== Phase 0: Leave-it-alone detector =====
@@ -127,14 +134,19 @@ def score_candidate($tmpl):
   prompt_words as $words |
   prompt_bigrams as $bigrams |
 
-  # --- Action matching ---
+  # --- Action matching (with simple plural/suffix handling) ---
   (if ($words | index($tmpl.action)) != null then 0.45
-   elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.action + "(\\s|$)"))) | length > 0) then 0.20
+   elif ($words | index($tmpl.action + "s")) != null then 0.45
+   elif ($words | index($tmpl.action + "es")) != null then 0.45
+   elif ($words | index($tmpl.action + "ing")) != null then 0.40
+   elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.action + "(s|es|ing)?(\\s|$)"))) | length > 0) then 0.20
    else 0 end) as $action_score |
 
-  # --- Object matching ---
+  # --- Object matching (with simple plural handling) ---
   (if ($words | index($tmpl.object)) != null then 0.35
-   elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.object + "(\\s|$)"))) | length > 0) then 0.15
+   elif ($words | index($tmpl.object + "s")) != null then 0.35
+   elif ($words | index($tmpl.object + "es")) != null then 0.35
+   elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.object + "(s|es)?(\\s|$)"))) | length > 0) then 0.15
    else 0 end) as $object_score |
 
   # --- Keyword overlap with triggers ---

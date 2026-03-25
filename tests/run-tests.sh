@@ -111,10 +111,11 @@ done
 echo ""
 echo "=== Template Validator ==="
 
-if bash "${PLUGIN_ROOT}/scripts/validate-template.sh" "${PLUGIN_ROOT}/data/prompts/coding/coding-001.md" 2>&1 | grep -q "OK"; then
+validator_output=$(bash "${PLUGIN_ROOT}/scripts/validate-template.sh" "${PLUGIN_ROOT}/data/prompts/coding/coding-001.md" 2>&1 || true)
+if [[ "$validator_output" == *"OK"* ]]; then
   pass "validate-template: coding-001 passes"
 else
-  fail "validate-template: coding-001 passes" "validation failed"
+  fail "validate-template: coding-001 passes" "validation failed: $validator_output"
 fi
 
 # ===== Test Group: Index Builder =====
