@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+# cortex-session-init — SessionStart hook for prompt-cortex
+# Validates index, detects project context, cleans stale state.
+#
+# Environment: CLAUDE_PLUGIN_ROOT, CLAUDE_ENV_FILE (optional)
+# Stdout: { hookSpecificOutput: { hookEventName, additionalContext } }
+
+set -euo pipefail
+
+# --- Determine paths ---
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
+INDEX="${PLUGIN_ROOT}/data/index.json"
+BUILD_SCRIPT="${PLUGIN_ROOT}/scripts/build-index.sh"
+
+# --- Validate index exists ---
+if [[ ! -f "$INDEX" ]]; then
+  if [[ -f "$BUILD_SCRIPT" ]]; then
+    bash "$BUILD_SCRIPT" >/dev/null 2>&1 || true
+  fi
+fi
+
+# Verify index is valid JSON
+if [[ -f "$INDEX" ]]; then
+  template_count=$(jq -r '.template_count // 0' "$INDEX" 2>/dev/null || echo "0")
+else
+  template_count=0
+fi
+
+# --- Detect project context ---
+# Try to determine language and framework from common files
+detect_project() {
+  local project_dir="${CLAUDE_PROJECT_DIR:-.}"
+  local language="unknown"
+  local framework="unknown"
+
+  # Language detection
+  if [[ -f "${project_dir}/package.json" ]]; then
+    language="javascript"
+    # Check for TypeScript
+    if [[ -f "${project_dir}/tsconfig.json" ]]; then
+      language="typescript"
+    fi
+    # Framework detection
+    if grep -q '"react"' "${project_dir}/package.json" 2>/dev/null; then
+      framework="react"
+    elif grep -q '"next"' "${project_dir}/package.json" 2>/dev/null; then
+      framework="nextjs"
+    elif grep -q '"vue"' "${project_dir}/package.json" 2>/dev/null; then
+      framework="vue"
+    elif grep -q '"svelte"' "${project_dir}/package.json" 2>/dev/null; then
+      framework="svelte"
+    elif grep -q '"express"' "${project_dir}/package.json" 2>/dev/null; then
+      framework="express"
+    fi
+  elif [[ -f "${project_dir}/requirements.txt" ]] || [[ -f "${project_dir}/pyproject.toml" ]]; then
+    language="python"
+    if grep -q 'django' "${project_dir}/requirements.txt" 2>/dev/null; then
+      framework="django"
+    elif grep -q 'fastapi' "${project_dir}/requirements.txt" 2>/dev/null; then
+      framework="fastapi"
+    elif grep -q 'flask' "${project_dir}/requirements.txt" 2>/dev/null; then
+      framework="flask"
+    fi
+  elif [[ -f "${project_dir}/Cargo.toml" ]]; then
+    language="rust"
+  elif [[ -f "${project_dir}/go.mod" ]]; then
+    language="go"
+  elif [[ -f "${project_dir}/build.gradle" ]] || [[ -f "${project_dir}/pom.xml" ]]; then
+    language="java"
+  fi
+
+  printf '%s %s' "$language" "$framework"
+}
+
+project_context=$(detect_project 2>/dev/null || echo "unknown unknown")
+project_lang=$(echo "$project_context" | cut -d' ' -f1)
+project_framework=$(echo "$project_context" | cut -d' ' -f2)
+
+# --- Clean stale state files (>24 hours old) ---
+cleanup_stale_state() {
+  local cortex_dir="${CLAUDE_PROJECT_DIR:-.}/.cortex"
+  if [[ -d "$cortex_dir" ]]; then
+    # Find state files older than 24 hours
+    find "$cortex_dir" -name "state-*.json" -mmin +1440 -delete 2>/dev/null || true
+  fi
+}
+cleanup_stale_state
+
+# --- Write health-check marker ---
+health_check() {
+  local cortex_dir="${CLAUDE_PROJECT_DIR:-.}/.cortex"
+  mkdir -p "$cortex_dir" 2>/dev/null || true
+  printf '%s' "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" > "${cortex_dir}/.health-check" 2>/dev/null || true
+}
+health_check
+
+# --- Build session context message ---
+context_msg="<prompt-cortex-init>\\nprompt-cortex v1.0 active. ${template_count} templates loaded.\\nProject: ${project_lang}/${project_framework}\\nEscape: prefix any prompt with --raw to skip enhancement.\\n</prompt-cortex-init>"
+
+# --- Output ---
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+  printf '{"additional_context":"%s"}\n' "$context_msg"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$context_msg"
+else
+  printf '{"additional_context":"%s"}\n' "$context_msg"
+fi
+
+exit 0
