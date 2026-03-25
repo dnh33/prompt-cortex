@@ -1,6 +1,65 @@
 # prompt-cortex
 
-Invisible prompt intelligence layer for Claude Code. Matches user input against proven prompt patterns and silently injects optimal framing as context.
+```
+                                          ╭─────────────────────────────╮
+    ┌──────────────────┐                  │                             │
+    │  "review my code" ├────────────────►│   ░░░░░░░░░░░░░░░░░░░░░░   │
+    └──────────────────┘                  │   ░  prompt-cortex      ░   │
+           what you type                  │   ░  350 templates      ░   │
+                                          │   ░  622 index keys     ░   │
+    ┌──────────────────┐                  │   ░  <2s matching       ░   │
+    │  senior engineer  │                 │   ░░░░░░░░░░░░░░░░░░░░░░   │
+    │  code review with │◄────────────────│                             │
+    │  5-point checklist│                 ╰─────────────────────────────╯
+    └──────────────────┘
+           what claude gets                      you see nothing
+```
+
+**The invisible layer beneath every prompt.** 350 proven templates. Pure bash + jq. Zero latency. You type naturally — Claude receives expert-level framing.
+
+> *prompt-cortex is what CLAUDE.md would be if it were alive.*
+
+---
+
+## Built for Superpowers
+
+prompt-cortex is the invisible half of the [superpowers](https://github.com/superpowers-marketplace/superpowers) stack. Two plugins, two layers, one pipeline:
+
+```
+    "review my code"
+           │
+     ══════╪══════════════════════════════════════════
+     ░░░░░░▼░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     ░  PROMPT-CORTEX              invisible layer   ░
+     ░  UserPromptSubmit hook      fires BEFORE      ░
+     ░  ─────────────────────────────────────────     ░
+     ░  + senior engineer code review template       ░
+     ░  + 5-point checklist (correctness, security   ░
+     ░    error handling, performance, naming)        ░
+     ░  + injected as additionalContext               ░
+     ░░░░░░│░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     ──────┼──────────────────────────────────────────
+     ██████▼██████████████████████████████████████████
+     █  SUPERPOWERS                 visible layer    █
+     █  Skill auto-detection        fires DURING     █
+     █  ─────────────────────────────────────────     █
+     █  + requesting-code-review workflow             █
+     █  + diff analysis, structured output            █
+     █  + verification-before-completion              █
+     ██████│██████████████████████████████████████████
+     ══════╪══════════════════════════════════════════
+           ▼
+    Claude responds with expert framing
+    AND a structured workflow
+```
+
+**They complement, not compete.** Cortex injects the *what to think about*. Superpowers provides the *how to execute*. Different lifecycle points, natural synergy. Every template declares which superpowers skills it pairs with via `compatible_with` — 11 of 14 superpowers skills are mapped.
+
+Install both for the full stack:
+```bash
+claude plugin add github:dnh33/prompt-cortex
+# + superpowers from marketplace
+```
 
 ## What it does
 
@@ -48,25 +107,12 @@ The engine also automatically stays silent for:
 - Already-structured prompts (XML tags, numbered lists, role assignments)
 - Conceptual questions (`what is React?`, `how does X work?`)
 
-## Designed to complement Superpowers
+## Superpowers skill coverage
 
-prompt-cortex was built to work alongside the [superpowers](https://github.com/superpowers-marketplace/superpowers) plugin. They occupy different layers of the same stack:
+Every template maps to 1-3 superpowers skills via the `compatible_with` field. See [docs/superpowers-skills-reference.md](docs/superpowers-skills-reference.md) for the full mapping and guidelines for new templates.
 
-| Layer | Plugin | Role | When it fires |
-|-------|--------|------|---------------|
-| **Invisible context** | prompt-cortex | Injects expert framing beneath every prompt | `UserPromptSubmit` (before response) |
-| **Visible methodology** | Superpowers | Provides workflows, TDD, brainstorming, code review | `SessionStart` + skill auto-detection (during response) |
-
-**They complement, not compete.** prompt-cortex makes the prompts that trigger superpowers skills better. When you type "review my code":
-
-1. **prompt-cortex** fires first (UserPromptSubmit hook) — injects a senior engineer code review template with a 5-point checklist as invisible `additionalContext`
-2. **Superpowers** fires next (skill auto-detection) — activates `requesting-code-review` which provides the visible review workflow, diff analysis, and structured output
-
-The result: Claude gets expert framing (from cortex) AND a structured workflow (from superpowers). Neither plugin knows about the other at runtime, but the `compatible_with` field in every template declares which superpowers skills it naturally pairs with.
-
-### Superpowers skill coverage
-
-Every template maps to 1-3 superpowers skills via the `compatible_with` field:
+<details>
+<summary>Skill coverage matrix</summary>
 
 | Superpowers Skill | Templates that complement it |
 |---|---|
@@ -81,6 +127,8 @@ Every template maps to 1-3 superpowers skills via the `compatible_with` field:
 | `finishing-a-development-branch` | PR review, git workflow |
 | `using-git-worktrees` | Git workflow, deployment |
 | `receiving-code-review` | Refactor code, type safety |
+
+</details>
 
 ## Commands
 
