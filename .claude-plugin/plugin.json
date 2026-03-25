@@ -1,0 +1,13 @@
+{
+  "name": "prompt-cortex",
+  "version": "1.0.0",
+  "description": "Invisible prompt intelligence layer for Claude Code. Matches user input against proven prompt patterns and silently injects optimal framing as context.",
+  "author": {
+    "name": "Daniel Hjermitslev",
+    "url": "https://github.com/dnh33"
+  },
+  "repository": "https://github.com/dnh33/prompt-cortex",
+  "homepage": "https://github.com/dnh33/prompt-cortex",
+  "license": "MIT",
+  "keywords": ["prompts", "optimization", "prompt-engineering", "templates", "context-injection"]
+}
