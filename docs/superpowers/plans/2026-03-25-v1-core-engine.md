@@ -52,8 +52,9 @@ This is a large v1.0. Split execution into:
 
 **UserPromptSubmit stdin:**
 ```json
-{"session_id":"abc","user_prompt":"text","cwd":"/path","hook_event_name":"UserPromptSubmit"}
+{"session_id":"abc","prompt":"text","cwd":"/path","hook_event_name":"UserPromptSubmit","permission_mode":"default","transcript_path":"/path/to/transcript.jsonl"}
 ```
+Note: Official docs use `prompt` field. Some test scripts use `user_prompt`. Hook scripts MUST try both: `jq -r '.prompt // .user_prompt // ""'`
 
 **Output for injection:**
 ```json
