@@ -1,0 +1,265 @@
+# match.jq — Core matching engine for prompt-cortex
+# Input: index.json (via file)
+# Arguments:
+#   $prompt  — the user's raw prompt text
+#   $state   — JSON string of current session state (or "null")
+#   $cwd     — current working directory (or "")
+#
+# Output: JSON with matching result
+#   { "action": "inject"|"defer"|"suppress"|"skip"|"escape",
+#     "confidence": <float>,
+#     "best_match": { template object } | null,
+#     "candidates": [ { id, confidence } ],
+#     "leave_alone_score": <float>,
+#     "leave_alone_reason": "<reason>" }
+
+# ===== Helper functions =====
+
+def prompt_lower: $prompt | ascii_downcase;
+
+def prompt_words: prompt_lower | split(" ") | map(select(length > 0));
+
+def prompt_word_count: prompt_words | length;
+
+def prompt_bigrams:
+  prompt_words as $w |
+  [range($w | length - 1) as $i | "\($w[$i]) \($w[$i+1])"];
+
+# Check if state has recent injections of a template
+def recently_injected($tmpl_id):
+  if $state == null or $state == "null" then false
+  elif ($state | type) != "object" then false
+  else
+    ($state.recentInjections // []) |
+    map(select(.template == $tmpl_id)) |
+    length >= 3
+  end;
+
+# Check if cortex is disabled via /cx off
+def cortex_disabled:
+  if $state == null or $state == "null" then false
+  elif ($state | type) != "object" then false
+  else ($state.cortex_disabled // false)
+  end;
+
+# ===== Phase 0: Leave-it-alone detector =====
+# Returns { score: float, reason: string }
+
+def leave_it_alone:
+  prompt_lower as $p |
+  prompt_word_count as $wc |
+
+  # Collect all detector scores
+  [
+    # Slash command prefix
+    (if ($p | test("^/[a-z]")) then { score: 1.0, reason: "slash_command" } else null end),
+
+    # --raw flag
+    (if ($p | test("^--raw(\\s|$)")) then { score: 1.0, reason: "raw_flag" } else null end),
+
+    # /cx off state (checked via state)
+    (if cortex_disabled then { score: 1.0, reason: "cx_off" } else null end),
+
+    # Already has XML tags
+    (if ($p | test("<[a-z][a-z0-9_-]*[^>]*>")) then { score: 0.50, reason: "has_xml_tags" } else null end),
+
+    # Looks like a shell command
+    (if ($p | test("^(git|npm|yarn|pnpm|pip|cargo|make|docker|kubectl|cd|ls|cat|mkdir|mv|cp|rm|chmod|curl|wget|ssh|scp)\\s")) then { score: 0.60, reason: "shell_command" } else null end),
+
+    # Continuation prompt
+    (if ($p | test("^(ok|okay|yes|yep|yeah|sure|go ahead|do it|looks good|that works|next|also|and also|continue|proceed|perfect|great|thanks|thank you|lgtm|ship it|merge it)$")) then { score: 0.45, reason: "continuation" } else null end),
+
+    # Already has role assignment
+    (if ($p | test("(^|[^a-zA-Z])(you are|act as|pretend to be|as a|role:)")) then { score: 0.40, reason: "has_role" } else null end),
+
+    # Conceptual question
+    (if ($p | test("^(what is|what are|how does|how do|why does|why do|explain|tell me about|describe|define)\\s")) then { score: 0.30, reason: "conceptual_question" } else null end),
+
+    # Already has numbered list
+    (if ($p | test("(^|\\n)[0-9]+\\.\\s")) then { score: 0.15, reason: "has_numbered_list" } else null end),
+
+    # Already specifies output format
+    (if ($p | test("(format|output|respond|reply|answer)(\\s+)(as|in|with|using)(\\s+)(json|yaml|markdown|csv|table|list|bullet)")) then { score: 0.10, reason: "specifies_format" } else null end),
+
+    # Long + structured (>80 words AND >=2 structural markers)
+    (if ($wc > 80) and (
+        [ ($p | test("(^|\\n)[0-9]+\\.")),
+          ($p | test("<[a-z]")),
+          ($p | test("(^|\\n)-\\s")),
+          ($p | test("(^|\\n)##")),
+          ($p | test("```"))
+        ] | map(select(.)) | length >= 2
+      ) then { score: 0.45, reason: "long_structured" }
+      else null end)
+  ] |
+
+  # Remove nulls and compute max-of-top-2
+  map(select(. != null)) |
+  sort_by(-.score) |
+  if length == 0 then { score: 0, reason: "none" }
+  elif length == 1 then .[0]
+  else
+    # score = min(1.0, top_1 + top_2 * 0.3)
+    { score: ([1.0, (.[0].score + .[1].score * 0.3)] | min),
+      reason: .[0].reason }
+  end;
+
+# ===== Phase 1: Keyword extraction + inverted index lookup =====
+
+def keyword_candidates:
+  prompt_words as $words |
+  prompt_bigrams as $bigrams |
+  .inverted_index as $idx |
+
+  # Look up each word and bigram in the inverted index
+  ([$words[] | . as $w | $idx[$w] // [] | .[]] +
+   [$bigrams[] | . as $b | $idx[$b] // [] | .[]]) |
+
+  # Count occurrences per template ID (more hits = more relevant)
+  group_by(.) |
+  map({ id: .[0], hits: length }) |
+  sort_by(-.hits);
+
+# ===== Phase 2: Score candidates against prompt =====
+
+def score_candidate($tmpl):
+  prompt_lower as $p |
+  prompt_words as $words |
+  prompt_bigrams as $bigrams |
+
+  # --- Action matching ---
+  (if ($words | index($tmpl.action)) != null then 0.45
+   elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.action + "(\\s|$)"))) | length > 0) then 0.20
+   else 0 end) as $action_score |
+
+  # --- Object matching ---
+  (if ($words | index($tmpl.object)) != null then 0.35
+   elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.object + "(\\s|$)"))) | length > 0) then 0.15
+   else 0 end) as $object_score |
+
+  # --- Keyword overlap with triggers ---
+  (($tmpl.triggers // []) |
+   map(ascii_downcase) |
+   map(. as $trigger |
+     if ($p | test($trigger)) then 0.02 else 0 end
+   ) | add // 0 |
+   if . > 0.08 then 0.08 else . end) as $keyword_score |
+
+  # --- Intent signal boost ---
+  (($tmpl.intent_signals // []) |
+   map(. as $sig |
+     if ($p | test($sig; "i")) then 0.10 else 0 end
+   ) | add // 0 |
+   if . > 0.10 then 0.10 else . end) as $signal_boost |
+
+  # --- Negative signal penalty ---
+  (($tmpl.negative_signals // []) |
+   map(. as $sig |
+     if ($p | test($sig; "i")) then -0.30 else 0 end
+   ) | add // 0) as $negative_penalty |
+
+  # --- Complexity mismatch penalty ---
+  (if (prompt_word_count < 6) and ($tmpl.min_confidence > 0.7) then -0.15
+   else 0 end) as $complexity_penalty |
+
+  # --- Multi-turn suppression ---
+  (if recently_injected($tmpl.id) then -0.40
+   else 0 end) as $suppression_penalty |
+
+  # --- Total ---
+  {
+    id: $tmpl.id,
+    name: $tmpl.name,
+    confidence: ([$action_score + $object_score + $keyword_score + $signal_boost + $negative_penalty + $complexity_penalty + $suppression_penalty, 0] | max),
+    breakdown: {
+      action: $action_score,
+      object: $object_score,
+      keyword: $keyword_score,
+      signal_boost: $signal_boost,
+      negative: $negative_penalty,
+      complexity: $complexity_penalty,
+      suppression: $suppression_penalty
+    }
+  };
+
+# ===== Phase 3: Context filter (stub for v1.0) =====
+
+def context_filter($scored):
+  $scored;
+
+# ===== Main pipeline =====
+
+# 0. Check escape mechanisms first
+if ($prompt | ascii_downcase | test("^--raw(\\s|$)")) then
+  { action: "escape", confidence: 0, best_match: null, candidates: [],
+    leave_alone_score: 1.0, leave_alone_reason: "raw_flag" }
+elif cortex_disabled then
+  { action: "escape", confidence: 0, best_match: null, candidates: [],
+    leave_alone_score: 1.0, leave_alone_reason: "cx_off" }
+else
+
+  # 1. Leave-it-alone detector
+  leave_it_alone as $lia |
+
+  if $lia.score >= 0.60 then
+    { action: "suppress", confidence: 0, best_match: null, candidates: [],
+      leave_alone_score: $lia.score, leave_alone_reason: $lia.reason }
+  else
+
+    # 2. Get candidate templates from inverted index
+    keyword_candidates as $candidates |
+
+    if ($candidates | length) == 0 then
+      { action: "skip", confidence: 0, best_match: null, candidates: [],
+        leave_alone_score: $lia.score, leave_alone_reason: $lia.reason }
+    else
+
+      # 3. Score top candidates (limit to top 10 by hit count for performance)
+      .templates as $all_templates |
+      ($candidates | .[0:10] | map(.id)) as $candidate_ids |
+
+      ($all_templates | map(select(.id as $tid | $candidate_ids | index($tid) != null))) as $candidate_templates |
+
+      [($candidate_templates[] | score_candidate(.))] |
+      sort_by(-.confidence) as $scored |
+
+      # Apply context filter
+      context_filter($scored) as $filtered |
+
+      # 4. Determine action based on confidence
+      if ($filtered | length) == 0 then
+        { action: "skip", confidence: 0, best_match: null, candidates: [],
+          leave_alone_score: $lia.score, leave_alone_reason: $lia.reason }
+      else
+        $filtered[0] as $best |
+
+        # Check per-template min_confidence
+        ($all_templates | map(select(.id == $best.id)) | .[0].min_confidence // 0.7) as $min_conf |
+
+        if $best.confidence >= ([0.70, $min_conf] | max) then
+          { action: "inject",
+            confidence: $best.confidence,
+            best_match: $best,
+            candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
+            leave_alone_score: $lia.score,
+            leave_alone_reason: $lia.reason }
+        elif $best.confidence >= 0.40 then
+          { action: "defer",
+            confidence: $best.confidence,
+            best_match: $best,
+            candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
+            leave_alone_score: $lia.score,
+            leave_alone_reason: $lia.reason }
+        else
+          { action: "skip",
+            confidence: $best.confidence,
+            best_match: null,
+            candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
+            leave_alone_score: $lia.score,
+            leave_alone_reason: $lia.reason }
+        end
+      end
+
+    end
+  end
+end
