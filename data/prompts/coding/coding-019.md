@@ -23,6 +23,9 @@ token_overhead: 165
 min_confidence: 0.7
 composable_with: []
 composition_role: primary
+compatible_with:
+  - "superpowers:test-driven-development"
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior engineer with deep regex expertise. Regex is powerful but becomes unmaintainable fast — write it to be readable.

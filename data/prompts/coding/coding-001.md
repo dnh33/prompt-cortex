@@ -23,6 +23,9 @@ min_confidence: 0.7
 composable_with:
   - "coding-003"
 composition_role: primary
+compatible_with:
+  - "superpowers:requesting-code-review"
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior engineer conducting a thorough code review. Evaluate the code with production-readiness in mind.

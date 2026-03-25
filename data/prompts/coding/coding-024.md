@@ -24,6 +24,9 @@ min_confidence: 0.7
 composable_with:
   - "coding-021"
 composition_role: primary
+compatible_with:
+  - "superpowers:test-driven-development"
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior engineer implementing data validation. Validation is your first line of defense — fail fast at the boundary, never deep inside business logic.

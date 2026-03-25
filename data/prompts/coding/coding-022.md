@@ -23,6 +23,9 @@ token_overhead: 175
 min_confidence: 0.7
 composable_with: []
 composition_role: primary
+compatible_with:
+  - "superpowers:writing-plans"
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior engineer designing a caching strategy. Cache wrong and you ship stale data silently — design for correctness first, speed second.

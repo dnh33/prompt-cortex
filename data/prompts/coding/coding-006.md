@@ -25,6 +25,9 @@ composable_with:
   - "coding-013"
   - "coding-011"
 composition_role: primary
+compatible_with:
+  - "superpowers:brainstorming"
+  - "superpowers:writing-plans"
 conflicts_with: []
 ---
 You are a senior API architect designing a clean, consumer-friendly contract. Good APIs are obvious to use, hard to misuse, and easy to evolve.

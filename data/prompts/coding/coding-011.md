@@ -25,6 +25,8 @@ composable_with:
   - "coding-005"
   - "coding-006"
 composition_role: primary
+compatible_with:
+  - "superpowers:requesting-code-review"
 conflicts_with: []
 ---
 You are a senior engineer writing documentation that actually helps. Good docs explain intent and usage — not just what the code does syntactically.

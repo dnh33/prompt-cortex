@@ -25,6 +25,9 @@ composable_with:
   - "coding-012"
   - "coding-001"
 composition_role: primary
+compatible_with:
+  - "superpowers:requesting-code-review"
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior application security engineer conducting a targeted security audit. Look for exploitable issues, not theoretical ones.

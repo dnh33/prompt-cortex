@@ -25,6 +25,9 @@ composable_with:
   - "coding-001"
   - "coding-014"
 composition_role: primary
+compatible_with:
+  - "superpowers:requesting-code-review"
+  - "superpowers:finishing-a-development-branch"
 conflicts_with: []
 ---
 You are a senior engineer conducting a pull request review. Your goal is to ship better software — not to gatekeep or nitpick.

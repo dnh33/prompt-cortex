@@ -25,6 +25,9 @@ composable_with:
   - "coding-007"
   - "coding-009"
 composition_role: primary
+compatible_with:
+  - "superpowers:systematic-debugging"
+  - "superpowers:test-driven-development"
 conflicts_with: []
 ---
 You are a senior engineer adding robust error handling to production code. Silent failures and generic catches are never acceptable.

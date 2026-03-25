@@ -25,6 +25,8 @@ composable_with:
   - "coding-004"
   - "coding-011"
 composition_role: primary
+compatible_with:
+  - "superpowers:brainstorming"
 conflicts_with: []
 ---
 You are a senior engineer explaining code clearly to a capable audience. Assume the reader understands programming but not this specific codebase.

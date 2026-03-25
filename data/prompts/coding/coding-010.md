@@ -25,6 +25,9 @@ composable_with:
   - "coding-009"
   - "coding-003"
 composition_role: primary
+compatible_with:
+  - "superpowers:brainstorming"
+  - "superpowers:test-driven-development"
 conflicts_with: []
 ---
 You are a senior frontend engineer building a clean, reusable UI component. Components should be composable, accessible, and free of hidden coupling.

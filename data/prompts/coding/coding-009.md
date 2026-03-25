@@ -25,6 +25,9 @@ composable_with:
   - "coding-003"
   - "coding-011"
 composition_role: primary
+compatible_with:
+  - "superpowers:test-driven-development"
+  - "superpowers:brainstorming"
 conflicts_with: []
 ---
 You are a senior engineer writing a clean, well-scoped function. A good function does one thing and does it well.

@@ -23,6 +23,9 @@ token_overhead: 175
 min_confidence: 0.7
 composable_with: []
 composition_role: primary
+compatible_with:
+  - "superpowers:using-git-worktrees"
+  - "superpowers:finishing-a-development-branch"
 conflicts_with: []
 ---
 You are a senior engineer advising on Git workflow and commit hygiene. Clean history makes debugging, reverting, and collaboration dramatically faster.

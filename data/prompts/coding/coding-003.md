@@ -25,6 +25,9 @@ composable_with:
   - "coding-001"
   - "coding-002"
 composition_role: primary
+compatible_with:
+  - "superpowers:test-driven-development"
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior QA engineer writing comprehensive tests. Tests are documentation -- they describe what the code SHOULD do.

@@ -25,6 +25,9 @@ composable_with:
   - "coding-001"
   - "coding-003"
 composition_role: primary
+compatible_with:
+  - "superpowers:receiving-code-review"
+  - "superpowers:requesting-code-review"
 conflicts_with: []
 ---
 You are a senior engineer refactoring code for long-term maintainability. The goal is a cleaner design — not just cosmetic changes.

@@ -1,6 +1,6 @@
 {
-  "version": "f4fb19d74beeb56a7057f13ab39a815bd233bc856803a10e38489f086443952d",
-  "built": "2026-03-25T20:52:46Z",
+  "version": "8ff6923adcc47e987340b7788cd897ba33390e2e51028798eefe9d502ff79b53",
+  "built": "2026-03-25T21:10:57Z",
   "template_count": 50,
   "templates": [
     {
@@ -31,6 +31,11 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans",
+        "superpowers:dispatching-parallel-agents"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-051.md"
     },
@@ -62,6 +67,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-052.md"
     },
@@ -93,6 +102,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-skills",
+        "superpowers:brainstorming"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-053.md"
     },
@@ -124,6 +137,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-054.md"
     },
@@ -155,6 +172,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:writing-plans"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-055.md"
     },
@@ -186,6 +207,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-056.md"
     },
@@ -217,6 +242,9 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-057.md"
     },
@@ -248,6 +276,11 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans",
+        "superpowers:writing-skills"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-058.md"
     },
@@ -279,6 +312,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-skills",
+        "superpowers:brainstorming"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-059.md"
     },
@@ -310,6 +347,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-skills",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-060.md"
     },
@@ -341,6 +382,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-skills",
+        "superpowers:brainstorming"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-061.md"
     },
@@ -372,6 +417,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-062.md"
     },
@@ -403,6 +452,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-063.md"
     },
@@ -434,6 +487,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-plans",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-064.md"
     },
@@ -465,6 +522,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-065.md"
     },
@@ -496,6 +557,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:dispatching-parallel-agents",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-066.md"
     },
@@ -527,6 +592,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-067.md"
     },
@@ -558,6 +627,9 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-068.md"
     },
@@ -589,6 +661,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-069.md"
     },
@@ -620,6 +696,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:verification-before-completion",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-070.md"
     },
@@ -651,6 +731,11 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans",
+        "superpowers:writing-skills"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-071.md"
     },
@@ -682,6 +767,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-plans",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "ai-workflows/ai-072.md"
     },
@@ -714,6 +803,10 @@
         "coding-003"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:requesting-code-review",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-001.md"
     },
@@ -747,6 +840,9 @@
         "coding-003"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:systematic-debugging"
+      ],
       "conflicts_with": [
         "coding-001"
       ],
@@ -783,6 +879,10 @@
         "coding-002"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-003.md"
     },
@@ -817,6 +917,10 @@
         "coding-003"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:receiving-code-review",
+        "superpowers:requesting-code-review"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-004.md"
     },
@@ -851,6 +955,9 @@
         "coding-011"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-005.md"
     },
@@ -885,6 +992,10 @@
         "coding-011"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-006.md"
     },
@@ -919,6 +1030,10 @@
         "coding-003"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:systematic-debugging",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-007.md"
     },
@@ -953,6 +1068,9 @@
         "coding-004"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-008.md"
     },
@@ -987,6 +1105,10 @@
         "coding-011"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:brainstorming"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-009.md"
     },
@@ -1021,6 +1143,10 @@
         "coding-003"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-010.md"
     },
@@ -1055,6 +1181,9 @@
         "coding-006"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:requesting-code-review"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-011.md"
     },
@@ -1089,6 +1218,10 @@
         "coding-014"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:requesting-code-review",
+        "superpowers:finishing-a-development-branch"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-012.md"
     },
@@ -1123,6 +1256,10 @@
         "coding-008"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-plans",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-013.md"
     },
@@ -1157,6 +1294,10 @@
         "coding-001"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:requesting-code-review",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-014.md"
     },
@@ -1191,6 +1332,10 @@
         "coding-009"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:systematic-debugging",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-015.md"
     },
@@ -1225,6 +1370,9 @@
         "coding-014"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-016.md"
     },
@@ -1258,6 +1406,11 @@
         "coding-001"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans",
+        "superpowers:requesting-code-review"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-017.md"
     },
@@ -1289,6 +1442,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:using-git-worktrees",
+        "superpowers:finishing-a-development-branch"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-018.md"
     },
@@ -1320,6 +1477,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-019.md"
     },
@@ -1351,6 +1512,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-plans",
+        "superpowers:systematic-debugging"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-020.md"
     },
@@ -1384,6 +1549,11 @@
         "coding-024"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-021.md"
     },
@@ -1415,6 +1585,10 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-plans",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-022.md"
     },
@@ -1448,6 +1622,11 @@
         "coding-022"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:brainstorming",
+        "superpowers:writing-plans",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-023.md"
     },
@@ -1481,6 +1660,10 @@
         "coding-021"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:test-driven-development",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-024.md"
     },
@@ -1514,6 +1697,10 @@
         "coding-002"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:systematic-debugging",
+        "superpowers:test-driven-development"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-025.md"
     },
@@ -1545,6 +1732,11 @@
       "min_confidence": 0.7,
       "composable_with": "[]",
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:writing-plans",
+        "superpowers:using-git-worktrees",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-026.md"
     },
@@ -1578,6 +1770,10 @@
         "coding-001"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:receiving-code-review",
+        "superpowers:systematic-debugging"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-027.md"
     },
@@ -1611,6 +1807,10 @@
         "coding-001"
       ],
       "composition_role": "primary",
+      "compatible_with": [
+        "superpowers:requesting-code-review",
+        "superpowers:verification-before-completion"
+      ],
       "conflicts_with": "[]",
       "file": "coding/coding-028.md"
     }

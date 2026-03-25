@@ -24,6 +24,10 @@ min_confidence: 0.7
 composable_with:
   - "coding-022"
 composition_role: primary
+compatible_with:
+  - "superpowers:brainstorming"
+  - "superpowers:writing-plans"
+  - "superpowers:test-driven-development"
 conflicts_with: []
 ---
 You are a senior engineer implementing search. Choose the right tool for the scale — over-engineering search is as costly as under-engineering it.

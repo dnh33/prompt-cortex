@@ -24,6 +24,9 @@ min_confidence: 0.7
 composable_with:
   - "coding-002"
 composition_role: primary
+compatible_with:
+  - "superpowers:systematic-debugging"
+  - "superpowers:test-driven-development"
 conflicts_with: []
 ---
 You are a senior engineer diagnosing and fixing concurrency issues. These bugs are among the hardest to reproduce — reason carefully about all possible interleavings.

@@ -48,6 +48,40 @@ The engine also automatically stays silent for:
 - Already-structured prompts (XML tags, numbered lists, role assignments)
 - Conceptual questions (`what is React?`, `how does X work?`)
 
+## Designed to complement Superpowers
+
+prompt-cortex was built to work alongside the [superpowers](https://github.com/superpowers-marketplace/superpowers) plugin. They occupy different layers of the same stack:
+
+| Layer | Plugin | Role | When it fires |
+|-------|--------|------|---------------|
+| **Invisible context** | prompt-cortex | Injects expert framing beneath every prompt | `UserPromptSubmit` (before response) |
+| **Visible methodology** | Superpowers | Provides workflows, TDD, brainstorming, code review | `SessionStart` + skill auto-detection (during response) |
+
+**They complement, not compete.** prompt-cortex makes the prompts that trigger superpowers skills better. When you type "review my code":
+
+1. **prompt-cortex** fires first (UserPromptSubmit hook) — injects a senior engineer code review template with a 5-point checklist as invisible `additionalContext`
+2. **Superpowers** fires next (skill auto-detection) — activates `requesting-code-review` which provides the visible review workflow, diff analysis, and structured output
+
+The result: Claude gets expert framing (from cortex) AND a structured workflow (from superpowers). Neither plugin knows about the other at runtime, but the `compatible_with` field in every template declares which superpowers skills it naturally pairs with.
+
+### Superpowers skill coverage
+
+Every template maps to 1-3 superpowers skills via the `compatible_with` field:
+
+| Superpowers Skill | Templates that complement it |
+|---|---|
+| `brainstorming` | API design, architecture, components, agents, RAG, embeddings, tool use, prompts, search, auth |
+| `test-driven-development` | Write tests, create functions, fix bugs, error handling, regex, concurrency, evals, guardrails, parsers |
+| `verification-before-completion` | Code review, performance, security audit, config, accessibility, deployment, cost optimization |
+| `systematic-debugging` | Debug error, fix bug, error handling, concurrency, type safety, logging |
+| `writing-plans` | API design, database, architecture, deployment, auth, caching, search, RAG, agents, embeddings |
+| `requesting-code-review` | Code review, refactor, PR review, docs, security audit, architecture, accessibility |
+| `writing-skills` | Prompt engineering, system prompts, chain-of-thought, few-shot, tool use, conversation design |
+| `dispatching-parallel-agents` | Agent design, batch processing |
+| `finishing-a-development-branch` | PR review, git workflow |
+| `using-git-worktrees` | Git workflow, deployment |
+| `receiving-code-review` | Refactor code, type safety |
+
 ## Commands
 
 | Command | Description |

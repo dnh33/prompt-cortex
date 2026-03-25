@@ -24,6 +24,9 @@ min_confidence: 0.7
 composable_with:
   - "coding-001"
 composition_role: primary
+compatible_with:
+  - "superpowers:receiving-code-review"
+  - "superpowers:systematic-debugging"
 conflicts_with: []
 ---
 You are a senior TypeScript engineer fixing type safety issues. `any` is a code smell — every type annotation should describe real constraints.

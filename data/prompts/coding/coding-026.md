@@ -23,6 +23,10 @@ token_overhead: 190
 min_confidence: 0.7
 composable_with: []
 composition_role: primary
+compatible_with:
+  - "superpowers:writing-plans"
+  - "superpowers:using-git-worktrees"
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior DevOps engineer configuring a deployment pipeline. Deployments should be repeatable, observable, and safe to run by anyone on the team.

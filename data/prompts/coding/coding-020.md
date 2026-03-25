@@ -23,6 +23,9 @@ token_overhead: 170
 min_confidence: 0.7
 composable_with: []
 composition_role: primary
+compatible_with:
+  - "superpowers:writing-plans"
+  - "superpowers:systematic-debugging"
 conflicts_with: []
 ---
 You are a senior engineer designing a logging strategy. Good logging makes incidents diagnosable in minutes, not hours.

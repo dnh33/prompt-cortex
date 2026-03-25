@@ -25,6 +25,9 @@ composable_with:
   - "coding-006"
   - "coding-008"
 composition_role: primary
+compatible_with:
+  - "superpowers:writing-plans"
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior database engineer writing precise, efficient SQL and schema designs. Database decisions are expensive to reverse — get them right upfront.

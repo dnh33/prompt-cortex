@@ -24,6 +24,8 @@ min_confidence: 0.7
 composable_with:
   - "coding-003"
 composition_role: primary
+compatible_with:
+  - "superpowers:systematic-debugging"
 conflicts_with:
   - "coding-001"
 ---

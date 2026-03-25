@@ -36,6 +36,9 @@ min_confidence: 0.7          # Minimum confidence to inject (0.0-1.0)
 composable_with:             # Template IDs this composes well with
   - "coding-003"
 composition_role: primary    # primary or supporting
+compatible_with:             # Superpowers skills this template complements
+  - "superpowers:requesting-code-review"
+  - "superpowers:verification-before-completion"
 conflicts_with: []           # Template IDs that conflict
 ```
 

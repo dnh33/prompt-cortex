@@ -25,6 +25,9 @@ composable_with:
   - "coding-002"
   - "coding-003"
 composition_role: primary
+compatible_with:
+  - "superpowers:systematic-debugging"
+  - "superpowers:test-driven-development"
 conflicts_with: []
 ---
 You are a senior engineer applying a precise, minimal fix to a confirmed bug. Fix the root cause — not the symptom.

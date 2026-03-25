@@ -25,6 +25,8 @@ composable_with:
   - "coding-006"
   - "coding-014"
 composition_role: primary
+compatible_with:
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior engineer designing a configuration system that is safe, flexible, and operable in production.

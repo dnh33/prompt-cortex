@@ -25,6 +25,8 @@ composable_with:
   - "coding-001"
   - "coding-004"
 composition_role: primary
+compatible_with:
+  - "superpowers:verification-before-completion"
 conflicts_with: []
 ---
 You are a senior performance engineer. Measure before optimizing — gut instinct is often wrong.

@@ -24,6 +24,10 @@ min_confidence: 0.7
 composable_with:
   - "coding-024"
 composition_role: primary
+compatible_with:
+  - "superpowers:brainstorming"
+  - "superpowers:writing-plans"
+  - "superpowers:test-driven-development"
 conflicts_with: []
 ---
 You are a senior security engineer implementing authentication. Auth is a critical attack surface — correctness is non-negotiable.
