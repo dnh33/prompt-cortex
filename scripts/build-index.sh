@@ -213,9 +213,17 @@ for file in "${template_files[@]}"; do
     }]')
 done
 
+# Write templates to temp file (avoids "Argument list too long" for large template sets)
+TMPDIR_BUILD=$(mktemp -d)
+trap "rm -rf $TMPDIR_BUILD" EXIT
+
+TEMPLATES_FILE="${TMPDIR_BUILD}/templates.json"
+printf '%s\n' "$templates_json" > "$TEMPLATES_FILE"
+
 # Build inverted index from triggers
 # Map each trigger keyword/phrase to template IDs
-inverted_index=$(printf '%s' "$templates_json" | jq '
+INVERTED_FILE="${TMPDIR_BUILD}/inverted.json"
+jq '
   reduce .[] as $tmpl ({};
     . as $idx |
     ($tmpl.triggers // []) as $triggers |
@@ -235,28 +243,25 @@ inverted_index=$(printf '%s' "$templates_json" | jq '
   ) |
   # Deduplicate arrays
   with_entries(.value |= unique)
-')
+' "$TEMPLATES_FILE" > "$INVERTED_FILE"
 
-# Compose final index
+# Compose final index using temp files (avoids arg length limits)
 built_at=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-final_index=$(jq -n \
+jq -n \
   --arg version "$version_hash" \
   --arg built "$built_at" \
-  --argjson templates "$templates_json" \
-  --argjson inverted "$inverted_index" \
+  --slurpfile templates "$TEMPLATES_FILE" \
+  --slurpfile inverted "$INVERTED_FILE" \
   '{
     version: $version,
     built: $built,
-    template_count: ($templates | length),
-    templates: $templates,
-    inverted_index: $inverted
-  }')
-
-# Write output
-printf '%s\n' "$final_index" > "$OUTPUT_FILE"
+    template_count: ($templates[0] | length),
+    templates: $templates[0],
+    inverted_index: $inverted[0]
+  }' > "$OUTPUT_FILE"
 
 echo "Index built: $OUTPUT_FILE"
-echo "  Templates: $(printf '%s' "$final_index" | jq '.template_count')"
-echo "  Index keys: $(printf '%s' "$final_index" | jq '.inverted_index | keys | length')"
+echo "  Templates: $(jq '.template_count' "$OUTPUT_FILE")"
+echo "  Index keys: $(jq '.inverted_index | keys | length' "$OUTPUT_FILE")"
 echo "  Version: ${version_hash:0:16}..."

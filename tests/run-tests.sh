@@ -131,7 +131,11 @@ else
 fi
 
 tmpl_count=$(jq '.template_count' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null || echo "0")
-assert_eq "index has 3 templates" "3" "$tmpl_count"
+if [[ "$tmpl_count" -ge 3 ]]; then
+  pass "index has templates ($tmpl_count)"
+else
+  fail "index has templates" "expected >= 3, got $tmpl_count"
+fi
 
 # Check inverted index has expected keys
 has_review=$(jq '.inverted_index | has("review")' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null || echo "false")

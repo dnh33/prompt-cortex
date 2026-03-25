@@ -1,8 +1,690 @@
 {
-  "version": "fb602f958d75a56acb87466f67d772c1d0f9dc5bd1035bfc0fa484f3924467d2",
-  "built": "2026-03-25T20:42:56Z",
-  "template_count": 3,
+  "version": "f4fb19d74beeb56a7057f13ab39a815bd233bc856803a10e38489f086443952d",
+  "built": "2026-03-25T20:52:46Z",
+  "template_count": 50,
   "templates": [
+    {
+      "id": "ai-051",
+      "name": "Agent Design",
+      "category": "ai-workflows",
+      "intent": "design-architecture",
+      "action": "design",
+      "object": "architecture",
+      "triggers": [
+        "design agent",
+        "build agent",
+        "agent architecture",
+        "multi-agent",
+        "agent system",
+        "create agent",
+        "autonomous agent"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(design|build|create|architect)(\\\\s|.){0,20}(agent|multi-agent|autonomous)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(agent)(\\\\s|.){0,15}(architecture|system|pipeline|framework)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])agent(\\\\s)(contract|insurance|real estate)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-051.md"
+    },
+    {
+      "id": "ai-052",
+      "name": "RAG Pipeline",
+      "category": "ai-workflows",
+      "intent": "create-architecture",
+      "action": "create",
+      "object": "architecture",
+      "triggers": [
+        "RAG pipeline",
+        "retrieval augmented",
+        "vector search",
+        "embedding pipeline",
+        "knowledge base",
+        "RAG system",
+        "build RAG"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(RAG|retrieval.augmented|retrieval augmented)(\\\\s|.){0,20}(pipeline|system|generation|search)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(build|create|design)(\\\\s|.){0,15}(knowledge base|vector search|embedding pipeline)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])rag(\\\\s)(doll|quilt|fabric)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 185,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-052.md"
+    },
+    {
+      "id": "ai-053",
+      "name": "Prompt Engineering",
+      "category": "ai-workflows",
+      "intent": "create-prompt",
+      "action": "create",
+      "object": "prompt",
+      "triggers": [
+        "write prompt",
+        "prompt engineering",
+        "system prompt",
+        "improve prompt",
+        "prompt template",
+        "craft prompt",
+        "optimize prompt"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(write|craft|design|create|build)(\\\\s|.){0,20}(prompt|instruction|system message)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(prompt)(\\\\s|.){0,15}(engineering|template|design|improvement|optimization)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])prompt(\\\\s)(payment|card|reminder)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-053.md"
+    },
+    {
+      "id": "ai-054",
+      "name": "LLM Evaluation",
+      "category": "ai-workflows",
+      "intent": "test-prompt",
+      "action": "test",
+      "object": "prompt",
+      "triggers": [
+        "evaluate LLM",
+        "eval suite",
+        "benchmark",
+        "test prompt",
+        "prompt testing",
+        "accuracy test",
+        "eval framework"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(evaluate|benchmark|test|assess)(\\\\s|.){0,20}(LLM|prompt|model|output|response)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(eval|evaluation)(\\\\s|.){0,15}(suite|framework|pipeline|harness)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])test(\\\\s)(drive|ride|flight|run)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 180,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-054.md"
+    },
+    {
+      "id": "ai-055",
+      "name": "Classification System",
+      "category": "ai-workflows",
+      "intent": "create-classifier",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "classify",
+        "classification",
+        "categorize",
+        "label data",
+        "sentiment analysis",
+        "text classification",
+        "intent detection"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(classify|categorize|label|detect)(\\\\s|.){0,20}(text|data|intent|sentiment|input|document)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(classification|classifier)(\\\\s|.){0,15}(system|model|pipeline|task)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])classify(\\\\s)(documents|files|folder)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-055.md"
+    },
+    {
+      "id": "ai-056",
+      "name": "Embedding Strategy",
+      "category": "ai-workflows",
+      "intent": "design-architecture",
+      "action": "design",
+      "object": "architecture",
+      "triggers": [
+        "embedding strategy",
+        "vector embeddings",
+        "embedding model",
+        "semantic search",
+        "embedding dimensions",
+        "chunk strategy",
+        "vectorize"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(embedding|embeddings|vectorize|vectorization)(\\\\s|.){0,20}(strategy|model|pipeline|dimensions|approach)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(semantic search|vector search)(\\\\s|.){0,15}(design|build|implement|strategy)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])embed(\\\\s)(video|image|iframe|widget)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-056.md"
+    },
+    {
+      "id": "ai-057",
+      "name": "Context Management",
+      "category": "ai-workflows",
+      "intent": "optimize-prompt",
+      "action": "optimize",
+      "object": "prompt",
+      "triggers": [
+        "context window",
+        "manage context",
+        "token limit",
+        "context overflow",
+        "trim context",
+        "context strategy",
+        "reduce tokens"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(context|token)(\\\\s|.){0,20}(window|limit|overflow|management|budget|strategy)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(trim|reduce|compress|manage)(\\\\s|.){0,15}(context|tokens|prompt|history)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])context(\\\\s)(menu|api|provider|hook)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 165,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-057.md"
+    },
+    {
+      "id": "ai-058",
+      "name": "Tool Use Design",
+      "category": "ai-workflows",
+      "intent": "design-API",
+      "action": "design",
+      "object": "API",
+      "triggers": [
+        "tool use",
+        "function calling",
+        "tool design",
+        "agent tools",
+        "tool schema",
+        "create tool",
+        "define tools"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(tool use|function calling|tool calling)(\\\\s|.){0,20}(design|schema|implement|define)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(design|create|define|build)(\\\\s|.){0,15}(tool|tools|function)(\\\\s|.){0,10}(schema|spec|interface)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])tool(\\\\s)(bar|tip|box|chain)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-058.md"
+    },
+    {
+      "id": "ai-059",
+      "name": "Chain of Thought",
+      "category": "ai-workflows",
+      "intent": "create-prompt",
+      "action": "create",
+      "object": "prompt",
+      "triggers": [
+        "chain of thought",
+        "reasoning chain",
+        "step by step",
+        "thinking process",
+        "CoT",
+        "structured reasoning",
+        "reasoning prompt"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(chain of thought|CoT|step.by.step)(\\\\s|.){0,20}(prompt|reasoning|thinking)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(structured|explicit)(\\\\s|.){0,10}(reasoning|thinking|rationale)(\\\\s|.){0,15}(prompt|design|approach)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])chain(\\\\s)(store|link|supply|gang)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 165,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-059.md"
+    },
+    {
+      "id": "ai-060",
+      "name": "Few-Shot Design",
+      "category": "ai-workflows",
+      "intent": "create-prompt",
+      "action": "create",
+      "object": "prompt",
+      "triggers": [
+        "few-shot",
+        "examples",
+        "few shot learning",
+        "in-context learning",
+        "shot examples",
+        "demonstration",
+        "example selection"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(few.shot|in.context learning|icl)(\\\\s|.){0,20}(prompt|example|design|learning)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(demonstration|exemplar|example)(\\\\s|.){0,15}(selection|design|format|prompt)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])example(\\\\s)(project|repo|app|code|file)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-060.md"
+    },
+    {
+      "id": "ai-061",
+      "name": "System Prompt Crafting",
+      "category": "ai-workflows",
+      "intent": "create-prompt",
+      "action": "create",
+      "object": "prompt",
+      "triggers": [
+        "system prompt",
+        "system message",
+        "base prompt",
+        "persona prompt",
+        "instruction prompt",
+        "system instructions",
+        "role prompt"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(system prompt|system message|base prompt)(\\\\s|.){0,20}(write|create|craft|design|build|improve)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(write|create|craft|design)(\\\\s|.){0,15}(system prompt|system message|persona prompt|role prompt)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])system(\\\\s)(error|crash|failure|log|admin)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-061.md"
+    },
+    {
+      "id": "ai-062",
+      "name": "Guardrails Design",
+      "category": "ai-workflows",
+      "intent": "create-guardrails",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "guardrails",
+        "safety filter",
+        "content filter",
+        "input validation",
+        "output filter",
+        "moderation",
+        "safety checks"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(guardrail|guardrails|safety)(\\\\s|.){0,20}(filter|check|layer|system|rule)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(content|input|output)(\\\\s|.){0,20}(filter|moderat|validat)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])safety(\\\\s)(meeting|manual|report|officer)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-062.md"
+    },
+    {
+      "id": "ai-063",
+      "name": "Output Parsing",
+      "category": "ai-workflows",
+      "intent": "create-parser",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "parse output",
+        "structured output",
+        "JSON output",
+        "extract data",
+        "output format",
+        "parse response",
+        "output schema"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(parse|extract|deserializ)(\\\\s|.){0,20}(output|response|result|JSON|text)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(structured|reliable|consistent)(\\\\s|.){0,20}(output|response|format)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])parse(\\\\s)(date|url|html|csv|xml)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-063.md"
+    },
+    {
+      "id": "ai-064",
+      "name": "Structured Extraction",
+      "category": "ai-workflows",
+      "intent": "create-extractor",
+      "action": "create",
+      "object": "schema",
+      "triggers": [
+        "extract data",
+        "data extraction",
+        "parse document",
+        "structured extraction",
+        "schema extraction",
+        "extract fields",
+        "information extraction"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(extract|pull|capture)(\\\\s|.){0,20}(data|field|entity|information|value)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(structured|schema)(\\\\s|.){0,20}(extract|parse|pull)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])extract(\\\\s)(audio|video|archive|zip|file)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 172,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-064.md"
+    },
+    {
+      "id": "ai-065",
+      "name": "Multi-Modal Design",
+      "category": "ai-workflows",
+      "intent": "design-multimodal",
+      "action": "design",
+      "object": "architecture",
+      "triggers": [
+        "multi-modal",
+        "image analysis",
+        "vision model",
+        "image and text",
+        "multimodal",
+        "visual understanding",
+        "image input"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(multi.modal|multimodal|vision)(\\\\s|.){0,20}(model|pipeline|system|workflow)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(image|visual|photo)(\\\\s|.){0,20}(analys|understand|process|input|reason)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])image(\\\\s)(upload|resize|compress|format|convert)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 178,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-065.md"
+    },
+    {
+      "id": "ai-066",
+      "name": "Batch Processing",
+      "category": "ai-workflows",
+      "intent": "create-batch-processor",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "batch process",
+        "bulk processing",
+        "batch API",
+        "process multiple",
+        "parallel requests",
+        "batch job",
+        "bulk operation"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(batch|bulk)(\\\\s|.){0,20}(process|job|operation|request|run)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(parallel|concurrent)(\\\\s|.){0,20}(request|call|inference|prompt)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])batch(\\\\s)(file|script|command|rename)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 168,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-066.md"
+    },
+    {
+      "id": "ai-067",
+      "name": "Streaming Implementation",
+      "category": "ai-workflows",
+      "intent": "create-streaming",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "streaming",
+        "stream response",
+        "SSE",
+        "server-sent events",
+        "stream tokens",
+        "real-time output",
+        "streaming API"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(stream|streaming)(\\\\s|.){0,20}(response|output|token|API|implement)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(SSE|server.sent|real.time)(\\\\s|.){0,20}(event|output|token|stream)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])stream(\\\\s)(video|audio|music|media|file)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 173,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-067.md"
+    },
+    {
+      "id": "ai-068",
+      "name": "Cost Optimization",
+      "category": "ai-workflows",
+      "intent": "optimize-cost",
+      "action": "optimize",
+      "object": "config",
+      "triggers": [
+        "reduce cost",
+        "API cost",
+        "token usage",
+        "cost optimize",
+        "cheaper model",
+        "budget",
+        "cost efficient"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(reduce|lower|cut|minimize)(\\\\s|.){0,20}(cost|spend|bill|token|usage)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(cost|token|API)(\\\\s|.){0,20}(optim|efficien|reduc|cheaper|budget)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])cost(\\\\s)(of|analysis|benefit|center|account)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 165,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-068.md"
+    },
+    {
+      "id": "ai-069",
+      "name": "Model Selection",
+      "category": "ai-workflows",
+      "intent": "design-model-selection",
+      "action": "design",
+      "object": "config",
+      "triggers": [
+        "which model",
+        "model selection",
+        "choose model",
+        "compare models",
+        "model comparison",
+        "best model",
+        "model for"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(which|what|best|choose|select)(\\\\s|.){0,20}(model|LLM|AI)(\\\\s|.){0,10}(for|to|should)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(model|LLM)(\\\\s|.){0,20}(comparison|selection|recommend|suggest|pick)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])model(\\\\s)(view|layer|schema|class|object|entity)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-069.md"
+    },
+    {
+      "id": "ai-070",
+      "name": "Retrieval Tuning",
+      "category": "ai-workflows",
+      "intent": "optimize-retrieval",
+      "action": "optimize",
+      "object": "architecture",
+      "triggers": [
+        "tune retrieval",
+        "improve search",
+        "search quality",
+        "relevance tuning",
+        "retrieval quality",
+        "search accuracy",
+        "ranking"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(tune|improve|fix|boost)(\\\\s|.){0,20}(retrieval|search|ranking|relevance)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(retrieval|search|RAG)(\\\\s|.){0,20}(quality|accuracy|result|performance|bad|poor)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])search(\\\\s)(engine|bar|box|UI|component|form)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 177,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-070.md"
+    },
+    {
+      "id": "ai-071",
+      "name": "Conversation Design",
+      "category": "ai-workflows",
+      "intent": "design-conversation",
+      "action": "design",
+      "object": "prompt",
+      "triggers": [
+        "conversation design",
+        "chat flow",
+        "dialogue system",
+        "conversation flow",
+        "chat UX",
+        "multi-turn",
+        "conversation architecture"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(conversation|dialogue|chat)(\\\\s|.){0,20}(design|flow|architect|system|UX)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(multi.turn|multi turn)(\\\\s|.){0,20}(chat|conversation|dialogue|flow)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])conversation(\\\\s)(history|log|export|transcript|record)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 174,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-071.md"
+    },
+    {
+      "id": "ai-072",
+      "name": "Fine-Tuning Guide",
+      "category": "ai-workflows",
+      "intent": "create-finetuning",
+      "action": "create",
+      "object": "config",
+      "triggers": [
+        "fine-tune",
+        "fine-tuning",
+        "training data",
+        "custom model",
+        "model training",
+        "adapt model",
+        "fine tune dataset"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(fine.tun|finetun)(\\\\s|.){0,20}(model|data|dataset|job|run|train)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(train|adapt|custom)(\\\\s|.){0,20}(model|LLM|AI)(\\\\s|.){0,10}(on|for|with|from)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])training(\\\\s)(plan|program|schedule|session|course)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 176,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "ai-workflows/ai-072.md"
+    },
     {
       "id": "coding-001",
       "name": "Code Review",
@@ -103,18 +785,1880 @@
       "composition_role": "primary",
       "conflicts_with": "[]",
       "file": "coding/coding-003.md"
+    },
+    {
+      "id": "coding-004",
+      "name": "Refactor Code",
+      "category": "coding",
+      "intent": "refactor-code",
+      "action": "refactor",
+      "object": "code",
+      "triggers": [
+        "refactor",
+        "clean up",
+        "restructure",
+        "simplify this",
+        "reduce complexity",
+        "improve readability",
+        "code smell"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(refactor|restructure|reorganize|rewrite)(\\\\s|.){0,20}(code|function|class|module|component)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(clean|simplify|reduce)(\\\\s|.){0,20}(complexity|coupling|duplication|code smell)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])refactor(\\\\s)(plan|meeting|ticket|story)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-001",
+        "coding-003"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-004.md"
+    },
+    {
+      "id": "coding-005",
+      "name": "Explain Code",
+      "category": "coding",
+      "intent": "explain-code",
+      "action": "explain",
+      "object": "code",
+      "triggers": [
+        "explain this",
+        "what does this do",
+        "how does this work",
+        "walk me through",
+        "understand this code",
+        "what is this code",
+        "explain the logic"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(explain|describe|clarify|summarize)(\\\\s|.){0,20}(code|function|class|logic|algorithm)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(what|how)(\\\\s|.){0,10}(does|is)(\\\\s|.){0,10}(this|it)(\\\\s)(do|work)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])explain(\\\\s)(yourself|decision|choice|why)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 160,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-004",
+        "coding-011"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-005.md"
+    },
+    {
+      "id": "coding-006",
+      "name": "API Design",
+      "category": "coding",
+      "intent": "design-API",
+      "action": "design",
+      "object": "API",
+      "triggers": [
+        "design API",
+        "create endpoint",
+        "REST API",
+        "API schema",
+        "route design",
+        "API architecture",
+        "build an API"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(design|create|build|define)(\\\\s|.){0,20}(API|endpoint|route|REST|GraphQL)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(API|endpoint)(\\\\s|.){0,15}(schema|design|architecture|spec|contract)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])API(\\\\s)(key|token|secret|credentials)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 185,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-013",
+        "coding-011"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-006.md"
+    },
+    {
+      "id": "coding-007",
+      "name": "Fix Bug",
+      "category": "coding",
+      "intent": "fix-bug",
+      "action": "fix",
+      "object": "error",
+      "triggers": [
+        "fix this",
+        "fix bug",
+        "resolve error",
+        "patch this",
+        "correct this",
+        "repair this",
+        "this is broken"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(fix|patch|repair|resolve|correct)(\\\\s|.){0,20}(bug|error|issue|crash|problem|broken)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(this)(\\\\s)(is|keeps|keeps)(\\\\s)(broken|failing|crashing|wrong)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])fix(\\\\s)(meeting|date|time|appointment)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 165,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-002",
+        "coding-003"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-007.md"
+    },
+    {
+      "id": "coding-008",
+      "name": "Optimize Performance",
+      "category": "coding",
+      "intent": "optimize-performance",
+      "action": "optimize",
+      "object": "code",
+      "triggers": [
+        "optimize",
+        "make faster",
+        "improve performance",
+        "speed up",
+        "reduce latency",
+        "performance issue",
+        "slow"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(optimize|improve|reduce|speed)(\\\\s|.){0,20}(performance|latency|memory|CPU|throughput)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(too|very|extremely)(\\\\s)(slow|heavy|expensive|large)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])optimize(\\\\s)(for|images|assets|bundle size)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 180,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-001",
+        "coding-004"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-008.md"
+    },
+    {
+      "id": "coding-009",
+      "name": "Create Function",
+      "category": "coding",
+      "intent": "create-function",
+      "action": "create",
+      "object": "function",
+      "triggers": [
+        "create function",
+        "write function",
+        "implement function",
+        "build helper",
+        "create method",
+        "write a function",
+        "add function"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(create|write|implement|build|add)(\\\\s|.){0,15}(function|method|helper|utility|handler)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(function|method)(\\\\s|.){0,10}(that|to|which|for)(\\\\s|.){0,20}(does|handles|returns|calculates)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])function(\\\\s)(key|button|signature|prototype)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 165,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-003",
+        "coding-011"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-009.md"
+    },
+    {
+      "id": "coding-010",
+      "name": "Create Component",
+      "category": "coding",
+      "intent": "create-component",
+      "action": "create",
+      "object": "component",
+      "triggers": [
+        "create component",
+        "build component",
+        "new component",
+        "add component",
+        "make widget",
+        "create page",
+        "build UI"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(create|build|add|make|write)(\\\\s|.){0,15}(component|widget|page|view|screen|panel)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(UI|frontend|interface)(\\\\s|.){0,15}(component|element|section|layout)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])component(\\\\s)(library|system|design)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-009",
+        "coding-003"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-010.md"
+    },
+    {
+      "id": "coding-011",
+      "name": "Document Code",
+      "category": "coding",
+      "intent": "document-code",
+      "action": "document",
+      "object": "code",
+      "triggers": [
+        "add docs",
+        "document this",
+        "write documentation",
+        "add comments",
+        "JSDoc",
+        "docstring",
+        "README"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(document|add|write|generate)(\\\\s|.){0,20}(docs|documentation|comments|JSDoc|docstring|README)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(undocumented|missing docs|no comments|needs docs)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])document(\\\\s)(store|editor|format|upload)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 160,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-005",
+        "coding-006"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-011.md"
+    },
+    {
+      "id": "coding-012",
+      "name": "Review PR",
+      "category": "coding",
+      "intent": "review-PR",
+      "action": "review",
+      "object": "PR",
+      "triggers": [
+        "review PR",
+        "review pull request",
+        "check PR",
+        "PR review",
+        "look at this PR",
+        "audit PR",
+        "examine PR"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(review|check|audit|examine|look at)(\\\\s|.){0,20}(PR|pull request|diff|changeset)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(PR|pull request)(\\\\s|.){0,15}(ready|open|submitted|for review)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])PR(\\\\s)(team|strategy|campaign|agency)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 185,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-001",
+        "coding-014"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-012.md"
+    },
+    {
+      "id": "coding-013",
+      "name": "Database Query",
+      "category": "coding",
+      "intent": "create-database",
+      "action": "create",
+      "object": "database",
+      "triggers": [
+        "write query",
+        "SQL query",
+        "database query",
+        "create migration",
+        "schema design",
+        "add table",
+        "database design"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(write|create|build|design|add)(\\\\s|.){0,20}(query|SQL|migration|schema|table|index)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(SELECT|INSERT|UPDATE|DELETE|CREATE TABLE|ALTER TABLE)(\\\\s|.)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])database(\\\\s)(admin|administrator|server|host)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 180,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-006",
+        "coding-008"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-013.md"
+    },
+    {
+      "id": "coding-014",
+      "name": "Security Audit",
+      "category": "coding",
+      "intent": "security-audit",
+      "action": "review",
+      "object": "code",
+      "triggers": [
+        "security audit",
+        "check security",
+        "find vulnerabilities",
+        "security review",
+        "OWASP",
+        "pen test",
+        "vulnerability scan"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(security|vulnerability|exploit|attack|injection)(\\\\s|.){0,20}(audit|review|check|scan|test|find)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(OWASP|CVE|XSS|CSRF|SQLi|RCE|SSRF)(\\\\s|.){0,20}([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])security(\\\\s)(guard|camera|badge|clearance)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 190,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-012",
+        "coding-001"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-014.md"
+    },
+    {
+      "id": "coding-015",
+      "name": "Error Handling",
+      "category": "coding",
+      "intent": "fix-error-handling",
+      "action": "fix",
+      "object": "code",
+      "triggers": [
+        "add error handling",
+        "handle errors",
+        "try catch",
+        "error boundary",
+        "graceful degradation",
+        "error recovery",
+        "exception handling"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(add|improve|implement)(\\\\s|.){0,20}(error handling|exception handling|error boundary|try.catch)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(graceful|robust)(\\\\s|.){0,10}(degradation|fallback|recovery|failure)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])error(\\\\s)(message|log|output|display|UI)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-007",
+        "coding-009"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-015.md"
+    },
+    {
+      "id": "coding-016",
+      "name": "Config Management",
+      "category": "coding",
+      "intent": "create-config",
+      "action": "create",
+      "object": "config",
+      "triggers": [
+        "configure",
+        "setup config",
+        "environment variables",
+        "config file",
+        ".env setup",
+        "settings",
+        "configuration management"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(setup|create|manage|configure)(\\\\s|.){0,20}(config|configuration|env|environment variables|settings)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(\\\\.env|dotenv|config file|settings file)(\\\\s|.){0,10}([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])config(\\\\s)(server|service|dashboard|panel)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 165,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-006",
+        "coding-014"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-016.md"
+    },
+    {
+      "id": "coding-017",
+      "name": "Architecture Review",
+      "category": "coding",
+      "intent": "review-architecture",
+      "action": "review",
+      "object": "architecture",
+      "triggers": [
+        "architecture review",
+        "review architecture",
+        "system design",
+        "design review",
+        "evaluate architecture",
+        "code architecture",
+        "structural review"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(review|evaluate|assess|critique)(\\\\s|.){0,20}(architecture|design|structure|system)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(architecture|structural)(\\\\s)(review|audit|analysis|assessment)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])design(\\\\s)(document|spec|mockup|wireframe)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 185,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-001"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-017.md"
+    },
+    {
+      "id": "coding-018",
+      "name": "Git Workflow",
+      "category": "coding",
+      "intent": "create-commit",
+      "action": "create",
+      "object": "commit",
+      "triggers": [
+        "git workflow",
+        "commit message",
+        "branch strategy",
+        "git help",
+        "merge strategy",
+        "rebase",
+        "git best practices"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(commit|branch|merge|rebase)(\\\\s|.){0,20}(message|strategy|workflow|convention|help)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(git)(\\\\s)(workflow|strategy|help|best practices|branching|flow)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])git(\\\\s)(server|hosting|GUI|desktop|client)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-018.md"
+    },
+    {
+      "id": "coding-019",
+      "name": "Regex Help",
+      "category": "coding",
+      "intent": "create-regex",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "regex",
+        "regular expression",
+        "pattern match",
+        "write regex",
+        "regex help",
+        "parse pattern",
+        "regex for"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(write|create|build|help|make)(\\\\s|.){0,20}(regex|regexp|regular expression|pattern)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(regex|regexp|regular expression)(\\\\s|.){0,15}(for|to|that|matching|match)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])pattern(\\\\s)(library|design|architecture|file)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 165,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-019.md"
+    },
+    {
+      "id": "coding-020",
+      "name": "Logging Strategy",
+      "category": "coding",
+      "intent": "create-logging",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "add logging",
+        "logging strategy",
+        "log levels",
+        "structured logging",
+        "observability",
+        "debug logging",
+        "monitoring"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(add|implement|set up|create|design)(\\\\s|.){0,20}(logging|logs|observability|monitoring|tracing)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(structured|centralized|distributed)(\\\\s)(logging|logs|tracing)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])log(\\\\s)(file|rotation|parser|viewer|tail)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-020.md"
+    },
+    {
+      "id": "coding-021",
+      "name": "Authentication",
+      "category": "coding",
+      "intent": "create-auth",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "add auth",
+        "authentication",
+        "login system",
+        "JWT",
+        "OAuth",
+        "session management",
+        "auth flow"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(implement|add|build|create|set up)(\\\\s|.){0,20}(auth|authentication|login|OAuth|JWT|session)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(JWT|OAuth|OIDC|SSO|session)(\\\\s|.){0,15}(flow|implementation|strategy|setup|help)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])auth(\\\\s)(error|failure|log|audit|bypass)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 195,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-024"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-021.md"
+    },
+    {
+      "id": "coding-022",
+      "name": "Caching Strategy",
+      "category": "coding",
+      "intent": "optimize-cache",
+      "action": "optimize",
+      "object": "code",
+      "triggers": [
+        "add caching",
+        "cache strategy",
+        "memoization",
+        "cache invalidation",
+        "redis cache",
+        "caching layer",
+        "cache this"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(add|implement|design|build)(\\\\s|.){0,20}(cache|caching|memoization|memoize)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(cache|caching)(\\\\s|.){0,15}(strategy|layer|invalidation|eviction|policy)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])cache(\\\\s)(miss|hit|log|header|control)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-022.md"
+    },
+    {
+      "id": "coding-023",
+      "name": "Search Implementation",
+      "category": "coding",
+      "intent": "create-search",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "implement search",
+        "search feature",
+        "full text search",
+        "search algorithm",
+        "fuzzy search",
+        "search index",
+        "add search"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(implement|add|build|create)(\\\\s|.){0,20}(search|full.text search|fuzzy search|search index)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(search)(\\\\s|.){0,15}(feature|functionality|algorithm|implementation|indexing)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])search(\\\\s)(engine|company|analytics|console|result page)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 180,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-022"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-023.md"
+    },
+    {
+      "id": "coding-024",
+      "name": "Data Validation",
+      "category": "coding",
+      "intent": "create-validation",
+      "action": "create",
+      "object": "code",
+      "triggers": [
+        "validate data",
+        "input validation",
+        "schema validation",
+        "form validation",
+        "sanitize input",
+        "validation rules",
+        "type checking"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(validate|sanitize|check|enforce)(\\\\s|.){0,20}(input|data|form|schema|payload|request)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(validation|sanitization)(\\\\s|.){0,15}(rules|schema|logic|layer|middleware)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])validate(\\\\s)(token|certificate|license|signature)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 170,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-021"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-024.md"
+    },
+    {
+      "id": "coding-025",
+      "name": "Concurrency",
+      "category": "coding",
+      "intent": "fix-concurrency",
+      "action": "fix",
+      "object": "code",
+      "triggers": [
+        "race condition",
+        "concurrency",
+        "parallel processing",
+        "async issue",
+        "deadlock",
+        "thread safety",
+        "concurrent access"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(race condition|deadlock|livelock|thread safety|concurrent access)(\\\\s|.){0,20}(fix|debug|prevent|resolve|issue)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(concurrency|parallel|async)(\\\\s|.){0,15}(bug|issue|problem|fix|error|failure)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])parallel(\\\\s)(programming|course|tutorial|book)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 185,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-002"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-025.md"
+    },
+    {
+      "id": "coding-026",
+      "name": "Deployment",
+      "category": "coding",
+      "intent": "create-deployment",
+      "action": "create",
+      "object": "config",
+      "triggers": [
+        "deploy",
+        "deployment config",
+        "CI/CD",
+        "pipeline",
+        "Docker",
+        "Dockerfile",
+        "deploy script"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(create|write|set up|build|configure)(\\\\s|.){0,20}(Dockerfile|CI.CD|pipeline|deployment|deploy script)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(deploy|deployment)(\\\\s|.){0,15}(config|setup|pipeline|strategy|script|process)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])deploy(\\\\s)(error|failure|log|rollback|incident)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 190,
+      "min_confidence": 0.7,
+      "composable_with": "[]",
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-026.md"
+    },
+    {
+      "id": "coding-027",
+      "name": "Type Safety",
+      "category": "coding",
+      "intent": "fix-types",
+      "action": "fix",
+      "object": "code",
+      "triggers": [
+        "type error",
+        "fix types",
+        "TypeScript types",
+        "type safety",
+        "generics",
+        "type inference",
+        "add types"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(fix|add|improve|resolve)(\\\\s|.){0,20}(types?|typing|TypeScript|generics|type errors?)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(type|TypeScript)(\\\\s|.){0,15}(error|issue|safety|inference|annotation|definition)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])type(\\\\s)(of|check|system|theory|guard)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 175,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-001"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-027.md"
+    },
+    {
+      "id": "coding-028",
+      "name": "Accessibility",
+      "category": "coding",
+      "intent": "review-accessibility",
+      "action": "review",
+      "object": "component",
+      "triggers": [
+        "accessibility",
+        "a11y",
+        "WCAG",
+        "screen reader",
+        "aria labels",
+        "keyboard navigation",
+        "accessible"
+      ],
+      "intent_signals": [
+        "(^|[^a-zA-Z])(review|audit|check|improve|fix)(\\\\s|.){0,20}(accessibility|a11y|WCAG|aria|screen reader)([^a-zA-Z]|$)",
+        "(^|[^a-zA-Z])(accessibility|a11y)(\\\\s|.){0,15}(review|audit|issue|fix|compliance|violation)([^a-zA-Z]|$)"
+      ],
+      "negative_signals": [
+        "(^|[^a-zA-Z])accessible(\\\\s)(route|url|path|endpoint)([^a-zA-Z]|$)"
+      ],
+      "quality_tier": "gold",
+      "token_overhead": 180,
+      "min_confidence": 0.7,
+      "composable_with": [
+        "coding-001"
+      ],
+      "composition_role": "primary",
+      "conflicts_with": "[]",
+      "file": "coding/coding-028.md"
     }
   ],
   "inverted_index": {
+    "design agent": [
+      "ai-051"
+    ],
+    "design": [
+      "ai-051",
+      "ai-056",
+      "ai-058",
+      "ai-065",
+      "ai-069",
+      "ai-071",
+      "coding-006",
+      "coding-013",
+      "coding-017"
+    ],
+    "agent": [
+      "ai-051",
+      "ai-058"
+    ],
+    "build agent": [
+      "ai-051"
+    ],
+    "build": [
+      "ai-051",
+      "ai-052",
+      "coding-006",
+      "coding-009",
+      "coding-010"
+    ],
+    "agent architecture": [
+      "ai-051"
+    ],
+    "architecture": [
+      "ai-051",
+      "ai-052",
+      "ai-056",
+      "ai-065",
+      "ai-070",
+      "ai-071",
+      "coding-006",
+      "coding-017"
+    ],
+    "multi-agent": [
+      "ai-051"
+    ],
+    "agent system": [
+      "ai-051"
+    ],
+    "system": [
+      "ai-051",
+      "ai-052",
+      "ai-053",
+      "ai-061",
+      "ai-071",
+      "coding-017",
+      "coding-021"
+    ],
+    "create agent": [
+      "ai-051"
+    ],
+    "create": [
+      "ai-051",
+      "ai-052",
+      "ai-053",
+      "ai-055",
+      "ai-058",
+      "ai-059",
+      "ai-060",
+      "ai-061",
+      "ai-062",
+      "ai-063",
+      "ai-064",
+      "ai-066",
+      "ai-067",
+      "ai-072",
+      "coding-006",
+      "coding-009",
+      "coding-010",
+      "coding-013",
+      "coding-016",
+      "coding-018",
+      "coding-019",
+      "coding-020",
+      "coding-021",
+      "coding-023",
+      "coding-024",
+      "coding-026"
+    ],
+    "autonomous agent": [
+      "ai-051"
+    ],
+    "autonomous": [
+      "ai-051"
+    ],
+    "RAG pipeline": [
+      "ai-052"
+    ],
+    "RAG": [
+      "ai-052"
+    ],
+    "pipeline": [
+      "ai-052",
+      "coding-026"
+    ],
+    "retrieval augmented": [
+      "ai-052"
+    ],
+    "retrieval": [
+      "ai-052",
+      "ai-070"
+    ],
+    "augmented": [
+      "ai-052"
+    ],
+    "vector search": [
+      "ai-052"
+    ],
+    "vector": [
+      "ai-052",
+      "ai-056"
+    ],
+    "search": [
+      "ai-052",
+      "ai-056",
+      "ai-070",
+      "coding-023"
+    ],
+    "embedding pipeline": [
+      "ai-052"
+    ],
+    "embedding": [
+      "ai-052",
+      "ai-056"
+    ],
+    "knowledge base": [
+      "ai-052"
+    ],
+    "knowledge": [
+      "ai-052"
+    ],
+    "base": [
+      "ai-052",
+      "ai-061"
+    ],
+    "RAG system": [
+      "ai-052"
+    ],
+    "build RAG": [
+      "ai-052"
+    ],
+    "write prompt": [
+      "ai-053"
+    ],
+    "write": [
+      "ai-053",
+      "coding-003",
+      "coding-009",
+      "coding-011",
+      "coding-013",
+      "coding-019"
+    ],
+    "prompt": [
+      "ai-053",
+      "ai-054",
+      "ai-057",
+      "ai-059",
+      "ai-060",
+      "ai-061",
+      "ai-071"
+    ],
+    "prompt engineering": [
+      "ai-053"
+    ],
+    "engineering": [
+      "ai-053"
+    ],
+    "system prompt": [
+      "ai-053",
+      "ai-061"
+    ],
+    "improve prompt": [
+      "ai-053"
+    ],
+    "improve": [
+      "ai-053",
+      "ai-070",
+      "coding-004",
+      "coding-008"
+    ],
+    "prompt template": [
+      "ai-053"
+    ],
+    "template": [
+      "ai-053"
+    ],
+    "craft prompt": [
+      "ai-053"
+    ],
+    "craft": [
+      "ai-053"
+    ],
+    "optimize prompt": [
+      "ai-053"
+    ],
+    "optimize": [
+      "ai-053",
+      "ai-057",
+      "ai-068",
+      "ai-070",
+      "coding-008",
+      "coding-022"
+    ],
+    "evaluate LLM": [
+      "ai-054"
+    ],
+    "evaluate": [
+      "ai-054",
+      "coding-017"
+    ],
+    "LLM": [
+      "ai-054"
+    ],
+    "eval suite": [
+      "ai-054"
+    ],
+    "eval": [
+      "ai-054"
+    ],
+    "suite": [
+      "ai-054"
+    ],
+    "benchmark": [
+      "ai-054"
+    ],
+    "test prompt": [
+      "ai-054"
+    ],
+    "test": [
+      "ai-054",
+      "coding-003",
+      "coding-014"
+    ],
+    "prompt testing": [
+      "ai-054"
+    ],
+    "testing": [
+      "ai-054"
+    ],
+    "accuracy test": [
+      "ai-054"
+    ],
+    "accuracy": [
+      "ai-054",
+      "ai-070"
+    ],
+    "eval framework": [
+      "ai-054"
+    ],
+    "framework": [
+      "ai-054"
+    ],
+    "classify": [
+      "ai-055"
+    ],
+    "classification": [
+      "ai-055"
+    ],
+    "categorize": [
+      "ai-055"
+    ],
+    "label data": [
+      "ai-055"
+    ],
+    "label": [
+      "ai-055"
+    ],
+    "data": [
+      "ai-055",
+      "ai-063",
+      "ai-064",
+      "ai-072",
+      "coding-024"
+    ],
+    "sentiment analysis": [
+      "ai-055"
+    ],
+    "sentiment": [
+      "ai-055"
+    ],
+    "analysis": [
+      "ai-055",
+      "ai-065"
+    ],
+    "text classification": [
+      "ai-055"
+    ],
+    "text": [
+      "ai-055",
+      "ai-065",
+      "coding-023"
+    ],
+    "intent detection": [
+      "ai-055"
+    ],
+    "intent": [
+      "ai-055"
+    ],
+    "detection": [
+      "ai-055"
+    ],
+    "code": [
+      "ai-055",
+      "ai-062",
+      "ai-063",
+      "ai-066",
+      "ai-067",
+      "coding-001",
+      "coding-003",
+      "coding-004",
+      "coding-005",
+      "coding-008",
+      "coding-011",
+      "coding-014",
+      "coding-015",
+      "coding-017",
+      "coding-019",
+      "coding-020",
+      "coding-021",
+      "coding-022",
+      "coding-023",
+      "coding-024",
+      "coding-025",
+      "coding-027"
+    ],
+    "embedding strategy": [
+      "ai-056"
+    ],
+    "strategy": [
+      "ai-056",
+      "ai-057",
+      "coding-018",
+      "coding-020",
+      "coding-022"
+    ],
+    "vector embeddings": [
+      "ai-056"
+    ],
+    "embeddings": [
+      "ai-056"
+    ],
+    "embedding model": [
+      "ai-056"
+    ],
+    "model": [
+      "ai-056",
+      "ai-065",
+      "ai-068",
+      "ai-069",
+      "ai-072"
+    ],
+    "semantic search": [
+      "ai-056"
+    ],
+    "semantic": [
+      "ai-056"
+    ],
+    "embedding dimensions": [
+      "ai-056"
+    ],
+    "dimensions": [
+      "ai-056"
+    ],
+    "chunk strategy": [
+      "ai-056"
+    ],
+    "chunk": [
+      "ai-056"
+    ],
+    "vectorize": [
+      "ai-056"
+    ],
+    "context window": [
+      "ai-057"
+    ],
+    "context": [
+      "ai-057"
+    ],
+    "window": [
+      "ai-057"
+    ],
+    "manage context": [
+      "ai-057"
+    ],
+    "manage": [
+      "ai-057"
+    ],
+    "token limit": [
+      "ai-057"
+    ],
+    "token": [
+      "ai-057",
+      "ai-068"
+    ],
+    "limit": [
+      "ai-057"
+    ],
+    "context overflow": [
+      "ai-057"
+    ],
+    "overflow": [
+      "ai-057"
+    ],
+    "trim context": [
+      "ai-057"
+    ],
+    "trim": [
+      "ai-057"
+    ],
+    "context strategy": [
+      "ai-057"
+    ],
+    "reduce tokens": [
+      "ai-057"
+    ],
+    "reduce": [
+      "ai-057",
+      "ai-068",
+      "coding-004",
+      "coding-008"
+    ],
+    "tokens": [
+      "ai-057",
+      "ai-067"
+    ],
+    "tool use": [
+      "ai-058"
+    ],
+    "tool": [
+      "ai-058"
+    ],
+    "use": [
+      "ai-058"
+    ],
+    "function calling": [
+      "ai-058"
+    ],
+    "function": [
+      "ai-058",
+      "coding-009"
+    ],
+    "calling": [
+      "ai-058"
+    ],
+    "tool design": [
+      "ai-058"
+    ],
+    "agent tools": [
+      "ai-058"
+    ],
+    "tools": [
+      "ai-058"
+    ],
+    "tool schema": [
+      "ai-058"
+    ],
+    "schema": [
+      "ai-058",
+      "ai-063",
+      "ai-064",
+      "coding-006",
+      "coding-013",
+      "coding-024"
+    ],
+    "create tool": [
+      "ai-058"
+    ],
+    "define tools": [
+      "ai-058"
+    ],
+    "define": [
+      "ai-058"
+    ],
+    "API": [
+      "ai-058",
+      "ai-066",
+      "ai-067",
+      "ai-068",
+      "coding-006"
+    ],
+    "chain of thought": [
+      "ai-059"
+    ],
+    "chain": [
+      "ai-059"
+    ],
+    "thought": [
+      "ai-059"
+    ],
+    "reasoning chain": [
+      "ai-059"
+    ],
+    "reasoning": [
+      "ai-059"
+    ],
+    "step by step": [
+      "ai-059"
+    ],
+    "step": [
+      "ai-059"
+    ],
+    "thinking process": [
+      "ai-059"
+    ],
+    "thinking": [
+      "ai-059"
+    ],
+    "process": [
+      "ai-059",
+      "ai-066"
+    ],
+    "CoT": [
+      "ai-059"
+    ],
+    "structured reasoning": [
+      "ai-059"
+    ],
+    "structured": [
+      "ai-059",
+      "ai-063",
+      "ai-064",
+      "coding-020"
+    ],
+    "reasoning prompt": [
+      "ai-059"
+    ],
+    "few-shot": [
+      "ai-060"
+    ],
+    "examples": [
+      "ai-060"
+    ],
+    "few shot learning": [
+      "ai-060"
+    ],
+    "few": [
+      "ai-060"
+    ],
+    "shot": [
+      "ai-060"
+    ],
+    "learning": [
+      "ai-060"
+    ],
+    "in-context learning": [
+      "ai-060"
+    ],
+    "in-context": [
+      "ai-060"
+    ],
+    "shot examples": [
+      "ai-060"
+    ],
+    "demonstration": [
+      "ai-060"
+    ],
+    "example selection": [
+      "ai-060"
+    ],
+    "example": [
+      "ai-060"
+    ],
+    "selection": [
+      "ai-060",
+      "ai-069"
+    ],
+    "system message": [
+      "ai-061"
+    ],
+    "message": [
+      "ai-061",
+      "coding-018"
+    ],
+    "base prompt": [
+      "ai-061"
+    ],
+    "persona prompt": [
+      "ai-061"
+    ],
+    "persona": [
+      "ai-061"
+    ],
+    "instruction prompt": [
+      "ai-061"
+    ],
+    "instruction": [
+      "ai-061"
+    ],
+    "system instructions": [
+      "ai-061"
+    ],
+    "instructions": [
+      "ai-061"
+    ],
+    "role prompt": [
+      "ai-061"
+    ],
+    "role": [
+      "ai-061"
+    ],
+    "guardrails": [
+      "ai-062"
+    ],
+    "safety filter": [
+      "ai-062"
+    ],
+    "safety": [
+      "ai-062",
+      "coding-025",
+      "coding-027"
+    ],
+    "filter": [
+      "ai-062"
+    ],
+    "content filter": [
+      "ai-062"
+    ],
+    "content": [
+      "ai-062"
+    ],
+    "input validation": [
+      "ai-062",
+      "coding-024"
+    ],
+    "input": [
+      "ai-062",
+      "ai-065",
+      "coding-024"
+    ],
+    "validation": [
+      "ai-062",
+      "coding-024"
+    ],
+    "output filter": [
+      "ai-062"
+    ],
+    "output": [
+      "ai-062",
+      "ai-063",
+      "ai-067"
+    ],
+    "moderation": [
+      "ai-062"
+    ],
+    "safety checks": [
+      "ai-062"
+    ],
+    "checks": [
+      "ai-062"
+    ],
+    "parse output": [
+      "ai-063"
+    ],
+    "parse": [
+      "ai-063",
+      "ai-064",
+      "coding-019"
+    ],
+    "structured output": [
+      "ai-063"
+    ],
+    "JSON output": [
+      "ai-063"
+    ],
+    "JSON": [
+      "ai-063"
+    ],
+    "extract data": [
+      "ai-063",
+      "ai-064"
+    ],
+    "extract": [
+      "ai-063",
+      "ai-064"
+    ],
+    "output format": [
+      "ai-063"
+    ],
+    "format": [
+      "ai-063"
+    ],
+    "parse response": [
+      "ai-063"
+    ],
+    "response": [
+      "ai-063",
+      "ai-067"
+    ],
+    "output schema": [
+      "ai-063"
+    ],
+    "data extraction": [
+      "ai-064"
+    ],
+    "extraction": [
+      "ai-064"
+    ],
+    "parse document": [
+      "ai-064"
+    ],
+    "document": [
+      "ai-064",
+      "coding-011"
+    ],
+    "structured extraction": [
+      "ai-064"
+    ],
+    "schema extraction": [
+      "ai-064"
+    ],
+    "extract fields": [
+      "ai-064"
+    ],
+    "fields": [
+      "ai-064"
+    ],
+    "information extraction": [
+      "ai-064"
+    ],
+    "information": [
+      "ai-064"
+    ],
+    "multi-modal": [
+      "ai-065"
+    ],
+    "image analysis": [
+      "ai-065"
+    ],
+    "image": [
+      "ai-065"
+    ],
+    "vision model": [
+      "ai-065"
+    ],
+    "vision": [
+      "ai-065"
+    ],
+    "image and text": [
+      "ai-065"
+    ],
+    "and": [
+      "ai-065"
+    ],
+    "multimodal": [
+      "ai-065"
+    ],
+    "visual understanding": [
+      "ai-065"
+    ],
+    "visual": [
+      "ai-065"
+    ],
+    "understanding": [
+      "ai-065"
+    ],
+    "image input": [
+      "ai-065"
+    ],
+    "batch process": [
+      "ai-066"
+    ],
+    "batch": [
+      "ai-066"
+    ],
+    "bulk processing": [
+      "ai-066"
+    ],
+    "bulk": [
+      "ai-066"
+    ],
+    "processing": [
+      "ai-066",
+      "coding-025"
+    ],
+    "batch API": [
+      "ai-066"
+    ],
+    "process multiple": [
+      "ai-066"
+    ],
+    "multiple": [
+      "ai-066"
+    ],
+    "parallel requests": [
+      "ai-066"
+    ],
+    "parallel": [
+      "ai-066",
+      "coding-025"
+    ],
+    "requests": [
+      "ai-066"
+    ],
+    "batch job": [
+      "ai-066"
+    ],
+    "job": [
+      "ai-066"
+    ],
+    "bulk operation": [
+      "ai-066"
+    ],
+    "operation": [
+      "ai-066"
+    ],
+    "streaming": [
+      "ai-067"
+    ],
+    "stream response": [
+      "ai-067"
+    ],
+    "stream": [
+      "ai-067"
+    ],
+    "SSE": [
+      "ai-067"
+    ],
+    "server-sent events": [
+      "ai-067"
+    ],
+    "server-sent": [
+      "ai-067"
+    ],
+    "events": [
+      "ai-067"
+    ],
+    "stream tokens": [
+      "ai-067"
+    ],
+    "real-time output": [
+      "ai-067"
+    ],
+    "real-time": [
+      "ai-067"
+    ],
+    "streaming API": [
+      "ai-067"
+    ],
+    "reduce cost": [
+      "ai-068"
+    ],
+    "cost": [
+      "ai-068"
+    ],
+    "API cost": [
+      "ai-068"
+    ],
+    "token usage": [
+      "ai-068"
+    ],
+    "usage": [
+      "ai-068"
+    ],
+    "cost optimize": [
+      "ai-068"
+    ],
+    "cheaper model": [
+      "ai-068"
+    ],
+    "cheaper": [
+      "ai-068"
+    ],
+    "budget": [
+      "ai-068"
+    ],
+    "cost efficient": [
+      "ai-068"
+    ],
+    "efficient": [
+      "ai-068"
+    ],
+    "config": [
+      "ai-068",
+      "ai-069",
+      "ai-072",
+      "coding-016",
+      "coding-026"
+    ],
+    "which model": [
+      "ai-069"
+    ],
+    "which": [
+      "ai-069"
+    ],
+    "model selection": [
+      "ai-069"
+    ],
+    "choose model": [
+      "ai-069"
+    ],
+    "choose": [
+      "ai-069"
+    ],
+    "compare models": [
+      "ai-069"
+    ],
+    "compare": [
+      "ai-069"
+    ],
+    "models": [
+      "ai-069"
+    ],
+    "model comparison": [
+      "ai-069"
+    ],
+    "comparison": [
+      "ai-069"
+    ],
+    "best model": [
+      "ai-069"
+    ],
+    "best": [
+      "ai-069",
+      "coding-018"
+    ],
+    "model for": [
+      "ai-069"
+    ],
+    "for": [
+      "ai-069",
+      "coding-019"
+    ],
+    "tune retrieval": [
+      "ai-070"
+    ],
+    "tune": [
+      "ai-070",
+      "ai-072"
+    ],
+    "improve search": [
+      "ai-070"
+    ],
+    "search quality": [
+      "ai-070"
+    ],
+    "quality": [
+      "ai-070"
+    ],
+    "relevance tuning": [
+      "ai-070"
+    ],
+    "relevance": [
+      "ai-070"
+    ],
+    "tuning": [
+      "ai-070"
+    ],
+    "retrieval quality": [
+      "ai-070"
+    ],
+    "search accuracy": [
+      "ai-070"
+    ],
+    "ranking": [
+      "ai-070"
+    ],
+    "conversation design": [
+      "ai-071"
+    ],
+    "conversation": [
+      "ai-071"
+    ],
+    "chat flow": [
+      "ai-071"
+    ],
+    "chat": [
+      "ai-071"
+    ],
+    "flow": [
+      "ai-071",
+      "coding-021"
+    ],
+    "dialogue system": [
+      "ai-071"
+    ],
+    "dialogue": [
+      "ai-071"
+    ],
+    "conversation flow": [
+      "ai-071"
+    ],
+    "chat UX": [
+      "ai-071"
+    ],
+    "multi-turn": [
+      "ai-071"
+    ],
+    "conversation architecture": [
+      "ai-071"
+    ],
+    "fine-tune": [
+      "ai-072"
+    ],
+    "fine-tuning": [
+      "ai-072"
+    ],
+    "training data": [
+      "ai-072"
+    ],
+    "training": [
+      "ai-072"
+    ],
+    "custom model": [
+      "ai-072"
+    ],
+    "custom": [
+      "ai-072"
+    ],
+    "model training": [
+      "ai-072"
+    ],
+    "adapt model": [
+      "ai-072"
+    ],
+    "adapt": [
+      "ai-072"
+    ],
+    "fine tune dataset": [
+      "ai-072"
+    ],
+    "fine": [
+      "ai-072"
+    ],
+    "dataset": [
+      "ai-072"
+    ],
     "code review": [
       "coding-001"
     ],
-    "code": [
-      "coding-001",
-      "coding-003"
-    ],
     "review": [
-      "coding-001"
+      "coding-001",
+      "coding-012",
+      "coding-014",
+      "coding-017",
+      "coding-028"
     ],
     "review this": [
       "coding-001"
@@ -122,7 +2666,13 @@
     "this": [
       "coding-001",
       "coding-002",
-      "coding-003"
+      "coding-003",
+      "coding-004",
+      "coding-005",
+      "coding-007",
+      "coding-011",
+      "coding-012",
+      "coding-022"
     ],
     "review my code": [
       "coding-001"
@@ -132,28 +2682,35 @@
     ],
     "the": [
       "coding-001",
-      "coding-002"
+      "coding-002",
+      "coding-005"
     ],
     "look at this code": [
       "coding-001"
     ],
     "look": [
-      "coding-001"
+      "coding-001",
+      "coding-012"
     ],
     "check this code": [
       "coding-001"
     ],
     "check": [
-      "coding-001"
+      "coding-001",
+      "coding-012",
+      "coding-014"
     ],
     "audit this": [
       "coding-001"
     ],
     "audit": [
-      "coding-001"
+      "coding-001",
+      "coding-012",
+      "coding-014"
     ],
     "debug": [
-      "coding-002"
+      "coding-002",
+      "coding-020"
     ],
     "not working": [
       "coding-002"
@@ -168,19 +2725,28 @@
       "coding-002"
     ],
     "find": [
-      "coding-002"
+      "coding-002",
+      "coding-014"
     ],
     "bug": [
-      "coding-002"
+      "coding-002",
+      "coding-007"
     ],
     "fix this error": [
       "coding-002"
     ],
     "fix": [
-      "coding-002"
+      "coding-002",
+      "coding-007",
+      "coding-015",
+      "coding-025",
+      "coding-027"
     ],
     "error": [
-      "coding-002"
+      "coding-002",
+      "coding-007",
+      "coding-015",
+      "coding-027"
     ],
     "why is this failing": [
       "coding-002"
@@ -200,9 +2766,6 @@
     "write tests": [
       "coding-003"
     ],
-    "write": [
-      "coding-003"
-    ],
     "tests": [
       "coding-003"
     ],
@@ -210,12 +2773,19 @@
       "coding-003"
     ],
     "add": [
-      "coding-003"
+      "coding-003",
+      "coding-009",
+      "coding-010",
+      "coding-011",
+      "coding-013",
+      "coding-015",
+      "coding-020",
+      "coding-021",
+      "coding-022",
+      "coding-023",
+      "coding-027"
     ],
     "test this": [
-      "coding-003"
-    ],
-    "test": [
       "coding-003"
     ],
     "unit test": [
@@ -238,6 +2808,889 @@
     ],
     "cases": [
       "coding-003"
+    ],
+    "refactor": [
+      "coding-004"
+    ],
+    "clean up": [
+      "coding-004"
+    ],
+    "clean": [
+      "coding-004"
+    ],
+    "restructure": [
+      "coding-004"
+    ],
+    "simplify this": [
+      "coding-004"
+    ],
+    "simplify": [
+      "coding-004"
+    ],
+    "reduce complexity": [
+      "coding-004"
+    ],
+    "complexity": [
+      "coding-004"
+    ],
+    "improve readability": [
+      "coding-004"
+    ],
+    "readability": [
+      "coding-004"
+    ],
+    "code smell": [
+      "coding-004"
+    ],
+    "smell": [
+      "coding-004"
+    ],
+    "explain this": [
+      "coding-005"
+    ],
+    "explain": [
+      "coding-005"
+    ],
+    "what does this do": [
+      "coding-005"
+    ],
+    "what": [
+      "coding-005"
+    ],
+    "does": [
+      "coding-005"
+    ],
+    "how does this work": [
+      "coding-005"
+    ],
+    "how": [
+      "coding-005"
+    ],
+    "work": [
+      "coding-005"
+    ],
+    "walk me through": [
+      "coding-005"
+    ],
+    "walk": [
+      "coding-005"
+    ],
+    "through": [
+      "coding-005"
+    ],
+    "understand this code": [
+      "coding-005"
+    ],
+    "understand": [
+      "coding-005"
+    ],
+    "what is this code": [
+      "coding-005"
+    ],
+    "explain the logic": [
+      "coding-005"
+    ],
+    "logic": [
+      "coding-005"
+    ],
+    "design API": [
+      "coding-006"
+    ],
+    "create endpoint": [
+      "coding-006"
+    ],
+    "endpoint": [
+      "coding-006"
+    ],
+    "REST API": [
+      "coding-006"
+    ],
+    "REST": [
+      "coding-006"
+    ],
+    "API schema": [
+      "coding-006"
+    ],
+    "route design": [
+      "coding-006"
+    ],
+    "route": [
+      "coding-006"
+    ],
+    "API architecture": [
+      "coding-006"
+    ],
+    "build an API": [
+      "coding-006"
+    ],
+    "fix this": [
+      "coding-007"
+    ],
+    "fix bug": [
+      "coding-007"
+    ],
+    "resolve error": [
+      "coding-007"
+    ],
+    "resolve": [
+      "coding-007"
+    ],
+    "patch this": [
+      "coding-007"
+    ],
+    "patch": [
+      "coding-007"
+    ],
+    "correct this": [
+      "coding-007"
+    ],
+    "correct": [
+      "coding-007"
+    ],
+    "repair this": [
+      "coding-007"
+    ],
+    "repair": [
+      "coding-007"
+    ],
+    "this is broken": [
+      "coding-007"
+    ],
+    "broken": [
+      "coding-007"
+    ],
+    "make faster": [
+      "coding-008"
+    ],
+    "make": [
+      "coding-008",
+      "coding-010"
+    ],
+    "faster": [
+      "coding-008"
+    ],
+    "improve performance": [
+      "coding-008"
+    ],
+    "performance": [
+      "coding-008"
+    ],
+    "speed up": [
+      "coding-008"
+    ],
+    "speed": [
+      "coding-008"
+    ],
+    "reduce latency": [
+      "coding-008"
+    ],
+    "latency": [
+      "coding-008"
+    ],
+    "performance issue": [
+      "coding-008"
+    ],
+    "issue": [
+      "coding-008",
+      "coding-025"
+    ],
+    "slow": [
+      "coding-008"
+    ],
+    "create function": [
+      "coding-009"
+    ],
+    "write function": [
+      "coding-009"
+    ],
+    "implement function": [
+      "coding-009"
+    ],
+    "implement": [
+      "coding-009",
+      "coding-023"
+    ],
+    "build helper": [
+      "coding-009"
+    ],
+    "helper": [
+      "coding-009"
+    ],
+    "create method": [
+      "coding-009"
+    ],
+    "method": [
+      "coding-009"
+    ],
+    "write a function": [
+      "coding-009"
+    ],
+    "add function": [
+      "coding-009"
+    ],
+    "create component": [
+      "coding-010"
+    ],
+    "component": [
+      "coding-010",
+      "coding-028"
+    ],
+    "build component": [
+      "coding-010"
+    ],
+    "new component": [
+      "coding-010"
+    ],
+    "new": [
+      "coding-010"
+    ],
+    "add component": [
+      "coding-010"
+    ],
+    "make widget": [
+      "coding-010"
+    ],
+    "widget": [
+      "coding-010"
+    ],
+    "create page": [
+      "coding-010"
+    ],
+    "page": [
+      "coding-010"
+    ],
+    "build UI": [
+      "coding-010"
+    ],
+    "add docs": [
+      "coding-011"
+    ],
+    "docs": [
+      "coding-011"
+    ],
+    "document this": [
+      "coding-011"
+    ],
+    "write documentation": [
+      "coding-011"
+    ],
+    "documentation": [
+      "coding-011"
+    ],
+    "add comments": [
+      "coding-011"
+    ],
+    "comments": [
+      "coding-011"
+    ],
+    "JSDoc": [
+      "coding-011"
+    ],
+    "docstring": [
+      "coding-011"
+    ],
+    "README": [
+      "coding-011"
+    ],
+    "review PR": [
+      "coding-012"
+    ],
+    "review pull request": [
+      "coding-012"
+    ],
+    "pull": [
+      "coding-012"
+    ],
+    "request": [
+      "coding-012"
+    ],
+    "check PR": [
+      "coding-012"
+    ],
+    "PR review": [
+      "coding-012"
+    ],
+    "look at this PR": [
+      "coding-012"
+    ],
+    "audit PR": [
+      "coding-012"
+    ],
+    "examine PR": [
+      "coding-012"
+    ],
+    "examine": [
+      "coding-012"
+    ],
+    "PR": [
+      "coding-012"
+    ],
+    "write query": [
+      "coding-013"
+    ],
+    "query": [
+      "coding-013"
+    ],
+    "SQL query": [
+      "coding-013"
+    ],
+    "SQL": [
+      "coding-013"
+    ],
+    "database query": [
+      "coding-013"
+    ],
+    "database": [
+      "coding-013"
+    ],
+    "create migration": [
+      "coding-013"
+    ],
+    "migration": [
+      "coding-013"
+    ],
+    "schema design": [
+      "coding-013"
+    ],
+    "add table": [
+      "coding-013"
+    ],
+    "table": [
+      "coding-013"
+    ],
+    "database design": [
+      "coding-013"
+    ],
+    "security audit": [
+      "coding-014"
+    ],
+    "security": [
+      "coding-014"
+    ],
+    "check security": [
+      "coding-014"
+    ],
+    "find vulnerabilities": [
+      "coding-014"
+    ],
+    "vulnerabilities": [
+      "coding-014"
+    ],
+    "security review": [
+      "coding-014"
+    ],
+    "OWASP": [
+      "coding-014"
+    ],
+    "pen test": [
+      "coding-014"
+    ],
+    "pen": [
+      "coding-014"
+    ],
+    "vulnerability scan": [
+      "coding-014"
+    ],
+    "vulnerability": [
+      "coding-014"
+    ],
+    "scan": [
+      "coding-014"
+    ],
+    "add error handling": [
+      "coding-015"
+    ],
+    "handling": [
+      "coding-015"
+    ],
+    "handle errors": [
+      "coding-015"
+    ],
+    "handle": [
+      "coding-015"
+    ],
+    "errors": [
+      "coding-015"
+    ],
+    "try catch": [
+      "coding-015"
+    ],
+    "try": [
+      "coding-015"
+    ],
+    "catch": [
+      "coding-015"
+    ],
+    "error boundary": [
+      "coding-015"
+    ],
+    "boundary": [
+      "coding-015"
+    ],
+    "graceful degradation": [
+      "coding-015"
+    ],
+    "graceful": [
+      "coding-015"
+    ],
+    "degradation": [
+      "coding-015"
+    ],
+    "error recovery": [
+      "coding-015"
+    ],
+    "recovery": [
+      "coding-015"
+    ],
+    "exception handling": [
+      "coding-015"
+    ],
+    "exception": [
+      "coding-015"
+    ],
+    "configure": [
+      "coding-016"
+    ],
+    "setup config": [
+      "coding-016"
+    ],
+    "setup": [
+      "coding-016"
+    ],
+    "environment variables": [
+      "coding-016"
+    ],
+    "environment": [
+      "coding-016"
+    ],
+    "variables": [
+      "coding-016"
+    ],
+    "config file": [
+      "coding-016"
+    ],
+    "file": [
+      "coding-016"
+    ],
+    ".env setup": [
+      "coding-016"
+    ],
+    ".env": [
+      "coding-016"
+    ],
+    "settings": [
+      "coding-016"
+    ],
+    "configuration management": [
+      "coding-016"
+    ],
+    "configuration": [
+      "coding-016"
+    ],
+    "management": [
+      "coding-016",
+      "coding-021"
+    ],
+    "architecture review": [
+      "coding-017"
+    ],
+    "review architecture": [
+      "coding-017"
+    ],
+    "system design": [
+      "coding-017"
+    ],
+    "design review": [
+      "coding-017"
+    ],
+    "evaluate architecture": [
+      "coding-017"
+    ],
+    "code architecture": [
+      "coding-017"
+    ],
+    "structural review": [
+      "coding-017"
+    ],
+    "structural": [
+      "coding-017"
+    ],
+    "git workflow": [
+      "coding-018"
+    ],
+    "git": [
+      "coding-018"
+    ],
+    "workflow": [
+      "coding-018"
+    ],
+    "commit message": [
+      "coding-018"
+    ],
+    "commit": [
+      "coding-018"
+    ],
+    "branch strategy": [
+      "coding-018"
+    ],
+    "branch": [
+      "coding-018"
+    ],
+    "git help": [
+      "coding-018"
+    ],
+    "help": [
+      "coding-018",
+      "coding-019"
+    ],
+    "merge strategy": [
+      "coding-018"
+    ],
+    "merge": [
+      "coding-018"
+    ],
+    "rebase": [
+      "coding-018"
+    ],
+    "git best practices": [
+      "coding-018"
+    ],
+    "practices": [
+      "coding-018"
+    ],
+    "regex": [
+      "coding-019"
+    ],
+    "regular expression": [
+      "coding-019"
+    ],
+    "regular": [
+      "coding-019"
+    ],
+    "expression": [
+      "coding-019"
+    ],
+    "pattern match": [
+      "coding-019"
+    ],
+    "pattern": [
+      "coding-019"
+    ],
+    "match": [
+      "coding-019"
+    ],
+    "write regex": [
+      "coding-019"
+    ],
+    "regex help": [
+      "coding-019"
+    ],
+    "parse pattern": [
+      "coding-019"
+    ],
+    "regex for": [
+      "coding-019"
+    ],
+    "add logging": [
+      "coding-020"
+    ],
+    "logging": [
+      "coding-020"
+    ],
+    "logging strategy": [
+      "coding-020"
+    ],
+    "log levels": [
+      "coding-020"
+    ],
+    "log": [
+      "coding-020"
+    ],
+    "levels": [
+      "coding-020"
+    ],
+    "structured logging": [
+      "coding-020"
+    ],
+    "observability": [
+      "coding-020"
+    ],
+    "debug logging": [
+      "coding-020"
+    ],
+    "monitoring": [
+      "coding-020"
+    ],
+    "add auth": [
+      "coding-021"
+    ],
+    "auth": [
+      "coding-021"
+    ],
+    "authentication": [
+      "coding-021"
+    ],
+    "login system": [
+      "coding-021"
+    ],
+    "login": [
+      "coding-021"
+    ],
+    "JWT": [
+      "coding-021"
+    ],
+    "OAuth": [
+      "coding-021"
+    ],
+    "session management": [
+      "coding-021"
+    ],
+    "session": [
+      "coding-021"
+    ],
+    "auth flow": [
+      "coding-021"
+    ],
+    "add caching": [
+      "coding-022"
+    ],
+    "caching": [
+      "coding-022"
+    ],
+    "cache strategy": [
+      "coding-022"
+    ],
+    "cache": [
+      "coding-022"
+    ],
+    "memoization": [
+      "coding-022"
+    ],
+    "cache invalidation": [
+      "coding-022"
+    ],
+    "invalidation": [
+      "coding-022"
+    ],
+    "redis cache": [
+      "coding-022"
+    ],
+    "redis": [
+      "coding-022"
+    ],
+    "caching layer": [
+      "coding-022"
+    ],
+    "layer": [
+      "coding-022"
+    ],
+    "cache this": [
+      "coding-022"
+    ],
+    "implement search": [
+      "coding-023"
+    ],
+    "search feature": [
+      "coding-023"
+    ],
+    "feature": [
+      "coding-023"
+    ],
+    "full text search": [
+      "coding-023"
+    ],
+    "full": [
+      "coding-023"
+    ],
+    "search algorithm": [
+      "coding-023"
+    ],
+    "algorithm": [
+      "coding-023"
+    ],
+    "fuzzy search": [
+      "coding-023"
+    ],
+    "fuzzy": [
+      "coding-023"
+    ],
+    "search index": [
+      "coding-023"
+    ],
+    "index": [
+      "coding-023"
+    ],
+    "add search": [
+      "coding-023"
+    ],
+    "validate data": [
+      "coding-024"
+    ],
+    "validate": [
+      "coding-024"
+    ],
+    "schema validation": [
+      "coding-024"
+    ],
+    "form validation": [
+      "coding-024"
+    ],
+    "form": [
+      "coding-024"
+    ],
+    "sanitize input": [
+      "coding-024"
+    ],
+    "sanitize": [
+      "coding-024"
+    ],
+    "validation rules": [
+      "coding-024"
+    ],
+    "rules": [
+      "coding-024"
+    ],
+    "type checking": [
+      "coding-024"
+    ],
+    "type": [
+      "coding-024",
+      "coding-027"
+    ],
+    "checking": [
+      "coding-024"
+    ],
+    "race condition": [
+      "coding-025"
+    ],
+    "race": [
+      "coding-025"
+    ],
+    "condition": [
+      "coding-025"
+    ],
+    "concurrency": [
+      "coding-025"
+    ],
+    "parallel processing": [
+      "coding-025"
+    ],
+    "async issue": [
+      "coding-025"
+    ],
+    "async": [
+      "coding-025"
+    ],
+    "deadlock": [
+      "coding-025"
+    ],
+    "thread safety": [
+      "coding-025"
+    ],
+    "thread": [
+      "coding-025"
+    ],
+    "concurrent access": [
+      "coding-025"
+    ],
+    "concurrent": [
+      "coding-025"
+    ],
+    "access": [
+      "coding-025"
+    ],
+    "deploy": [
+      "coding-026"
+    ],
+    "deployment config": [
+      "coding-026"
+    ],
+    "deployment": [
+      "coding-026"
+    ],
+    "CI/CD": [
+      "coding-026"
+    ],
+    "Docker": [
+      "coding-026"
+    ],
+    "Dockerfile": [
+      "coding-026"
+    ],
+    "deploy script": [
+      "coding-026"
+    ],
+    "script": [
+      "coding-026"
+    ],
+    "type error": [
+      "coding-027"
+    ],
+    "fix types": [
+      "coding-027"
+    ],
+    "types": [
+      "coding-027"
+    ],
+    "TypeScript types": [
+      "coding-027"
+    ],
+    "TypeScript": [
+      "coding-027"
+    ],
+    "type safety": [
+      "coding-027"
+    ],
+    "generics": [
+      "coding-027"
+    ],
+    "type inference": [
+      "coding-027"
+    ],
+    "inference": [
+      "coding-027"
+    ],
+    "add types": [
+      "coding-027"
+    ],
+    "accessibility": [
+      "coding-028"
+    ],
+    "a11y": [
+      "coding-028"
+    ],
+    "WCAG": [
+      "coding-028"
+    ],
+    "screen reader": [
+      "coding-028"
+    ],
+    "screen": [
+      "coding-028"
+    ],
+    "reader": [
+      "coding-028"
+    ],
+    "aria labels": [
+      "coding-028"
+    ],
+    "aria": [
+      "coding-028"
+    ],
+    "labels": [
+      "coding-028"
+    ],
+    "keyboard navigation": [
+      "coding-028"
+    ],
+    "keyboard": [
+      "coding-028"
+    ],
+    "navigation": [
+      "coding-028"
+    ],
+    "accessible": [
+      "coding-028"
     ]
   }
 }
