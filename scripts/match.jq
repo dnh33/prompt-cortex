@@ -248,7 +248,7 @@ def score_candidate($tmpl):
 # Receives $scored array and $all_templates from main pipeline.
 
 def context_filter($scored; $all_templates):
-  (($context // null) // {}) as $ctx |
+  ($context // {}) as $ctx |
   # NOTE: $project_rules handling deferred to Task 2 (boost/suppress/disabled)
 
   # 1. Language filter — remove templates requiring a different language

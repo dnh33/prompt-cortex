@@ -129,6 +129,7 @@ else
   intents_arg=(--argjson intents "null")
 fi
 
+# min_conf_adjust set by preset loading (Task 2)
 match_result=$(jq -f "$MATCH_JQ" \
   --arg prompt "$user_prompt" \
   --arg state "$state_json" \

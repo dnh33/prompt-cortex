@@ -154,6 +154,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -169,6 +170,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -182,6 +184,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -195,6 +198,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -210,6 +214,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -227,6 +232,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -240,6 +246,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state '{"cortex_disabled":true}' \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -253,6 +260,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -266,6 +274,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -364,6 +373,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state '{"recentRejections":3}' \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -375,6 +385,7 @@ result_no_reject=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -416,6 +427,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -443,6 +455,7 @@ if [[ -n "$silver_id" ]]; then
     --arg state "null" \
     --arg cwd "" \
     --arg min_tier "gold" \
+  --arg min_confidence_adjust "0" \
     --argjson context '{}' \
     --argjson project_rules '{}' \
     --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -499,6 +512,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -525,6 +539,7 @@ result=$(printf '%s' "$MOCK_INDEX" | jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{"lang":"typescript","framework":"nextjs"}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
@@ -542,6 +557,7 @@ result=$(printf '%s' "$MOCK_INDEX" | jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{"lang":"python","framework":""}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
@@ -560,6 +576,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
   --argjson context '{}' \
   --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
