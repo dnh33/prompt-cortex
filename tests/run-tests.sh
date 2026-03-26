@@ -977,6 +977,32 @@ else
   fail "bulk upgrade: idempotent" "expected >0 skipped, got $idempotent_skipped"
 fi
 
+# ===== Test Group: CLAUDE.md Staleness =====
+echo ""
+echo "=== CLAUDE.md Staleness ==="
+
+# T-ST1: suggest command file exists
+if [[ -f "${PLUGIN_ROOT}/commands/suggest.md" ]]; then
+  pass "suggest command exists"
+else
+  fail "suggest command exists" "commands/suggest.md not found"
+fi
+
+# T-ST2: staleness detected when hashes differ
+STALE_DIR="${TEST_DIR}/.cortex-stale"
+mkdir -p "${STALE_DIR}/.cortex"
+printf 'Test CLAUDE.md content' > "${STALE_DIR}/CLAUDE.md"
+printf '{"claude_md_hash":"00000000","rules":{}}' > "${STALE_DIR}/.cortex/project-context.json"
+
+output=$(CLAUDE_PROJECT_DIR="$STALE_DIR" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+  bash "${PLUGIN_ROOT}/hooks/cortex-session-init" 2>/dev/null)
+
+if printf '%s' "$output" | grep -q "CLAUDE.md has changed"; then
+  pass "staleness: detected CLAUDE.md change"
+else
+  fail "staleness: detected CLAUDE.md change" "no staleness warning in output"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"

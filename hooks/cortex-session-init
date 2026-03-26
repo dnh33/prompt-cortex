@@ -116,8 +116,22 @@ if [[ -f "$PROJECT_JSON" ]]; then
   project_json_note="\\nProject config: .cortex/project.json loaded"
 fi
 
+# --- CLAUDE.md staleness detection ---
+PROJECT_CONTEXT="${CORTEX_DIR}/project-context.json"
+staleness_note=""
+
+if [[ -f "$PROJECT_CONTEXT" ]] && [[ -f "${PROJECT_DIR}/CLAUDE.md" ]]; then
+  stored_hash=$(jq -r '.claude_md_hash // ""' "$PROJECT_CONTEXT" 2>/dev/null || echo "")
+  if [[ -n "$stored_hash" ]]; then
+    current_hash=$(cksum "${PROJECT_DIR}/CLAUDE.md" 2>/dev/null | cut -d' ' -f1 | head -c 8)
+    if [[ "$current_hash" != "$stored_hash" ]]; then
+      staleness_note="\\n[cortex] CLAUDE.md has changed since last /cortex:suggest scan. Run /cortex:suggest --refresh to update project context."
+    fi
+  fi
+fi
+
 # --- Build session context message ---
-context_msg="<prompt-cortex-init>\\nprompt-cortex v1.2 active. ${template_count} templates loaded.\\nProject: ${project_lang}/${project_framework}${preset_note}${project_json_note}\\nEscape: prefix any prompt with --raw to skip enhancement.\\n</prompt-cortex-init>"
+context_msg="<prompt-cortex-init>\\nprompt-cortex v1.2 active. ${template_count} templates loaded.\\nProject: ${project_lang}/${project_framework}${preset_note}${project_json_note}${staleness_note}\\nEscape: prefix any prompt with --raw to skip enhancement.\\n</prompt-cortex-init>"
 
 # --- Output ---
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
