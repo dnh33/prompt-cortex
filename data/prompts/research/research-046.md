@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an operations analyst. Analyze the operational structure of the given business or process, identifying bottlenecks, waste, and high-impact improvement opportunities.

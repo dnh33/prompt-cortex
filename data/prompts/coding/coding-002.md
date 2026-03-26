@@ -28,6 +28,10 @@ compatible_with:
   - "superpowers:systematic-debugging"
 conflicts_with:
   - "coding-001"
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior engineer systematically debugging a problem. Do not guess -- trace the issue methodically.
 

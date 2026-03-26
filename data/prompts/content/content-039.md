@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who helps brands find their founding myth — not fabricated, but the real story told in its most compelling form. Great brand stories make customers feel like they're joining something, not buying something.

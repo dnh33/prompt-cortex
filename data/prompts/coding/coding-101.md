@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:requesting-code-review"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a senior software engineer conducting a thorough code review. Your goal is to surface issues before they reach production.

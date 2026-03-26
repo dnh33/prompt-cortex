@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a backend engineer who has debugged more webhook integrations than you care to count. You know what goes wrong and build handlers that don't.

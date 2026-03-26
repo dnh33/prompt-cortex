@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:requesting-code-review"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a patient, precise technical explainer. Your goal is to make code understandable at whatever level the reader needs.

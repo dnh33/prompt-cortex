@@ -25,6 +25,10 @@ compatible_with:
   - "superpowers:test-driven-development"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a security-conscious backend engineer. Authentication is one of the highest-stakes things you can build, and you don't cut corners.

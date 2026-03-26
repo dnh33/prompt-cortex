@@ -946,6 +946,37 @@ assert_eq "intents.json has domain_map" "true" "$has_domain_map"
 has_domain_synonyms=$(jq 'has("domain_synonyms")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
 assert_eq "intents.json has domain_synonyms" "true" "$has_domain_synonyms"
 
+# ===== Test Group: Template Schema =====
+echo ""
+echo "=== Template Schema ==="
+
+# T-TS1: templates in index have requires field
+has_requires=$(jq '[.templates[] | has("requires")] | all' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index: all templates have requires" "true" "$has_requires"
+
+# T-TS2: templates have project_affinity
+has_affinity=$(jq '[.templates[] | has("project_affinity")] | all' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index: all templates have project_affinity" "true" "$has_affinity"
+
+# T-TS3: templates have min_complexity
+has_complexity=$(jq '[.templates[] | has("min_complexity")] | all' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index: all templates have min_complexity" "true" "$has_complexity"
+
+# T-TS4: requires has nested language and framework arrays
+requires_shape=$(jq '[.templates[] | (.requires | has("language") and has("framework"))] | all' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index: requires has language+framework" "true" "$requires_shape"
+
+# T-TS5: bulk-schema-upgrade.sh is idempotent
+idempotent_out=$(bash "${PLUGIN_ROOT}/scripts/bulk-schema-upgrade.sh" 2>&1)
+idempotent_skipped=$(echo "$idempotent_out" | awk '/^Skipped:/{print $2}')
+idempotent_updated=$(echo "$idempotent_out" | awk '/^Updated:/{print $2}')
+assert_eq "bulk upgrade: idempotent (0 updated)" "0" "$idempotent_updated"
+if [[ "$idempotent_skipped" -gt 0 ]]; then
+  pass "bulk upgrade: idempotent (${idempotent_skipped} skipped)"
+else
+  fail "bulk upgrade: idempotent" "expected >0 skipped, got $idempotent_skipped"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"

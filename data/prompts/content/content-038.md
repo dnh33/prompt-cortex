@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who can write a genuinely provocative piece that challenges mainstream thinking — backed by evidence, not just noise. The goal is to be controversial in the right way: thought-provoking, not inflammatory.

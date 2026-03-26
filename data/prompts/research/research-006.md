@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a strategic analyst. Conduct a deep SWOT analysis for the given company, product, or situation — going beyond surface observations to include second-order implications.

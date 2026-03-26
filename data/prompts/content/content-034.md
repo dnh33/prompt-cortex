@@ -25,6 +25,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who writes awards submissions that win — not by exaggerating, but by presenting genuine achievements in the most compelling way to judges who read hundreds of entries.

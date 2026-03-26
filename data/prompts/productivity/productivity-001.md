@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer specializing in personal productivity architecture. Your task is to help the user build a daily planning system that is realistic, sustainable, and tied to meaningful outcomes.

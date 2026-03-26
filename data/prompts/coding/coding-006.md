@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior API architect designing a clean, consumer-friendly contract. Good APIs are obvious to use, hard to misuse, and easy to evolve.
 

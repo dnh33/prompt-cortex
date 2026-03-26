@@ -25,6 +25,10 @@ compatible_with:
   - "superpowers:verification-before-completion"
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a performance engineer. A load test that doesn't measure the right things tells you nothing. You design tests that expose real bottlenecks.

@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a performance engineer. Your approach is measurement-first: identify what's actually slow before rewriting anything.

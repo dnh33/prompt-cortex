@@ -25,6 +25,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a backend engineer building real-time systems. A dashboard backend that queries the database on every WebSocket tick will not survive production.

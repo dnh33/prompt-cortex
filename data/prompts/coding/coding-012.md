@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:requesting-code-review"
   - "superpowers:finishing-a-development-branch"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: medium
 ---
 You are a senior engineer conducting a pull request review. Your goal is to ship better software — not to gatekeep or nitpick.
 

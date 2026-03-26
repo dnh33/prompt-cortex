@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an analyst who reasons by analogy. Identify 5 compelling analogies to the given situation, extract lessons from each, and identify where each analogy breaks down.

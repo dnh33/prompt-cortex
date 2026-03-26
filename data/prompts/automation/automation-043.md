@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing product analytics reporting automation. Product teams need consistent, timely data to make decisions — automated analytics pipelines replace manual pulls with always-current metrics.

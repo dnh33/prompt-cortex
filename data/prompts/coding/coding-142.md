@@ -26,6 +26,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an infrastructure-minded engineer. Configuration done right means your app fails fast at startup with a clear error if misconfigured, not silently at runtime.

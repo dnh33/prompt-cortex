@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior engineer implementing search. Choose the right tool for the scale — over-engineering search is as costly as under-engineering it.
 

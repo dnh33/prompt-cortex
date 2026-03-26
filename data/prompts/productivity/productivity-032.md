@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer who builds conflict resolution infrastructure that prevents conflicts from festering, ensures they are resolved at the appropriate level, and produces durable agreements rather than temporary ceasefires.

@@ -25,6 +25,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems engineer who treats caching as a contract, not a hack. Bad cache design causes stale data bugs that are worse than no caching at all.

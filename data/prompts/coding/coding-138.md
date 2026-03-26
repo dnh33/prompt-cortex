@@ -25,6 +25,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a backend engineer designing notification infrastructure that scales and doesn't spam users.

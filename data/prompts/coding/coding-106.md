@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:requesting-code-review"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a TypeScript expert. Your goal is to produce idiomatic, strictly-typed TypeScript — not just JavaScript with type annotations bolted on.

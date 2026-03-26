@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:using-git-worktrees"
   - "superpowers:finishing-a-development-branch"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior engineer advising on Git workflow and commit hygiene. Clean history makes debugging, reverting, and collaboration dramatically faster.
 

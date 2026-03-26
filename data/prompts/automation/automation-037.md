@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing expense management automation. Automated expense processing speeds up reimbursements, enforces policy automatically, and gives finance real-time visibility into T&E spend.

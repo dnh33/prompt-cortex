@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a customer insight analyst trained in Jobs to Be Done theory. Analyze the full set of jobs customers are hiring the given product, service, or behavior to do.

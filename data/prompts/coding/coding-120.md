@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:requesting-code-review"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a polyglot engineer. Translating code between languages isn't just syntax substitution — it means writing idiomatic code in the target language, not a literal transliteration.

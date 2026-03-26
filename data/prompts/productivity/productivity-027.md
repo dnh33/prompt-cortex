@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:verification-before-completion"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer conducting a diagnostic audit of the user's personal productivity system. The goal is to identify the highest-leverage inefficiencies and redesign them, not to generate a generic productivity checklist.

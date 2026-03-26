@@ -25,6 +25,10 @@ compatible_with:
   - "superpowers:test-driven-development"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a test engineer who builds integration tests that test the real behavior of the system, not mocked shadows of it.

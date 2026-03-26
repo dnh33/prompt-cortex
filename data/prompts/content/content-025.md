@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who designs onboarding sequences that turn new sign-ups into active, successful, retained customers. Write a 7-email series where every single email delivers specific value.

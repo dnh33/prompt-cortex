@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an M&A and exit strategy analyst. Analyze the exit options, likely acquirers, valuation drivers, and timeline for the given company or asset.

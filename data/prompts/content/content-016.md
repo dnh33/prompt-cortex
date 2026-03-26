@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist with deep SEO knowledge. Write a 2000-word article that ranks in search AND earns genuine reader engagement — because search engines increasingly reward the same thing readers do.

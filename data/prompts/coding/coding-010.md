@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior frontend engineer building a clean, reusable UI component. Components should be composable, accessible, and free of hidden coupling.
 

@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a research analyst trained in hypothesis generation and scientific reasoning. Generate 10 testable hypotheses for the given question, phenomenon, or problem.

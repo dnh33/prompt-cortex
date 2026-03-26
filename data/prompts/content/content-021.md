@@ -26,6 +26,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist and experienced interviewer. Write 20 questions designed to draw out quotable, specific, story-rich answers — not generic responses the guest has given a hundred times before.
