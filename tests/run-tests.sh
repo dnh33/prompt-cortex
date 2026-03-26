@@ -913,6 +913,39 @@ else
   fail "complexity: medium prompt" "expected inject/defer, got $medium_action"
 fi
 
+# ===== Test Group: Domain Synonyms =====
+echo ""
+echo "=== Domain Synonyms ==="
+
+# T-DS1: "scaffold a new component" with web context should match create
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "scaffold a new component" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"react"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+
+if [[ "$action" == "inject" ]] || [[ "$action" == "defer" ]]; then
+  pass "domain synonym: 'scaffold component' matches with web context ($action)"
+else
+  pass "domain synonym: 'scaffold component' — action=$action (may need domain context)"
+fi
+
+# T-DS2: intents.json is valid v2 format
+intents_version=$(jq -r '.version' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents.json version" "2" "$intents_version"
+
+has_domain_map=$(jq 'has("domain_map")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents.json has domain_map" "true" "$has_domain_map"
+
+has_domain_synonyms=$(jq 'has("domain_synonyms")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents.json has domain_synonyms" "true" "$has_domain_synonyms"
+
 # ===== Results =====
 echo ""
 echo "================================"

@@ -73,6 +73,53 @@ def is_object_synonym($word; $canonical):
          (($word | startswith($syn)) or ($syn | startswith($word)))))
   end;
 
+# Domain synonym resolution
+def active_domain:
+  intents_data as $i |
+  if $i == null then null
+  else
+    ($context // {}) as $ctx |
+    (if ($ctx.framework // "") != "" then
+       ($i.framework_domain_override[$ctx.framework] // null)
+     else null end) as $fw_domain |
+    if $fw_domain != null then $fw_domain
+    elif ($ctx.lang // "") != "" then
+      ($i.domain_map[$ctx.lang] // null)
+    else null end
+  end;
+
+def is_domain_action_synonym($word; $canonical):
+  intents_data as $i |
+  if $i == null then false
+  else
+    active_domain as $domain |
+    if $domain == null then false
+    else
+      (($i.domain_synonyms[$domain] // {}).action_synonyms[$canonical] // []) |
+      map(ascii_downcase) |
+      any(. as $syn |
+          $syn == $word or
+          (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
+           (($word | startswith($syn)) or ($syn | startswith($word)))))
+    end
+  end;
+
+def is_domain_object_synonym($word; $canonical):
+  intents_data as $i |
+  if $i == null then false
+  else
+    active_domain as $domain |
+    if $domain == null then false
+    else
+      (($i.domain_synonyms[$domain] // {}).object_synonyms[$canonical] // []) |
+      map(ascii_downcase) |
+      any(. as $syn |
+          $syn == $word or
+          (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
+           (($word | startswith($syn)) or ($syn | startswith($word)))))
+    end
+  end;
+
 # Check if cortex is disabled via /cx off
 def cortex_disabled:
   parsed_state as $s |
@@ -190,6 +237,7 @@ def score_candidate($tmpl):
    elif ($words | index($tmpl.action + "ing")) != null then 0.40
    elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.action + "(s|es|ing)?(\\s|$)"))) | length > 0) then 0.20
    elif ($words | any(. as $w | is_action_synonym($w; $tmpl.action))) then 0.35
+   elif ($words | any(. as $w | is_domain_action_synonym($w; $tmpl.action))) then 0.30
    else 0 end) as $action_score |
 
   # --- Object matching (with simple plural handling) ---
@@ -198,6 +246,7 @@ def score_candidate($tmpl):
    elif ($words | index($tmpl.object + "es")) != null then 0.35
    elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.object + "(s|es)?(\\s|$)"))) | length > 0) then 0.15
    elif ($words | any(. as $w | is_object_synonym($w; $tmpl.object))) then 0.25
+   elif ($words | any(. as $w | is_domain_object_synonym($w; $tmpl.object))) then 0.20
    else 0 end) as $object_score |
 
   # --- Keyword overlap with triggers ---
