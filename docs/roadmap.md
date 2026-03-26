@@ -19,16 +19,36 @@ All v1.1 features implemented on 2026-03-26.
 
 **Deferred to v1.2:** `/cortex:suggest` (CLAUDE.md integration) — requires LLM calls, violates "no LLM in Layer 1" constraint.
 
-## v1.2 — Context Awareness
+## v1.2 — Context Awareness (DESIGN COMPLETE)
 
-### `/cortex:suggest` — CLAUDE.md integration
-Scan CLAUDE.md using LLM call, propose boost/suppress rules for templates based on project conventions. User reviews and accepts. (Deferred from v1.1 — requires LLM calls.)
+Full spec: `docs/superpowers/specs/2026-03-26-v1.2-context-awareness-design.md` (708 lines, approved 2026-03-26)
 
-### Project context filtering (Phase 3 in match.jq)
-Use detected language/framework from SessionStart to filter templates. TypeScript projects boost TS-relevant templates, Python projects suppress JS-specific ones.
+### 14 Features, 4 Pillars
 
-### `.cortex/project.json` configuration
-Manual config for tech stack, boost/suppress rules, quality tier minimum.
+**Pillar 1 — Smarter Matching:**
+- [ ] F1: Phase 3 context filter — wire the no-op stub into full language/framework/affinity filtering
+- [ ] F2: Template schema upgrade — add `requires`, `project_affinity`, `min_complexity` to 350 templates
+- [ ] F3: Enhanced tech detection — monorepo, testing frameworks, linters, package managers, git branch type
+- [ ] F9: Complexity scoring — classify prompt complexity (trivial→expert), suppress mismatched templates
+- [ ] F10: Domain synonyms — intents.json v2 with context-sensitive synonyms and domain mapping
+
+**Pillar 2 — Context Intelligence:**
+- [ ] F6: `/cortex:suggest` — LLM scans CLAUDE.md, proposes boost/suppress rules, user reviews, results cached
+- [ ] F12.5: CLAUDE.md staleness detection — hash comparison at SessionStart
+- [ ] F13: CwdChanged hook — reactive context detection with fallback
+
+**Pillar 3 — Extensibility:**
+- [ ] F4: `.cortex/project.json` — manual per-project config (tech_stack, boost, suppress, disabled, preset)
+- [ ] F5: Presets system — greenfield, maintenance, strict, learning (activate via `/cortex:preset`)
+- [ ] F11: Template packs — domain-specific bundles (react/, python/) with auto-detection
+- [ ] F12: Team-shared templates — `.cortex/custom/` in repo, auto-indexed
+
+**Pillar 4 — Commands & Polish:**
+- [ ] F7: `/cortex:preset` — activate/list/create presets
+- [ ] F8: `/cortex:context` — show current project intelligence
+- [ ] F14: Enhanced `/cortex:stats` — context filter effectiveness, preset impact
+
+**Execution:** 4 waves (foundation → matching → commands/extensibility → polish). Target: 75-80 tests.
 
 ## v2.0 — The Brain (Layer 2)
 
