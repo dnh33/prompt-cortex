@@ -320,6 +320,23 @@ fi
 
 assert_contains "session-init mentions template count" "templates loaded" "$output"
 
+# ===== Test Group: Transparent Mode =====
+echo ""
+echo "=== Transparent Mode ==="
+
+TRANS_DIR="${TEST_DIR}/.cortex-trans"
+mkdir -p "${TRANS_DIR}/.cortex"
+printf '{"min_tier":"silver","transparent":true}' > "${TRANS_DIR}/.cortex/config.json"
+
+output=$(echo '{"session_id":"test-trans","prompt":"review my code","cwd":"'"$TRANS_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-match" 2>/dev/null)
+
+if printf '%s' "$output" | grep -q "cortex: applied"; then
+  pass "transparent mode: footer appended"
+else
+  fail "transparent mode: footer not found" "output: $(printf '%s' "$output" | head -c 200)"
+fi
+
 # ===== Test Group: Reject-Signal Boosting =====
 echo ""
 echo "=== Reject-Signal Boosting ==="

@@ -267,6 +267,36 @@ case "$action" in
       exit 0
     fi
 
+    # --- Token budget enforcement (300 token max ≈ 230 words) ---
+    MAX_WORDS=230
+    body_word_count=$(printf '%s' "$template_body" | wc -w | tr -d ' ')
+    if [[ "$body_word_count" -gt "$MAX_WORDS" ]]; then
+      truncated=""
+      word_count=0
+      last_sentence_end=""
+      while IFS= read -r line; do
+        line_words=$(printf '%s' "$line" | wc -w | tr -d ' ')
+        word_count=$((word_count + line_words))
+        if [[ -n "$truncated" ]]; then
+          truncated+=$'\n'"$line"
+        else
+          truncated="$line"
+        fi
+        if [[ "$line" =~ [.!?]$ ]]; then
+          last_sentence_end="$truncated"
+        fi
+        if [[ "$word_count" -ge "$MAX_WORDS" ]]; then
+          break
+        fi
+      done <<< "$template_body"
+
+      if [[ -n "$last_sentence_end" ]]; then
+        template_body="$last_sentence_end"
+      else
+        template_body="$truncated"
+      fi
+    fi
+
     # Update state
     update_state
 
@@ -280,9 +310,16 @@ case "$action" in
       mark_onboarded
     fi
 
+    # Transparent mode footer
+    transparent_note=""
+    if [[ "$transparent_mode" == "true" ]]; then
+      template_name=$(printf '%s' "$match_result" | jq -r '.best_match.name // ""')
+      transparent_note="\\n[cortex: applied ${template_id} \"${template_name}\" @ ${confidence}]"
+    fi
+
     # Output hook response using printf (not heredoc — bash 5.3+ bug)
-    printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"<prompt-cortex match=\\"%s\\" confidence=\\"%s\\">\\n%s\\n</prompt-cortex>%s"}}\n' \
-      "$template_id" "$confidence" "$template_body_escaped" "$onboarding_note"
+    printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"<prompt-cortex match=\\"%s\\" confidence=\\"%s\\">\\n%s\\n</prompt-cortex>%s%s"}}\n' \
+      "$template_id" "$confidence" "$template_body_escaped" "$onboarding_note" "$transparent_note"
     ;;
 
   defer)
