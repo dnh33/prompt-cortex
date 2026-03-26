@@ -365,6 +365,26 @@ else
   fail "reject boost: leave-alone score unchanged" "$leave_score_base == $leave_score"
 fi
 
+# E2E test: cortex-match persists rejection state on --raw escape
+REJECT_E2E_DIR="${TEST_DIR}/.cortex-reject-e2e"
+mkdir -p "${REJECT_E2E_DIR}/.cortex"
+
+# Send a --raw prompt through the hook
+echo '{"session_id":"test-reject-e2e","prompt":"--raw fix the bug","cwd":"'"$REJECT_E2E_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-match" >/dev/null 2>&1
+
+# Verify state file was created with recentRejections > 0
+if [[ -f "${REJECT_E2E_DIR}/.cortex/state-test-reject-e2e.json" ]]; then
+  rej_count=$(jq -r '.recentRejections // 0' "${REJECT_E2E_DIR}/.cortex/state-test-reject-e2e.json" 2>/dev/null)
+  if [[ "$rej_count" -gt 0 ]]; then
+    pass "reject boost e2e: state persists rejection count ($rej_count)"
+  else
+    fail "reject boost e2e: recentRejections not incremented" "got $rej_count"
+  fi
+else
+  fail "reject boost e2e: state file not created" "no state file after --raw"
+fi
+
 # ===== Test Group: Synonym Expansion =====
 echo ""
 echo "=== Synonym Expansion ==="

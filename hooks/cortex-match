@@ -332,7 +332,8 @@ case "$action" in
     ;;
 
   suppress|escape|skip|*)
-    # No injection
+    # No injection — still update state for reject tracking + decay
+    update_state
     echo '{}'
     ;;
 esac
