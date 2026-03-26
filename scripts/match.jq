@@ -221,8 +221,18 @@ def score_candidate($tmpl):
      if ($p | test($sig; "i")) then -0.30 else 0 end
    ) | add // 0) as $negative_penalty |
 
-  # --- Complexity mismatch penalty ---
-  (if (prompt_word_count < 6) and ($tmpl.min_confidence > 0.7) then -0.15
+  # --- Complexity mismatch penalty (full range) ---
+  (prompt_word_count as $wc |
+   (if $wc < 6 then "trivial"
+    elif $wc < 15 then "low"
+    elif $wc < 40 then "medium"
+    elif $wc < 80 then "high"
+    else "expert" end) as $prompt_complexity |
+   ({"trivial": 1, "low": 2, "medium": 3, "high": 4, "expert": 5}) as $levels |
+   ($levels[$prompt_complexity] // 3) as $prompt_level |
+   ($levels[$tmpl.min_complexity // "low"] // 2) as $tmpl_level |
+   if $prompt_level < $tmpl_level then -0.15
+   elif $prompt_level > ($tmpl_level + 2) then -0.05
    else 0 end) as $complexity_penalty |
 
   # --- Multi-turn suppression ---

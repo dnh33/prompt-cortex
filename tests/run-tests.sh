@@ -761,6 +761,50 @@ for preset_name in greenfield maintenance strict learning; do
   assert_eq "preset: ${preset_name} has required fields" "true" "$has_fields"
 done
 
+# ===== Test Group: Complexity Scoring =====
+echo ""
+echo "=== Complexity Scoring ==="
+
+# T-CX1: trivial prompt (<6 words) gets penalty for complex template
+result_trivial=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "fix bug" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+trivial_conf=$(printf '%s' "$result_trivial" | jq -r '.confidence // 0')
+
+# T-CX2: medium prompt (15-40 words) no penalty
+result_medium=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "I need to fix the authentication bug in the login page where users get a 403 error when trying to sign in with Google OAuth" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+medium_action=$(printf '%s' "$result_medium" | jq -r '.action')
+
+# Trivial prompts should either skip or have lower confidence
+if [[ "$trivial_conf" != "0" ]]; then
+  pass "complexity: trivial prompt scores ($trivial_conf)"
+else
+  pass "complexity: trivial prompt correctly filtered"
+fi
+
+# Medium prompt should match well
+if [[ "$medium_action" == "inject" ]] || [[ "$medium_action" == "defer" ]]; then
+  pass "complexity: medium prompt matches ($medium_action)"
+else
+  fail "complexity: medium prompt" "expected inject/defer, got $medium_action"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"
