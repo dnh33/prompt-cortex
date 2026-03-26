@@ -50,8 +50,7 @@ parse_yaml_frontmatter() {
       val="${val%\"}"
       val="${val#\'}"
       val="${val%\'}"
-      # Escape backslashes and quotes for JSON
-      val="${val//\\/\\\\}"
+      # Escape quotes for JSON (backslashes preserved as-is for regex patterns)
       val="${val//\"/\\\"}"
       if [[ -n "$array_vals" ]]; then
         array_vals="${array_vals},\"${val}\""
@@ -90,8 +89,7 @@ parse_yaml_frontmatter() {
       val="${val%\"}"
       val="${val#\'}"
       val="${val%\'}"
-      # Escape for JSON
-      val="${val//\\/\\\\}"
+      # Escape quotes for JSON (backslashes preserved as-is for regex patterns)
       val="${val//\"/\\\"}"
 
       if ! $first; then json+=","; fi

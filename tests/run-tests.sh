@@ -302,6 +302,21 @@ fi
 
 assert_contains "session-init mentions template count" "templates loaded" "$output"
 
+# ===== Test Group: Intent Signal Fix =====
+echo ""
+echo "=== Intent Signal Fix ==="
+
+bash "${PLUGIN_ROOT}/scripts/build-index.sh" >/dev/null 2>&1
+
+signal=$(jq -r '.templates[] | select(.id == "coding-001") | .intent_signals[0] // ""' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+if [[ "$signal" == *'\\\\s'* ]]; then
+  fail "intent signals not double-escaped" "found double-escaped backslash in signal"
+elif [[ -n "$signal" ]]; then
+  pass "intent signals not double-escaped"
+else
+  fail "intent signals not double-escaped" "signal is empty"
+fi
+
 # ===== Test Group: Config System =====
 echo ""
 echo "=== Config System ==="
