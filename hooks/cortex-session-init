@@ -77,6 +77,35 @@ project_context=$(detect_project 2>/dev/null || echo "unknown unknown")
 project_lang=$(echo "$project_context" | cut -d' ' -f1)
 project_framework=$(echo "$project_context" | cut -d' ' -f2)
 
+# --- Load project.json overrides ---
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
+PROJECT_JSON="${PROJECT_DIR}/.cortex/project.json"
+
+if [[ -f "$PROJECT_JSON" ]]; then
+  override_lang=$(jq -r '.tech_stack.language // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+  override_fw=$(jq -r '.tech_stack.framework // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+  if [[ -n "$override_lang" ]]; then project_lang="$override_lang"; fi
+  if [[ -n "$override_fw" ]]; then project_framework="$override_fw"; fi
+fi
+
+# --- Write context to session-context.json (env var fallback) ---
+CORTEX_DIR="${PROJECT_DIR}/.cortex"
+mkdir -p "$CORTEX_DIR" 2>/dev/null || true
+
+jq -n \
+  --arg lang "$project_lang" \
+  --arg framework "$project_framework" \
+  '{lang: $lang, framework: $framework}' \
+  > "${CORTEX_DIR}/session-context.json" 2>/dev/null || true
+
+# Write CLAUDE_ENV_FILE if available
+if [[ -n "${CLAUDE_ENV_FILE:-}" ]]; then
+  {
+    printf 'CORTEX_LANG=%s\n' "$project_lang"
+    printf 'CORTEX_FRAMEWORK=%s\n' "$project_framework"
+  } > "$CLAUDE_ENV_FILE" 2>/dev/null || true
+fi
+
 # --- Clean stale state files (>24 hours old) ---
 cleanup_stale_state() {
   local cortex_dir="${CLAUDE_PROJECT_DIR:-.}/.cortex"
@@ -95,8 +124,24 @@ health_check() {
 }
 health_check
 
+# --- Determine active preset ---
+active_preset=""
+if [[ -f "$PROJECT_JSON" ]]; then
+  active_preset=$(jq -r '.preset // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+fi
+
+preset_note=""
+if [[ -n "$active_preset" ]]; then
+  preset_note="\\nPreset: ${active_preset}"
+fi
+
+project_json_note=""
+if [[ -f "$PROJECT_JSON" ]]; then
+  project_json_note="\\nProject config: .cortex/project.json loaded"
+fi
+
 # --- Build session context message ---
-context_msg="<prompt-cortex-init>\\nprompt-cortex v1.0 active. ${template_count} templates loaded.\\nProject: ${project_lang}/${project_framework}\\nEscape: prefix any prompt with --raw to skip enhancement.\\n</prompt-cortex-init>"
+context_msg="<prompt-cortex-init>\\nprompt-cortex v1.2 active. ${template_count} templates loaded.\\nProject: ${project_lang}/${project_framework}${preset_note}${project_json_note}\\nEscape: prefix any prompt with --raw to skip enhancement.\\n</prompt-cortex-init>"
 
 # --- Output ---
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then

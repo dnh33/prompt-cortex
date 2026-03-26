@@ -588,6 +588,83 @@ else
   fail "context filter: empty context" "got null action"
 fi
 
+# ===== Test Group: Project Config =====
+echo ""
+echo "=== Project Config ==="
+
+# T-PC1: boost rule increases confidence
+result_no_rules=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_base=$(printf '%s' "$result_no_rules" | jq -r '.confidence')
+
+result_boost=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{"boost":["review"],"suppress":[],"disabled":[]}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_boosted=$(printf '%s' "$result_boost" | jq -r '.confidence')
+
+# Use jq for float comparison (bc not available on all platforms)
+boosted_higher=$(jq -n --arg base "$conf_base" --arg boosted "$conf_boosted" \
+  '($boosted | tonumber) > ($base | tonumber)')
+if [[ "$boosted_higher" == "true" ]]; then
+  pass "project config: boost increases confidence ($conf_base -> $conf_boosted)"
+else
+  fail "project config: boost increases confidence" "base=$conf_base boosted=$conf_boosted"
+fi
+
+# T-PC2: disabled removes template entirely
+result_disabled=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{"boost":[],"suppress":[],"disabled":["coding-001"]}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+disabled_match=$(printf '%s' "$result_disabled" | jq -r '.best_match.id // ""')
+
+if [[ "$disabled_match" != "coding-001" ]]; then
+  pass "project config: disabled removes template (got: ${disabled_match:-none})"
+else
+  fail "project config: disabled removes template" "coding-001 still matched"
+fi
+
+# ===== Test Group: Presets =====
+echo ""
+echo "=== Presets ==="
+
+# T-PR1: preset files are valid JSON
+for preset_name in greenfield maintenance strict learning; do
+  if jq . "${PLUGIN_ROOT}/data/presets/${preset_name}.json" >/dev/null 2>&1; then
+    pass "preset: ${preset_name}.json is valid JSON"
+  else
+    fail "preset: ${preset_name}.json is valid JSON" "parse error or not found"
+  fi
+done
+
+# T-PR2: preset has required fields
+for preset_name in greenfield maintenance strict learning; do
+  has_fields=$(jq 'has("name") and has("boost") and has("suppress") and has("min_confidence_adjust")' \
+    "${PLUGIN_ROOT}/data/presets/${preset_name}.json" 2>/dev/null || echo "false")
+  assert_eq "preset: ${preset_name} has required fields" "true" "$has_fields"
+done
+
 # ===== Results =====
 echo ""
 echo "================================"

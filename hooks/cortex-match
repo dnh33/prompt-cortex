@@ -119,6 +119,61 @@ if [[ -f "$PROJECT_CONTEXT" ]]; then
     }')
 fi
 
+# --- Load preset ---
+active_preset=""
+PRESETS_DIR="${PLUGIN_ROOT}/data/presets"
+
+# Preset from project.json takes priority
+if [[ -f "$PROJECT_JSON" ]]; then
+  active_preset=$(jq -r '.preset // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+fi
+
+# Fallback to config.json preset
+if [[ -z "$active_preset" ]] && [[ -f "$CONFIG_FILE" ]]; then
+  active_preset=$(jq -r '.preset // ""' "$CONFIG_FILE" 2>/dev/null || echo "")
+fi
+
+# Load preset and merge with project_rules (preset first, project.json overwrites)
+if [[ -n "$active_preset" ]]; then
+  preset_file="${PRESETS_DIR}/${active_preset}.json"
+  custom_preset="${CORTEX_DIR}/presets/${active_preset}.json"
+
+  # Check custom presets first, then built-in
+  if [[ -f "$custom_preset" ]]; then
+    preset_file="$custom_preset"
+  fi
+
+  if [[ -f "$preset_file" ]]; then
+    preset_rules=$(jq '{
+      boost: (.boost // []),
+      suppress: (.suppress // [])
+    }' "$preset_file" 2>/dev/null || echo '{}')
+
+    # Merge: preset as base, project_rules overwrites
+    project_rules_json=$(printf '%s\n%s' "$preset_rules" "$project_rules_json" | \
+      jq -s '.[0] as $preset | .[1] as $proj | {
+        boost: (($preset.boost // []) + ($proj.boost // []) | unique),
+        suppress: (($preset.suppress // []) + ($proj.suppress // []) | unique),
+        disabled: ($proj.disabled // [])
+      }')
+
+    # Extract min_confidence_adjust (capped at +/-0.10)
+    min_conf_adjust=$(jq -r '.min_confidence_adjust // 0' "$preset_file" 2>/dev/null || echo "0")
+
+    # Export preset name for context
+    export CORTEX_PRESET="$active_preset"
+  fi
+fi
+
+# Default min_confidence_adjust if no preset
+min_conf_adjust="${min_conf_adjust:-0}"
+
+# --- project.json min_tier override (rank 2, higher than config.json rank 6) ---
+if [[ -f "$PROJECT_JSON" ]]; then
+  project_min_tier=$(jq -r '.min_tier // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+  if [[ -n "$project_min_tier" ]]; then min_tier="$project_min_tier"; fi
+fi
+
 # --- Run matching engine ---
 INTENTS="${PLUGIN_ROOT}/data/intents.json"
 

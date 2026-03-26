@@ -1,0 +1,7 @@
+{
+  "name": "strict",
+  "description": "Security-first, thorough testing, error handling",
+  "boost": ["review", "test", "fix"],
+  "suppress": [],
+  "min_confidence_adjust": 0.05
+}

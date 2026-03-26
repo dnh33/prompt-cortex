@@ -1,0 +1,7 @@
+{
+  "name": "maintenance",
+  "description": "Bug fixes, performance, code quality",
+  "boost": ["debug", "fix", "refactor", "optimize", "test"],
+  "suppress": ["architecture", "design"],
+  "min_confidence_adjust": 0
+}

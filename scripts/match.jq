@@ -249,7 +249,7 @@ def score_candidate($tmpl):
 
 def context_filter($scored; $all_templates):
   ($context // {}) as $ctx |
-  # NOTE: $project_rules handling deferred to Task 2 (boost/suppress/disabled)
+  ($project_rules // {}) as $rules |
 
   # 1. Language filter — remove templates requiring a different language
   [ $scored[] |
@@ -269,6 +269,26 @@ def context_filter($scored; $all_templates):
       if (($tmpl.requires.framework | map(ascii_downcase)) | index($ctx.framework // "")) != null then $entry
       else empty end
     else $entry end
+  ] |
+
+  # 3. Boost/suppress rules from project.json + project-context.json
+  [ .[] |
+    . as $entry |
+    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    # Boost matching categories, actions, or template IDs
+    (if ($rules.boost // []) | any(. as $b |
+        ($tmpl.category == $b) or ($tmpl.action == $b) or ($tmpl.id == $b))
+     then .confidence = .confidence + 0.05
+     else . end) |
+    # Suppress matching categories, actions, or template IDs
+    (if ($rules.suppress // []) | any(. as $s |
+        ($tmpl.category == $s) or ($tmpl.action == $s) or ($tmpl.id == $s))
+     then .confidence = .confidence - 0.15
+     else . end) |
+    # Disabled templates — remove entirely
+    (if ($rules.disabled // []) | any(. == $entry.id or . == "*")
+     then empty
+     else . end)
   ] |
 
   # Re-sort by confidence
