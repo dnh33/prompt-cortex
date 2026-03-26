@@ -151,17 +151,32 @@ update_state() {
       '[{template: $tmpl, ts: $ts}] + . | .[0:10]')
   fi
 
+  # Track recent rejections (--raw flag usage)
+  local recent_rejections=0
+  if [[ -f "$STATE_FILE" ]]; then
+    recent_rejections=$(jq -r '.recentRejections // 0' "$STATE_FILE" 2>/dev/null || echo "0")
+  fi
+
+  if [[ "$action" == "escape" ]] && [[ "$leave_alone_reason" == "raw_flag" ]]; then
+    recent_rejections=$((recent_rejections + 1))
+    if [[ "$recent_rejections" -gt 10 ]]; then recent_rejections=10; fi
+  elif [[ "$recent_rejections" -gt 0 ]]; then
+    recent_rejections=$((recent_rejections - 1))
+  fi
+
   local new_state
   new_state=$(jq -n \
     --arg ts "$ts" \
     --arg hash "$prompt_hash" \
     --argjson hook_result "$match_result" \
     --argjson recent "$recent_injections" \
+    --argjson rejections "$recent_rejections" \
     '{
       lastHookRun: $ts,
       lastPromptHash: $hash,
       hookResult: $hook_result,
       recentInjections: $recent,
+      recentRejections: $rejections,
       cortex_disabled: false
     }')
 

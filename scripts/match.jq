@@ -129,7 +129,17 @@ def leave_it_alone:
           ($p | test("```"))
         ] | map(select(.)) | length >= 2
       ) then { score: 0.45, reason: "long_structured" }
-      else null end)
+      else null end),
+
+    # Reject-signal boost
+    (parsed_state as $s |
+     if $s == null then null
+     else
+       ($s.recentRejections // 0) as $rej |
+       if $rej >= 2 then
+         { score: ([($rej * 0.10), 0.25] | min), reason: "reject_boost" }
+       else null end
+     end)
   ] |
 
   # Remove nulls and compute max-of-top-2

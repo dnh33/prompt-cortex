@@ -320,6 +320,34 @@ fi
 
 assert_contains "session-init mentions template count" "templates loaded" "$output"
 
+# ===== Test Group: Reject-Signal Boosting =====
+echo ""
+echo "=== Reject-Signal Boosting ==="
+
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "help me optimize this" \
+  --arg state '{"recentRejections":3}' \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+leave_score=$(printf '%s' "$result" | jq -r '.leave_alone_score')
+
+result_no_reject=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "help me optimize this" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+leave_score_base=$(printf '%s' "$result_no_reject" | jq -r '.leave_alone_score')
+
+if [[ "$leave_score" != "$leave_score_base" ]]; then
+  pass "reject boost: leave-alone score changed ($leave_score_base -> $leave_score)"
+else
+  fail "reject boost: leave-alone score unchanged" "$leave_score_base == $leave_score"
+fi
+
 # ===== Test Group: Synonym Expansion =====
 echo ""
 echo "=== Synonym Expansion ==="
