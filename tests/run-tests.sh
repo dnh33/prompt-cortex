@@ -1003,6 +1003,36 @@ else
   fail "staleness: detected CLAUDE.md change" "no staleness warning in output"
 fi
 
+# ===== Test Group: Commands =====
+echo ""
+echo "=== Commands ==="
+
+# T-CMD1: preset command exists
+if [[ -f "${PLUGIN_ROOT}/commands/preset.md" ]]; then
+  pass "preset command exists"
+else
+  fail "preset command exists" "commands/preset.md not found"
+fi
+
+# T-CMD2: context command exists
+if [[ -f "${PLUGIN_ROOT}/commands/context.md" ]]; then
+  pass "context command exists"
+else
+  fail "context command exists" "commands/context.md not found"
+fi
+
+# T-CMD3: all commands have name field in frontmatter
+for cmd in debug list sync tier show transparent feedback stats add suggest preset context; do
+  if [[ -f "${PLUGIN_ROOT}/commands/${cmd}.md" ]]; then
+    cmd_name=$(grep "^name:" "${PLUGIN_ROOT}/commands/${cmd}.md" | head -1 | sed 's/^name:[[:space:]]*//')
+    if [[ -n "$cmd_name" ]]; then
+      pass "command: ${cmd}.md has name ($cmd_name)"
+    else
+      fail "command: ${cmd}.md has name" "no name field"
+    fi
+  fi
+done
+
 # ===== Results =====
 echo ""
 echo "================================"
