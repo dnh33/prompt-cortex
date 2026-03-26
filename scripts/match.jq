@@ -42,6 +42,34 @@ def recently_injected($tmpl_id):
     length >= 3
   end;
 
+# Synonym expansion
+def intents_data:
+  ($intents // null) | if . == null then null elif type == "array" then .[0] else . end;
+
+def is_action_synonym($word; $canonical):
+  intents_data as $i |
+  if $i == null then false
+  else
+    ($i.action_synonyms[$canonical] // []) |
+    map(ascii_downcase) |
+    any(. as $syn |
+        $syn == $word or
+        (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
+         (($word | startswith($syn)) or ($syn | startswith($word)))))
+  end;
+
+def is_object_synonym($word; $canonical):
+  intents_data as $i |
+  if $i == null then false
+  else
+    ($i.object_synonyms[$canonical] // []) |
+    map(ascii_downcase) |
+    any(. as $syn |
+        $syn == $word or
+        (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
+         (($word | startswith($syn)) or ($syn | startswith($word)))))
+  end;
+
 # Check if cortex is disabled via /cx off
 def cortex_disabled:
   parsed_state as $s |
@@ -144,6 +172,7 @@ def score_candidate($tmpl):
    elif ($words | index($tmpl.action + "es")) != null then 0.45
    elif ($words | index($tmpl.action + "ing")) != null then 0.40
    elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.action + "(s|es|ing)?(\\s|$)"))) | length > 0) then 0.20
+   elif ($words | any(. as $w | is_action_synonym($w; $tmpl.action))) then 0.35
    else 0 end) as $action_score |
 
   # --- Object matching (with simple plural handling) ---
@@ -151,6 +180,7 @@ def score_candidate($tmpl):
    elif ($words | index($tmpl.object + "s")) != null then 0.35
    elif ($words | index($tmpl.object + "es")) != null then 0.35
    elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.object + "(s|es)?(\\s|$)"))) | length > 0) then 0.15
+   elif ($words | any(. as $w | is_object_synonym($w; $tmpl.object))) then 0.25
    else 0 end) as $object_score |
 
   # --- Keyword overlap with triggers ---

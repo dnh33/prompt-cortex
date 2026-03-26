@@ -154,6 +154,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
@@ -166,6 +167,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
 assert_eq "match 'debug auth' template" "coding-002" "$match_id"
@@ -176,6 +178,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
 assert_eq "match 'write tests' template" "coding-003" "$match_id"
@@ -186,6 +189,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 reason=$(printf '%s' "$result" | jq -r '.leave_alone_reason')
@@ -198,6 +202,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 if [[ "$action" == "suppress" ]] || [[ "$action" == "skip" ]]; then
@@ -212,6 +217,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 assert_eq "escape '--raw' action" "escape" "$action"
@@ -222,6 +228,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state '{"cortex_disabled":true}' \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 assert_eq "escape '/cx off' state" "escape" "$action"
@@ -232,6 +239,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 assert_eq "leave-alone '/cortex:debug'" "suppress" "$action"
@@ -242,6 +250,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 # Should be skip or suppress (conceptual question)
@@ -311,6 +320,26 @@ fi
 
 assert_contains "session-init mentions template count" "templates loaded" "$output"
 
+# ===== Test Group: Synonym Expansion =====
+echo ""
+echo "=== Synonym Expansion ==="
+
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "troubleshoot the bug" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
+
+if [[ "$action" == "inject" ]] || [[ "$action" == "defer" ]]; then
+  pass "synonym: 'troubleshoot the bug' matches $match_id"
+else
+  fail "synonym: 'troubleshoot the bug'" "expected inject/defer, got $action"
+fi
+
 # ===== Test Group: Tier Filtering =====
 echo ""
 echo "=== Tier Filtering ==="
@@ -325,6 +354,7 @@ if [[ -n "$silver_id" ]]; then
     --arg state "null" \
     --arg cwd "" \
     --arg min_tier "gold" \
+    --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
     "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
   has_silver=$(printf '%s' "$result_gold" | jq --arg id "$silver_id" '[.candidates[].id] | map(select(. == $id)) | length')
 

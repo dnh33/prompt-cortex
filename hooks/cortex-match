@@ -54,11 +54,21 @@ if [[ -f "$CONFIG_FILE" ]]; then
 fi
 
 # --- Run matching engine ---
+INTENTS="${PLUGIN_ROOT}/data/intents.json"
+
+intents_arg=()
+if [[ -f "$INTENTS" ]]; then
+  intents_arg=(--slurpfile intents "$INTENTS")
+else
+  intents_arg=(--argjson intents "null")
+fi
+
 match_result=$(jq -f "$MATCH_JQ" \
   --arg prompt "$user_prompt" \
   --arg state "$state_json" \
   --arg cwd "$cwd" \
   --arg min_tier "$min_tier" \
+  "${intents_arg[@]}" \
   "$INDEX" 2>/dev/null) || {
   # jq failed — silent degradation
   echo '{}'
