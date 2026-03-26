@@ -1033,6 +1033,24 @@ for cmd in debug list sync tier show transparent feedback stats add suggest pres
   fi
 done
 
+# ===== Test Group: Enhanced Stats =====
+echo ""
+echo "=== Enhanced Stats ==="
+
+# T-STAT1: stats command mentions context intelligence
+if grep -q "Context Intelligence" "${PLUGIN_ROOT}/commands/stats.md" 2>/dev/null; then
+  pass "stats: has Context Intelligence section"
+else
+  fail "stats: has Context Intelligence section" "not found"
+fi
+
+# T-STAT2: stats command mentions filter effectiveness
+if grep -q "Filter Effectiveness" "${PLUGIN_ROOT}/commands/stats.md" 2>/dev/null; then
+  pass "stats: has Filter Effectiveness section"
+else
+  fail "stats: has Filter Effectiveness section" "not found"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"
