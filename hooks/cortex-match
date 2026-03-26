@@ -43,11 +43,22 @@ if [[ -f "$STATE_FILE" ]]; then
   state_json=$(cat "$STATE_FILE" 2>/dev/null || echo "null")
 fi
 
+# --- Load config ---
+CONFIG_FILE="${CORTEX_DIR}/config.json"
+min_tier="silver"  # Default: gold + silver
+transparent_mode="false"
+
+if [[ -f "$CONFIG_FILE" ]]; then
+  min_tier=$(jq -r '.min_tier // "silver"' "$CONFIG_FILE" 2>/dev/null || echo "silver")
+  transparent_mode=$(jq -r '.transparent // false' "$CONFIG_FILE" 2>/dev/null || echo "false")
+fi
+
 # --- Run matching engine ---
 match_result=$(jq -f "$MATCH_JQ" \
   --arg prompt "$user_prompt" \
   --arg state "$state_json" \
   --arg cwd "$cwd" \
+  --arg min_tier "$min_tier" \
   "$INDEX" 2>/dev/null) || {
   # jq failed — silent degradation
   echo '{}'

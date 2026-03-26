@@ -302,6 +302,22 @@ fi
 
 assert_contains "session-init mentions template count" "templates loaded" "$output"
 
+# ===== Test Group: Config System =====
+echo ""
+echo "=== Config System ==="
+
+CONFIG_DIR="${TEST_DIR}/.cortex"
+mkdir -p "$CONFIG_DIR"
+printf '{"min_tier":"gold","transparent":false}' > "${CONFIG_DIR}/config.json"
+
+output=$(echo '{"session_id":"test-config-1","prompt":"review my code","cwd":"'"$TEST_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-match" 2>/dev/null)
+if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
+  pass "config: gold tier still matches gold template"
+else
+  fail "config: gold tier still matches gold template" "no injection"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"
