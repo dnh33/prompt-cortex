@@ -761,6 +761,114 @@ for preset_name in greenfield maintenance strict learning; do
   assert_eq "preset: ${preset_name} has required fields" "true" "$has_fields"
 done
 
+# ===== Test Group: Enhanced Detection =====
+echo ""
+echo "=== Enhanced Detection ==="
+
+# T-ED1: hooks.json has CwdChanged
+has_cwd=$(jq 'has("hooks") and (.hooks | has("CwdChanged"))' "${PLUGIN_ROOT}/hooks/hooks.json" 2>/dev/null || echo "false")
+assert_eq "hooks.json has CwdChanged" "true" "$has_cwd"
+
+# T-ED2: cortex-cwd-changed script exists
+if [[ -f "${PLUGIN_ROOT}/hooks/cortex-cwd-changed" ]]; then
+  pass "cortex-cwd-changed exists"
+else
+  fail "cortex-cwd-changed exists" "file not found"
+fi
+
+# T-ED3: detect-project.sh shared lib exists
+if [[ -f "${PLUGIN_ROOT}/hooks/lib/detect-project.sh" ]]; then
+  pass "detect-project.sh shared lib exists"
+else
+  fail "detect-project.sh shared lib exists" "file not found"
+fi
+
+# T-ED4: session-init writes session-context.json with enhanced fields
+DETECT_DIR="${TEST_DIR}/.cortex-detect"
+mkdir -p "${DETECT_DIR}"
+CLAUDE_PROJECT_DIR="$DETECT_DIR" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+  bash "${PLUGIN_ROOT}/hooks/cortex-session-init" >/dev/null 2>&1
+if [[ -f "${DETECT_DIR}/.cortex/session-context.json" ]]; then
+  pass "session-init writes session-context.json"
+  detected_lang=$(jq -r '.lang' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null)
+  assert_not_empty "session-context has lang" "$detected_lang"
+  # Check enhanced fields exist
+  has_testing=$(jq 'has("testing")' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null || echo "false")
+  assert_eq "session-context has testing field" "true" "$has_testing"
+  has_linter=$(jq 'has("linter")' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null || echo "false")
+  assert_eq "session-context has linter field" "true" "$has_linter"
+  has_pkgmgr=$(jq 'has("pkgmgr")' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null || echo "false")
+  assert_eq "session-context has pkgmgr field" "true" "$has_pkgmgr"
+  has_monorepo=$(jq 'has("monorepo")' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null || echo "false")
+  assert_eq "session-context has monorepo field" "true" "$has_monorepo"
+else
+  fail "session-init writes session-context.json" "file not found"
+fi
+
+# T-ED5: detect_project detects JS project
+JS_DIR="${TEST_DIR}/.cortex-js-detect"
+mkdir -p "${JS_DIR}"
+printf '{"name":"test","dependencies":{"react":"^18"}}' > "${JS_DIR}/package.json"
+source "${PLUGIN_ROOT}/hooks/lib/detect-project.sh"
+js_result=$(detect_project "$JS_DIR" 2>/dev/null || echo "unknown|unknown|||||")
+js_lang=$(echo "$js_result" | awk -F'|' '{print $1}')
+js_fw=$(echo "$js_result" | awk -F'|' '{print $2}')
+assert_eq "detect JS project lang" "javascript" "$js_lang"
+assert_eq "detect JS project framework" "react" "$js_fw"
+
+# T-ED6: detect_project detects TypeScript + vitest + pnpm
+TS_DIR="${TEST_DIR}/.cortex-ts-detect"
+mkdir -p "${TS_DIR}"
+printf '{"name":"test","dependencies":{"next":"^14"}}' > "${TS_DIR}/package.json"
+touch "${TS_DIR}/tsconfig.json"
+touch "${TS_DIR}/vitest.config.ts"
+touch "${TS_DIR}/pnpm-lock.yaml"
+ts_result=$(detect_project "$TS_DIR" 2>/dev/null || echo "unknown|unknown|||||")
+ts_lang=$(echo "$ts_result" | awk -F'|' '{print $1}')
+ts_fw=$(echo "$ts_result" | awk -F'|' '{print $2}')
+ts_testing=$(echo "$ts_result" | awk -F'|' '{print $3}')
+ts_pkgmgr=$(echo "$ts_result" | awk -F'|' '{print $5}')
+assert_eq "detect TS project lang" "typescript" "$ts_lang"
+assert_eq "detect TS project framework" "nextjs" "$ts_fw"
+assert_eq "detect TS project testing" "vitest" "$ts_testing"
+assert_eq "detect TS project pkgmgr" "pnpm" "$ts_pkgmgr"
+
+# T-ED7: detect_project detects monorepo
+MONO_DIR="${TEST_DIR}/.cortex-mono-detect"
+mkdir -p "${MONO_DIR}"
+printf '{"name":"monorepo","workspaces":["packages/*"]}' > "${MONO_DIR}/package.json"
+touch "${MONO_DIR}/turbo.json"
+mono_result=$(detect_project "$MONO_DIR" 2>/dev/null || echo "unknown|unknown|||||")
+mono_monorepo=$(echo "$mono_result" | awk -F'|' '{print $6}')
+assert_eq "detect monorepo" "true" "$mono_monorepo"
+
+# T-ED8: cwd-changed hook writes session-context.json
+CWD_DIR="${TEST_DIR}/.cortex-cwd-test"
+mkdir -p "${CWD_DIR}"
+printf '{"name":"cwd-test","dependencies":{"vue":"^3"}}' > "${CWD_DIR}/package.json"
+output=$(echo '{"session_id":"test-cwd","cwd":"'"$CWD_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-cwd-changed" 2>/dev/null)
+if [[ -f "${CWD_DIR}/.cortex/session-context.json" ]]; then
+  cwd_lang=$(jq -r '.lang' "${CWD_DIR}/.cortex/session-context.json" 2>/dev/null)
+  cwd_fw=$(jq -r '.framework' "${CWD_DIR}/.cortex/session-context.json" 2>/dev/null)
+  assert_eq "cwd-changed detects lang" "javascript" "$cwd_lang"
+  assert_eq "cwd-changed detects framework" "vue" "$cwd_fw"
+else
+  fail "cwd-changed writes session-context.json" "file not found"
+fi
+
+# T-ED9: cwd-changed outputs valid hook JSON
+if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
+  pass "cwd-changed outputs valid hook JSON"
+else
+  fail "cwd-changed outputs valid hook JSON" "invalid output: $output"
+fi
+
+# T-ED10: cwd-changed with empty cwd returns {}
+empty_output=$(echo '{"session_id":"test-empty"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-cwd-changed" 2>/dev/null)
+assert_eq "cwd-changed empty cwd returns {}" "{}" "$empty_output"
+
 # ===== Test Group: Complexity Scoring =====
 echo ""
 echo "=== Complexity Scoring ==="
