@@ -30,11 +30,17 @@ prompt-cortex/
     build-index.sh                  # Index compiler — YAML parser + inverted index builder
     validate-template.sh            # Template frontmatter validator
   tests/
-    run-tests.sh                    # Integration test suite (33 tests)
+    run-tests.sh                    # Integration test suite (39 tests)
   commands/
     debug.md                        # /cortex:debug — show last match result
     list.md                         # /cortex:list — list templates by category
     sync.md                         # /cortex:sync — rebuild index
+    tier.md                         # /cortex:tier — set minimum quality tier (v1.1)
+    show.md                         # /cortex:show — display injected template body (v1.1)
+    transparent.md                  # /cortex:transparent — toggle injection visibility (v1.1)
+    feedback.md                     # /cortex:feedback — log good/bad quality signal (v1.1)
+    stats.md                        # /cortex:stats — usage analytics from telemetry (v1.1)
+    add.md                          # /cortex:add — create template from natural language (v1.1)
   docs/
     2026-03-25-prompt-cortex-design.md          # Original design spec
     how-the-index-works.md                      # Inverted index architecture deep dive
@@ -46,9 +52,10 @@ prompt-cortex/
 
 ## Key Files You Must Understand
 
-- **`scripts/match.jq`** — The brain. Leave-it-alone detector (12 signals), 3-phase matching, weighted scoring. Read `docs/how-the-index-works.md` for the full explanation.
-- **`hooks/cortex-match`** — The spine. Reads stdin, calls match.jq, reads template body, outputs hook JSON, manages state and telemetry.
+- **`scripts/match.jq`** — The brain. Leave-it-alone detector (13 signals incl. reject boost), tier filtering, synonym expansion, 3-phase matching, weighted scoring. Read `docs/how-the-index-works.md` for the full explanation.
+- **`hooks/cortex-match`** — The spine. Reads stdin, loads config, calls match.jq with intents, reads template body, enforces token budget, outputs hook JSON, manages state/telemetry/transparent mode.
 - **`scripts/build-index.sh`** — The compiler. Pure-bash YAML parser → JSON → inverted index. Uses temp files to avoid arg length limits.
+- **`data/intents.json`** — Action/object taxonomy with synonym maps. Loaded by match.jq via `--slurpfile intents`.
 
 ## Do NOT Edit Manually
 
@@ -61,6 +68,7 @@ prompt-cortex/
 - **printf over heredoc**: Bash 5.3+ has a heredoc variable expansion bug. Use `printf` for all JSON output.
 - **Extensionless scripts**: Hook scripts are `cortex-match` not `cortex-match.sh` — prevents Windows auto-detection interference.
 - **State as string**: `$state` is passed via `--arg` (always a string in jq). match.jq uses `fromjson` to parse it.
+- **jq variable declarations**: `$min_tier` and `$intents` MUST be passed on every `jq -f match.jq` call — jq crashes on undeclared variables. Use `--arg min_tier "silver"` and `--slurpfile intents data/intents.json` (or `--argjson intents "null"` as fallback).
 - **Temp files for large data**: build-index.sh writes to temp files and uses `--slurpfile` to avoid "Argument list too long" with 350+ templates.
 
 ## Template Schema
@@ -93,8 +101,14 @@ bash scripts/validate-template.sh data/prompts/**/*.md
 # Rebuild index
 bash scripts/build-index.sh
 
-# Test matching
-jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" data/index.json
+# Test matching (MUST pass all 4 args + intents)
+jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" --arg min_tier "silver" --slurpfile intents data/intents.json data/index.json
+
+# Test with tier filtering (gold only)
+jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" --arg min_tier "gold" --slurpfile intents data/intents.json data/index.json
+
+# Test synonym expansion
+jq -f scripts/match.jq --arg prompt "troubleshoot the bug" --arg state "null" --arg cwd "" --arg min_tier "silver" --slurpfile intents data/intents.json data/index.json
 
 # Test hook end-to-end
 echo '{"session_id":"test","prompt":"review my code","cwd":"/tmp"}' | CLAUDE_PLUGIN_ROOT="$(pwd)" bash hooks/cortex-match
@@ -104,7 +118,15 @@ echo '{"session_id":"test","prompt":"review my code","cwd":"/tmp"}' | CLAUDE_PLU
 
 Every template has a `compatible_with` field mapping to superpowers skills. See `docs/superpowers-skills-reference.md` for the full mapping guide and coverage matrix. When adding templates, always map to relevant superpowers skills.
 
+## v1.1 Features
+
+- **Tier filtering**: `/cortex:tier gold|silver|all` — control which templates are active. Config persists in `.cortex/config.json`.
+- **Synonym expansion**: "troubleshoot the bug" matches "debug error" via `action_synonyms`/`object_synonyms` from `intents.json`.
+- **Reject-signal boosting**: 2+ `--raw` in recent prompts increases leave-alone score (max +0.25).
+- **Token budget**: Templates >300 tokens (~230 words) are truncated at sentence boundary.
+- **Transparent mode**: `/cortex:transparent` toggles visibility footer showing which template was applied.
+- **6 new commands**: `/cortex:tier`, `/cortex:show`, `/cortex:transparent`, `/cortex:feedback`, `/cortex:stats`, `/cortex:add`
+
 ## Known Issues
 
-- **Intent signals double-escaped**: build-index.sh YAML parser over-escapes `\\s` to `\\\\s`. Matching works via action/keyword scoring but regex signals are broken. Fix tracked in `docs/roadmap.md`.
 - **"ok" returns "skip" not "suppress"**: Continuation detector scores 0.45, below 0.60 threshold. Functionally equivalent (nothing injected).
