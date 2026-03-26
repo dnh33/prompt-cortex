@@ -4,6 +4,9 @@
 #   $prompt  — the user's raw prompt text
 #   $state   — JSON string of current session state (or "null")
 #   $cwd     — current working directory (or "")
+#   $context              — JSON object of detected project context (or {})
+#   $project_rules        — JSON object of boost/suppress/disabled rules (or {})
+#   $min_confidence_adjust — string number from preset (default "0"), capped +/-0.10
 #
 # Output: JSON with matching result
 #   { "action": "inject"|"defer"|"suppress"|"skip"|"escape",
@@ -238,10 +241,38 @@ def score_candidate($tmpl):
     }
   };
 
-# ===== Phase 3: Context filter (stub for v1.0) =====
+# ===== Phase 3: Context filter =====
+# Filters and re-scores candidates based on project context.
+# $context: { lang, framework, testing, branch_type, preset }
+# $project_rules: { boost, suppress, disabled }
+# Receives $scored array and $all_templates from main pipeline.
 
-def context_filter($scored):
-  $scored;
+def context_filter($scored; $all_templates):
+  (($context // null) // {}) as $ctx |
+  # NOTE: $project_rules handling deferred to Task 2 (boost/suppress/disabled)
+
+  # 1. Language filter — remove templates requiring a different language
+  [ $scored[] |
+    . as $entry |
+    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    if (($tmpl.requires // {}).language // []) | length > 0 then
+      if (($tmpl.requires.language | map(ascii_downcase)) | index($ctx.lang // "")) != null then $entry
+      else empty end
+    else $entry end
+  ] |
+
+  # 2. Framework filter — remove templates requiring a different framework
+  [ .[] |
+    . as $entry |
+    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    if (($tmpl.requires // {}).framework // []) | length > 0 then
+      if (($tmpl.requires.framework | map(ascii_downcase)) | index($ctx.framework // "")) != null then $entry
+      else empty end
+    else $entry end
+  ] |
+
+  # Re-sort by confidence
+  sort_by(-.confidence);
 
 # ===== Main pipeline =====
 
@@ -290,7 +321,7 @@ else
       sort_by(-.confidence) as $scored |
 
       # Apply context filter
-      context_filter($scored) as $filtered |
+      context_filter($scored; $all_templates) as $filtered |
 
       # 4. Determine action based on confidence
       if ($filtered | length) == 0 then

@@ -53,6 +53,72 @@ if [[ -f "$CONFIG_FILE" ]]; then
   transparent_mode=$(jq -r '.transparent // false' "$CONFIG_FILE" 2>/dev/null || echo "false")
 fi
 
+# --- Define project config paths (used by preset loading + rules loading) ---
+PROJECT_JSON="${CORTEX_DIR}/project.json"
+PROJECT_CONTEXT="${CORTEX_DIR}/project-context.json"
+
+# --- Read session context (fallback if env vars not set) ---
+SESSION_CONTEXT="${CORTEX_DIR}/session-context.json"
+if [[ -z "${CORTEX_LANG:-}" ]] && [[ -f "$SESSION_CONTEXT" ]]; then
+  export CORTEX_LANG=$(jq -r '.lang // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+  export CORTEX_FRAMEWORK=$(jq -r '.framework // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+  export CORTEX_TESTING=$(jq -r '.testing // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+  export CORTEX_LINTER=$(jq -r '.linter // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+  export CORTEX_PKGMGR=$(jq -r '.pkgmgr // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+  export CORTEX_BRANCH_TYPE=$(jq -r '.branch_type // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+fi
+
+# --- CwdChanged fallback: detect context change inline ---
+if [[ -f "$SESSION_CONTEXT" ]]; then
+  last_cwd=$(jq -r '.last_cwd // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+  if [[ -n "$cwd" ]] && [[ "$cwd" != "$last_cwd" ]] && [[ -n "$last_cwd" ]]; then
+    new_session_ctx="${cwd}/.cortex/session-context.json"
+    if [[ -f "$new_session_ctx" ]]; then
+      export CORTEX_LANG=$(jq -r '.lang // ""' "$new_session_ctx" 2>/dev/null || echo "")
+      export CORTEX_FRAMEWORK=$(jq -r '.framework // ""' "$new_session_ctx" 2>/dev/null || echo "")
+      export CORTEX_TESTING=$(jq -r '.testing // ""' "$new_session_ctx" 2>/dev/null || echo "")
+      export CORTEX_LINTER=$(jq -r '.linter // ""' "$new_session_ctx" 2>/dev/null || echo "")
+      export CORTEX_PKGMGR=$(jq -r '.pkgmgr // ""' "$new_session_ctx" 2>/dev/null || echo "")
+      export CORTEX_BRANCH_TYPE=$(jq -r '.branch_type // ""' "$new_session_ctx" 2>/dev/null || echo "")
+    fi
+  fi
+fi
+
+# --- Build context from env vars ---
+context_json=$(jq -n \
+  --arg lang "${CORTEX_LANG:-unknown}" \
+  --arg framework "${CORTEX_FRAMEWORK:-unknown}" \
+  --arg testing "${CORTEX_TESTING:-}" \
+  --arg linter "${CORTEX_LINTER:-}" \
+  --arg pkgmgr "${CORTEX_PKGMGR:-}" \
+  --arg branch_type "${CORTEX_BRANCH_TYPE:-}" \
+  --arg preset "${CORTEX_PRESET:-}" \
+  '{lang: $lang, framework: $framework, testing: $testing,
+    linter: $linter, pkgmgr: $pkgmgr,
+    branch_type: $branch_type, preset: $preset}')
+
+# --- Load project rules ---
+project_rules_json='{}'
+
+if [[ -f "$PROJECT_JSON" ]]; then
+  project_rules_json=$(jq '{
+    boost: (.boost // []),
+    suppress: (.suppress // []),
+    disabled: (.disabled // [])
+  }' "$PROJECT_JSON" 2>/dev/null || echo '{}')
+fi
+
+# Merge project-context.json rules (lower precedence — project.json overwrites)
+if [[ -f "$PROJECT_CONTEXT" ]]; then
+  pc_rules=$(jq '.rules // {}' "$PROJECT_CONTEXT" 2>/dev/null || echo '{}')
+  project_rules_json=$(printf '%s\n%s' "$pc_rules" "$project_rules_json" | \
+    jq -s '.[0] * .[1] | {
+      boost: ((.boost // []) | unique),
+      suppress: ((.suppress // []) | unique),
+      disabled: ((.disabled // []) | unique)
+    }')
+fi
+
 # --- Run matching engine ---
 INTENTS="${PLUGIN_ROOT}/data/intents.json"
 
@@ -68,6 +134,9 @@ match_result=$(jq -f "$MATCH_JQ" \
   --arg state "$state_json" \
   --arg cwd "$cwd" \
   --arg min_tier "$min_tier" \
+  --arg min_confidence_adjust "${min_conf_adjust:-0}" \
+  --argjson context "$context_json" \
+  --argjson project_rules "$project_rules_json" \
   "${intents_arg[@]}" \
   "$INDEX" 2>/dev/null) || {
   # jq failed — silent degradation
