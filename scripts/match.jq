@@ -49,6 +49,10 @@ def cortex_disabled:
   else ($s.cortex_disabled // false)
   end;
 
+def effective_min_tier:
+  if $min_tier == null or $min_tier == "" then "silver"
+  else $min_tier end;
+
 # ===== Phase 0: Leave-it-alone detector =====
 # Returns { score: float, reason: string }
 
@@ -228,9 +232,19 @@ else
 
       # 3. Score top candidates (limit to top 10 by hit count for performance)
       .templates as $all_templates |
+
+      # --- Tier filtering ---
+      ($all_templates | map(select(
+        .quality_tier as $t |
+        effective_min_tier as $mt |
+        if ($mt == "gold") then ($t == "gold")
+        elif ($mt == "silver") then ($t == "gold" or $t == "silver")
+        else true end
+      ))) as $tier_filtered |
+
       ($candidates | .[0:10] | map(.id)) as $candidate_ids |
 
-      ($all_templates | map(select(.id as $tid | $candidate_ids | index($tid) != null))) as $candidate_templates |
+      ($tier_filtered | map(select(.id as $tid | $candidate_ids | index($tid) != null))) as $candidate_templates |
 
       [($candidate_templates[] | score_candidate(.))] |
       sort_by(-.confidence) as $scored |

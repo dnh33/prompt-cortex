@@ -153,6 +153,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "review my code" \
   --arg state "null" \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
@@ -164,6 +165,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "help me debug why auth isn't working" \
   --arg state "null" \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
 assert_eq "match 'debug auth' template" "coding-002" "$match_id"
@@ -173,6 +175,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "write unit tests for the auth module" \
   --arg state "null" \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
 assert_eq "match 'write tests' template" "coding-003" "$match_id"
@@ -182,6 +185,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "git status" \
   --arg state "null" \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 reason=$(printf '%s' "$result" | jq -r '.leave_alone_reason')
@@ -193,6 +197,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "ok" \
   --arg state "null" \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 if [[ "$action" == "suppress" ]] || [[ "$action" == "skip" ]]; then
@@ -206,6 +211,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "--raw fix the bug" \
   --arg state "null" \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 assert_eq "escape '--raw' action" "escape" "$action"
@@ -215,6 +221,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "review my code" \
   --arg state '{"cortex_disabled":true}' \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 assert_eq "escape '/cx off' state" "escape" "$action"
@@ -224,6 +231,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "/cortex:debug" \
   --arg state "null" \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 assert_eq "leave-alone '/cortex:debug'" "suppress" "$action"
@@ -233,6 +241,7 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg prompt "what is the weather today in Copenhagen" \
   --arg state "null" \
   --arg cwd "" \
+  --arg min_tier "silver" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
 # Should be skip or suppress (conceptual question)
@@ -301,6 +310,32 @@ else
 fi
 
 assert_contains "session-init mentions template count" "templates loaded" "$output"
+
+# ===== Test Group: Tier Filtering =====
+echo ""
+echo "=== Tier Filtering ==="
+
+silver_id=$(jq -r '[.templates[] | select(.quality_tier == "silver")][0].id' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+silver_action=$(jq -r --arg id "$silver_id" '.templates[] | select(.id == $id) | .action' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+silver_object=$(jq -r --arg id "$silver_id" '.templates[] | select(.id == $id) | .object' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+
+if [[ -n "$silver_id" ]]; then
+  result_gold=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+    --arg prompt "${silver_action} the ${silver_object}" \
+    --arg state "null" \
+    --arg cwd "" \
+    --arg min_tier "gold" \
+    "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+  has_silver=$(printf '%s' "$result_gold" | jq --arg id "$silver_id" '[.candidates[].id] | map(select(. == $id)) | length')
+
+  if [[ "$has_silver" == "0" ]]; then
+    pass "tier filter: gold excludes silver template"
+  else
+    fail "tier filter: gold excludes silver template" "silver $silver_id still in candidates"
+  fi
+else
+  pass "tier filter: no silver templates to test (skip)"
+fi
 
 # ===== Test Group: Intent Signal Fix =====
 echo ""
