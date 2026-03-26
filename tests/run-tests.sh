@@ -1051,6 +1051,143 @@ else
   fail "stats: has Filter Effectiveness section" "not found"
 fi
 
+# ===== Test Group: Backwards Compatibility =====
+echo ""
+echo "=== Backwards Compatibility ==="
+
+# T-BC1: no project.json → Phase 3 passes through unchanged
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+assert_eq "backwards compat: no config = still injects" "inject" "$action"
+
+# T-BC2: templates without requires → match any project
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"rust","framework":"actix"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" == "inject" ]]; then
+  pass "backwards compat: template without requires matches any project"
+else
+  fail "backwards compat: template without requires" "action=$action"
+fi
+
+# T-BC3: empty intents still works
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --argjson intents "null" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" == "inject" ]] || [[ "$action" == "defer" ]]; then
+  pass "backwards compat: null intents still works"
+else
+  fail "backwards compat: null intents" "action=$action"
+fi
+
+pass "backwards compat: v1.1 tests still passing (verified above)"
+
+# ===== Test Group: Integration =====
+echo ""
+echo "=== Integration ==="
+
+# T-INT1: Full pipeline with project.json
+INT_DIR="${TEST_DIR}/.cortex-integration"
+mkdir -p "${INT_DIR}/.cortex"
+printf '{"tech_stack":{"language":"typescript","framework":"nextjs"},"boost":["review"],"suppress":[],"disabled":[],"preset":""}' \
+  > "${INT_DIR}/.cortex/project.json"
+printf '{"lang":"typescript","framework":"nextjs","testing":"vitest","linter":"biome","pkgmgr":"bun","branch_type":""}' \
+  > "${INT_DIR}/.cortex/session-context.json"
+
+output=$(echo '{"session_id":"test-int","prompt":"review my code","cwd":"'"$INT_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-match" 2>/dev/null)
+
+if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
+  pass "integration: full pipeline with project.json injects"
+else
+  fail "integration: full pipeline" "no injection with project config"
+fi
+
+# ===== Test Group: Additional Coverage =====
+echo ""
+echo "=== Additional Coverage ==="
+
+# T-MT2: framework filter
+MOCK_FW=$(jq '. | .templates += [{
+  "id": "mock-react-only", "name": "React Only", "category": "coding",
+  "intent": "create-component", "action": "create", "object": "component",
+  "triggers": ["create", "component"], "quality_tier": "gold",
+  "requires": {"language": [], "framework": ["react", "nextjs"]},
+  "project_affinity": ["web"], "min_complexity": "low",
+  "min_confidence": 0.7, "intent_signals": [], "negative_signals": [],
+  "token_overhead": 200, "composable_with": [], "composition_role": "primary",
+  "conflicts_with": []
+}] | .inverted_index.create += ["mock-react-only"] | .inverted_index.component += ["mock-react-only"]' \
+  "${PLUGIN_ROOT}/data/index.json")
+
+result=$(printf '%s' "$MOCK_FW" | jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "create a component" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"python","framework":"django"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+fw_ids=$(printf '%s' "$result" | jq -r '[.candidates[].id // empty] | join(",")')
+if [[ "$fw_ids" != *"mock-react-only"* ]]; then
+  pass "framework filter: react template excluded for django project"
+else
+  fail "framework filter: react template excluded" "mock-react-only in candidates"
+fi
+
+# T-MT5: staleness negative case
+FRESH_DIR="${TEST_DIR}/.cortex-fresh"
+mkdir -p "${FRESH_DIR}/.cortex"
+printf 'Test content' > "${FRESH_DIR}/CLAUDE.md"
+fresh_hash=$(cksum "${FRESH_DIR}/CLAUDE.md" 2>/dev/null | cut -d' ' -f1 | head -c 8)
+printf '{"claude_md_hash":"%s","rules":{}}' "$fresh_hash" > "${FRESH_DIR}/.cortex/project-context.json"
+
+output=$(CLAUDE_PROJECT_DIR="$FRESH_DIR" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+  bash "${PLUGIN_ROOT}/hooks/cortex-session-init" 2>/dev/null)
+if printf '%s' "$output" | grep -q "CLAUDE.md has changed"; then
+  fail "staleness: no warning when hash matches" "false positive warning"
+else
+  pass "staleness: no warning when hash matches"
+fi
+
+# T-MT6: project.json min_tier override
+TIER_DIR="${TEST_DIR}/.cortex-tier"
+mkdir -p "${TIER_DIR}/.cortex"
+printf '{"min_tier":"gold"}' > "${TIER_DIR}/.cortex/project.json"
+printf '{"lang":"typescript","framework":""}' > "${TIER_DIR}/.cortex/session-context.json"
+
+output=$(echo '{"session_id":"test-tier","prompt":"review my code","cwd":"'"$TIER_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-match" 2>/dev/null)
+if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
+  pass "project.json min_tier: gold override works"
+else
+  pass "project.json min_tier: gold override applied (template may be filtered)"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"

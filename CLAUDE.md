@@ -11,13 +11,18 @@ prompt-cortex/
   .claude-plugin/
     plugin.json                     # Plugin manifest (name, version, author)
   hooks/
-    hooks.json                      # Hook registrations (SessionStart + UserPromptSubmit)
+    hooks.json                      # Hook registrations (SessionStart + UserPromptSubmit + CwdChanged)
     run-hook.cmd                    # Cross-platform polyglot wrapper (bash + batch)
     cortex-match                    # UserPromptSubmit hook — main matching + injection
     cortex-session-init             # SessionStart hook — index validation + project detection
+    cortex-cwd-changed              # CwdChanged hook — reactive context re-detection (v1.2)
+    lib/
+      detect-project.sh             # Shared tech detection (lang, framework, testing, linter, pkgmgr, monorepo)
   data/
-    intents.json                    # Action/object taxonomy with synonym maps
+    intents.json                    # Action/object taxonomy with synonym maps + domain synonyms (v2 format)
     index.json                      # GENERATED — pre-built inverted index (do not edit manually)
+    presets/                        # Preset configs: greenfield, maintenance, strict, learning (v1.2)
+    packs/                          # Template pack manifests (v1.2)
     prompts/
       coding/                       # coding-001 to coding-150 (78 files)
       ai-workflows/                 # ai-051 to ai-150 (72 files)
@@ -29,8 +34,10 @@ prompt-cortex/
     match.jq                        # Core matching engine — leave-it-alone + 3-phase scoring
     build-index.sh                  # Index compiler — YAML parser + inverted index builder
     validate-template.sh            # Template frontmatter validator
+  scripts/
+    bulk-schema-upgrade.sh          # Add v1.2 fields to all templates (idempotent)
   tests/
-    run-tests.sh                    # Integration test suite (39 tests)
+    run-tests.sh                    # Integration test suite (116 tests)
   commands/
     debug.md                        # /cortex:debug — show last match result
     list.md                         # /cortex:list — list templates by category
@@ -41,6 +48,9 @@ prompt-cortex/
     feedback.md                     # /cortex:feedback — log good/bad quality signal (v1.1)
     stats.md                        # /cortex:stats — usage analytics from telemetry (v1.1)
     add.md                          # /cortex:add — create template from natural language (v1.1)
+    suggest.md                      # /cortex:suggest — CLAUDE.md analysis + rule proposals (v1.2)
+    preset.md                       # /cortex:preset — activate/list presets (v1.2)
+    context.md                      # /cortex:context — show current project intelligence (v1.2)
   docs/
     2026-03-25-prompt-cortex-design.md          # Original design spec
     how-the-index-works.md                      # Inverted index architecture deep dive
@@ -55,7 +65,8 @@ prompt-cortex/
 - **`scripts/match.jq`** — The brain. Leave-it-alone detector (13 signals incl. reject boost), tier filtering, synonym expansion, 3-phase matching, weighted scoring. Read `docs/how-the-index-works.md` for the full explanation.
 - **`hooks/cortex-match`** — The spine. Reads stdin, loads config, calls match.jq with intents, reads template body, enforces token budget, outputs hook JSON, manages state/telemetry/transparent mode.
 - **`scripts/build-index.sh`** — The compiler. Pure-bash YAML parser → JSON → inverted index. Uses temp files to avoid arg length limits.
-- **`data/intents.json`** — Action/object taxonomy with synonym maps. Loaded by match.jq via `--slurpfile intents`.
+- **`data/intents.json`** — Action/object taxonomy with synonym maps + domain synonyms (v2 format). Loaded by match.jq via `--slurpfile intents`.
+- **`hooks/lib/detect-project.sh`** — Shared tech detection used by session-init and cwd-changed. Returns `lang|framework|testing|linter|pkgmgr|monorepo`.
 
 ## Do NOT Edit Manually
 
@@ -68,7 +79,7 @@ prompt-cortex/
 - **printf over heredoc**: Bash 5.3+ has a heredoc variable expansion bug. Use `printf` for all JSON output.
 - **Extensionless scripts**: Hook scripts are `cortex-match` not `cortex-match.sh` — prevents Windows auto-detection interference.
 - **State as string**: `$state` is passed via `--arg` (always a string in jq). match.jq uses `fromjson` to parse it.
-- **jq variable declarations**: `$min_tier` and `$intents` MUST be passed on every `jq -f match.jq` call — jq crashes on undeclared variables. Use `--arg min_tier "silver"` and `--slurpfile intents data/intents.json` (or `--argjson intents "null"` as fallback).
+- **jq variable declarations**: `$min_tier`, `$intents`, `$context`, `$project_rules`, and `$min_confidence_adjust` MUST be passed on every `jq -f match.jq` call — jq crashes on undeclared variables. Use `--arg min_tier "silver"`, `--arg min_confidence_adjust "0"`, `--argjson context '{}'`, `--argjson project_rules '{}'`, and `--slurpfile intents data/intents.json` (or `--argjson intents "null"` as fallback).
 - **Temp files for large data**: build-index.sh writes to temp files and uses `--slurpfile` to avoid "Argument list too long" with 350+ templates.
 
 ## Template Schema
@@ -78,6 +89,9 @@ prompt-cortex/
 
 ### Recommended Fields
 `intent_signals`, `negative_signals`, `quality_tier` (gold/silver/bronze), `token_overhead`, `min_confidence`, `composable_with`, `composition_role`, `compatible_with` (superpowers skills), `conflicts_with`
+
+### v1.2 Fields (auto-added by bulk-schema-upgrade.sh)
+`requires` (object with `language: []` and `framework: []`), `project_affinity` (array of domain tags), `min_complexity` (trivial/low/medium/high/expert)
 
 ### Valid Values
 - **Actions**: create, review, debug, refactor, explain, test, document, optimize, design, fix
@@ -92,7 +106,7 @@ prompt-cortex/
 ## Development Commands
 
 ```bash
-# Run tests
+# Run tests (116 tests covering all v1.0–v1.2 features)
 bash tests/run-tests.sh
 
 # Validate all templates
@@ -101,14 +115,23 @@ bash scripts/validate-template.sh data/prompts/**/*.md
 # Rebuild index
 bash scripts/build-index.sh
 
-# Test matching (MUST pass all 4 args + intents)
-jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" --arg min_tier "silver" --slurpfile intents data/intents.json data/index.json
+# Bulk-add v1.2 fields to templates (idempotent)
+bash scripts/bulk-schema-upgrade.sh
+
+# Test matching (MUST pass all 7 args + intents)
+jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" --arg min_tier "silver" --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' --slurpfile intents data/intents.json data/index.json
 
 # Test with tier filtering (gold only)
-jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" --arg min_tier "gold" --slurpfile intents data/intents.json data/index.json
+jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" --arg min_tier "gold" --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' --slurpfile intents data/intents.json data/index.json
+
+# Test with context filter (typescript project)
+jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" --arg min_tier "silver" --arg min_confidence_adjust "0" --argjson context '{"lang":"typescript","framework":"nextjs"}' --argjson project_rules '{}' --slurpfile intents data/intents.json data/index.json
+
+# Test with project rules (boost review)
+jq -f scripts/match.jq --arg prompt "review my code" --arg state "null" --arg cwd "" --arg min_tier "silver" --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{"boost":["review"],"suppress":[],"disabled":[]}' --slurpfile intents data/intents.json data/index.json
 
 # Test synonym expansion
-jq -f scripts/match.jq --arg prompt "troubleshoot the bug" --arg state "null" --arg cwd "" --arg min_tier "silver" --slurpfile intents data/intents.json data/index.json
+jq -f scripts/match.jq --arg prompt "troubleshoot the bug" --arg state "null" --arg cwd "" --arg min_tier "silver" --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' --slurpfile intents data/intents.json data/index.json
 
 # Test hook end-to-end
 echo '{"session_id":"test","prompt":"review my code","cwd":"/tmp"}' | CLAUDE_PLUGIN_ROOT="$(pwd)" bash hooks/cortex-match
@@ -126,6 +149,22 @@ Every template has a `compatible_with` field mapping to superpowers skills. See 
 - **Token budget**: Templates >300 tokens (~230 words) are truncated at sentence boundary.
 - **Transparent mode**: `/cortex:transparent` toggles visibility footer showing which template was applied.
 - **6 new commands**: `/cortex:tier`, `/cortex:show`, `/cortex:transparent`, `/cortex:feedback`, `/cortex:stats`, `/cortex:add`
+
+## v1.2 Features
+
+- **Context filter (Phase 3)**: Templates with `requires.language` or `requires.framework` are excluded when the detected project doesn't match. Empty requires = universal (backwards compatible).
+- **Project affinity boost**: Templates with `project_affinity` matching the detected domain get a confidence boost (+0.05 per match).
+- **Complexity scoring**: Prompt word count maps to complexity (trivial/low/medium/high/expert). Templates with `min_complexity` above prompt complexity get a confidence penalty.
+- **Branch-type boost**: `fix/` branches boost debug templates, `feat/` branches boost create templates.
+- **Domain synonyms**: `intents.json` v2 format with `domain_synonyms` and `domain_map` for context-sensitive synonym expansion (e.g., "scaffold" = "create" in web context).
+- **Enhanced tech detection**: `hooks/lib/detect-project.sh` detects language, framework, testing framework, linter, package manager, monorepo status, and git branch type.
+- **CwdChanged hook**: `hooks/cortex-cwd-changed` re-detects project context when working directory changes.
+- **CLAUDE.md staleness detection**: Session-init hashes CLAUDE.md and warns if it changed since last `/cortex:suggest` scan.
+- **Presets**: `data/presets/` with greenfield, maintenance, strict, learning configs. Each sets boost/suppress rules and `min_confidence_adjust`.
+- **`.cortex/project.json`**: Per-project config with `tech_stack`, `boost`, `suppress`, `disabled`, `preset`, `min_tier` fields.
+- **Config precedence**: escape > project.json > project-context.json > preset > auto-detect > defaults
+- **3 new commands**: `/cortex:suggest`, `/cortex:preset`, `/cortex:context`
+- **Enhanced `/cortex:stats`**: Context Intelligence section with filter effectiveness and preset impact metrics.
 
 ## Known Issues
 
