@@ -84,6 +84,10 @@ def effective_min_tier:
   if $min_tier == null or $min_tier == "" then "silver"
   else $min_tier end;
 
+def effective_threshold:
+  (($min_confidence_adjust // "0") | tonumber) as $adj |
+  0.70 + ([[$adj, 0.10] | min, -0.10] | max);
+
 # ===== Phase 0: Leave-it-alone detector =====
 # Returns { score: float, reason: string }
 
@@ -291,6 +295,34 @@ def context_filter($scored; $all_templates):
      else . end)
   ] |
 
+  # 4. Project affinity boost (+0.05 per matching affinity, max +0.10)
+  [ .[] |
+    . as $entry |
+    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    (($tmpl.project_affinity // []) |
+     map(select(. as $aff |
+       ($ctx.lang == $aff) or ($ctx.framework == $aff) or
+       (($ctx.lang // "") | ascii_downcase | test($aff; "i") // false) or
+       (($ctx.framework // "") | ascii_downcase | test($aff; "i") // false)
+     )) | length) as $affinity_hits |
+    if $affinity_hits > 0 then
+      .confidence = .confidence + ([$affinity_hits * 0.05, 0.10] | min)
+    else . end
+  ] |
+
+  # 5. Git branch context boost (+0.03 for matching action types)
+  [ .[] |
+    . as $entry |
+    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    (if ($ctx.branch_type // "") == "feature" and ($tmpl.action == "design" or $tmpl.action == "create")
+     then .confidence = .confidence + 0.03
+     elif ($ctx.branch_type // "") == "fix" and ($tmpl.action == "debug" or $tmpl.action == "fix" or $tmpl.action == "test")
+     then .confidence = .confidence + 0.03
+     elif ($ctx.branch_type // "") == "refactor" and ($tmpl.action == "refactor" or $tmpl.action == "review")
+     then .confidence = .confidence + 0.03
+     else . end)
+  ] |
+
   # Re-sort by confidence
   sort_by(-.confidence);
 
@@ -353,7 +385,7 @@ else
         # Check per-template min_confidence
         ($all_templates | map(select(.id == $best.id)) | .[0].min_confidence // 0.7) as $min_conf |
 
-        if $best.confidence >= ([0.70, $min_conf] | max) then
+        if $best.confidence >= ([effective_threshold, $min_conf] | max) then
           { action: "inject",
             confidence: $best.confidence,
             best_match: $best,

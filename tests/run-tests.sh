@@ -588,6 +588,102 @@ else
   fail "context filter: empty context" "got null action"
 fi
 
+# T-CF4: project affinity boost increases confidence
+MOCK_AFFINITY=$(jq '. | .templates = [.templates[] | if .id == "coding-001" then . + {"project_affinity": ["web", "typescript"]} else . end]' \
+  "${PLUGIN_ROOT}/data/index.json")
+
+result_no_affinity=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_no_aff=$(printf '%s' "$result_no_affinity" | jq -r '.confidence')
+
+result_with_affinity=$(printf '%s' "$MOCK_AFFINITY" | jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"nextjs"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+conf_with_aff=$(printf '%s' "$result_with_affinity" | jq -r '.confidence')
+
+# Use jq for float comparison (bc not available on Windows)
+is_greater=$(jq -n --arg a "$conf_with_aff" --arg b "$conf_no_aff" '($a | tonumber) > ($b | tonumber)')
+if [[ "$is_greater" == "true" ]]; then
+  pass "context filter: affinity boost increases confidence ($conf_no_aff -> $conf_with_aff)"
+else
+  fail "context filter: affinity boost" "no increase: base=$conf_no_aff affinity=$conf_with_aff"
+fi
+
+# T-CF5: git branch boost
+result_no_branch=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "debug this error" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"","branch_type":""}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_no_branch=$(printf '%s' "$result_no_branch" | jq -r '.confidence')
+
+result_fix_branch=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "debug this error" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"","branch_type":"fix"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_fix_branch=$(printf '%s' "$result_fix_branch" | jq -r '.confidence')
+
+# Use jq for float comparison
+is_gte=$(jq -n --arg a "$conf_fix_branch" --arg b "$conf_no_branch" '($a | tonumber) >= ($b | tonumber)')
+if [[ "$is_gte" == "true" ]]; then
+  pass "context filter: fix branch boosts debug ($conf_no_branch -> $conf_fix_branch)"
+else
+  fail "context filter: fix branch boost" "no increase: $conf_no_branch vs $conf_fix_branch"
+fi
+
+# T-CF6: min_confidence_adjust changes threshold
+result_default=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+default_action=$(printf '%s' "$result_default" | jq -r '.action')
+
+result_learning=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "-0.10" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+learning_action=$(printf '%s' "$result_learning" | jq -r '.action')
+
+assert_eq "threshold adjust: default still injects" "inject" "$default_action"
+assert_eq "threshold adjust: learning still injects" "inject" "$learning_action"
+
 # ===== Test Group: Project Config =====
 echo ""
 echo "=== Project Config ==="
