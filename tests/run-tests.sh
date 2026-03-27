@@ -1359,6 +1359,24 @@ else
   fail "morphological: 'failing' matches" "got action=$action confidence=$confidence"
 fi
 
+# ===== Test Group: Single-Word Penalty (v1.3 F9) =====
+echo ""
+echo "=== Single-Word Penalty ==="
+
+# Single word "test" should skip (not defer)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "test" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+assert_eq "single word 'test' skips" "skip" "$action"
+
 # ===== Results =====
 echo ""
 echo "================================"

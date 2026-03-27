@@ -292,18 +292,21 @@ def score_candidate($tmpl):
 
   # --- Complexity mismatch penalty (full range) ---
   (prompt_word_count as $wc |
-   (if $wc < 6 then "trivial"
-    elif $wc < 15 then "low"
-    elif $wc < 40 then "medium"
-    elif $wc < 80 then "high"
-    else "expert" end) as $prompt_complexity |
-   ({"trivial": 1, "low": 2, "medium": 3, "high": 4, "expert": 5}) as $levels |
-   ($levels[$prompt_complexity] // 3) as $prompt_level |
-   ($levels[$tmpl.min_complexity // "low"] // 2) as $tmpl_level |
-   # Only penalize for large complexity gaps (>2 levels apart)
-   if ($tmpl_level - $prompt_level) > 2 then -0.15
-   elif ($prompt_level - $tmpl_level) > 2 then -0.05
-   else 0 end) as $complexity_penalty |
+   # v1.3: unconditional -0.30 for ultra-short prompts (<3 words)
+   if $wc < 3 then -0.30
+   else
+     (if $wc < 6 then "trivial"
+      elif $wc < 15 then "low"
+      elif $wc < 40 then "medium"
+      elif $wc < 80 then "high"
+      else "expert" end) as $prompt_complexity |
+     ({"trivial": 1, "low": 2, "medium": 3, "high": 4, "expert": 5}) as $levels |
+     ($levels[$prompt_complexity] // 3) as $prompt_level |
+     ($levels[$tmpl.min_complexity // "low"] // 2) as $tmpl_level |
+     if ($tmpl_level - $prompt_level) > 2 then -0.15
+     elif ($prompt_level - $tmpl_level) > 2 then -0.05
+     else 0 end
+   end) as $complexity_penalty |
 
   # --- Multi-turn suppression ---
   (if recently_injected($tmpl.id) then -0.40
