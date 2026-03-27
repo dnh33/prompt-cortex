@@ -177,22 +177,24 @@ def score_candidate($tmpl):
   prompt_lower as $p |
   prompt_words as $words |
   prompt_bigrams as $bigrams |
+  ($tmpl.action | ascii_downcase) as $action |
+  ($tmpl.object | ascii_downcase) as $object |
 
   # --- Action matching (with simple plural/suffix handling) ---
-  (if ($words | index($tmpl.action)) != null then 0.45
-   elif ($words | index($tmpl.action + "s")) != null then 0.45
-   elif ($words | index($tmpl.action + "es")) != null then 0.45
-   elif ($words | index($tmpl.action + "ing")) != null then 0.40
-   elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.action + "(s|es|ing)?(\\s|$)"))) | length > 0) then 0.20
-   elif ($words | any(. as $w | is_action_synonym($w; $tmpl.action))) then 0.35
+  (if ($words | index($action)) != null then 0.45
+   elif ($words | index($action + "s")) != null then 0.45
+   elif ($words | index($action + "es")) != null then 0.45
+   elif ($words | index($action + "ing")) != null then 0.40
+   elif ($bigrams | map(select(test("(^|\\s)" + $action + "(s|es|ing)?(\\s|$)"))) | length > 0) then 0.20
+   elif ($words | any(. as $w | is_action_synonym($w; $action))) then 0.35
    else 0 end) as $action_score |
 
   # --- Object matching (with simple plural handling) ---
-  (if ($words | index($tmpl.object)) != null then 0.35
-   elif ($words | index($tmpl.object + "s")) != null then 0.35
-   elif ($words | index($tmpl.object + "es")) != null then 0.35
-   elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.object + "(s|es)?(\\s|$)"))) | length > 0) then 0.15
-   elif ($words | any(. as $w | is_object_synonym($w; $tmpl.object))) then 0.25
+  (if ($words | index($object)) != null then 0.35
+   elif ($words | index($object + "s")) != null then 0.35
+   elif ($words | index($object + "es")) != null then 0.35
+   elif ($bigrams | map(select(test("(^|\\s)" + $object + "(s|es)?(\\s|$)"))) | length > 0) then 0.15
+   elif ($words | any(. as $w | is_object_synonym($w; $object))) then 0.25
    else 0 end) as $object_score |
 
   # --- Keyword overlap with triggers ---

@@ -1,6 +1,6 @@
 {
   "version": "9d6ff91a1a76627491d23eacaacd4208215ef741b5bdd7af417c6ed4ee5ad274",
-  "built": "2026-03-27T09:00:39Z",
+  "built": "2026-03-27T13:45:22Z",
   "template_count": 350,
   "templates": [
     {
@@ -12512,10 +12512,10 @@
       "ai-051",
       "ai-101"
     ],
-    "RAG pipeline": [
+    "rag pipeline": [
       "ai-052"
     ],
-    "RAG": [
+    "rag": [
       "ai-052",
       "ai-105"
     ],
@@ -12610,10 +12610,10 @@
       "productivity-007",
       "research-011"
     ],
-    "RAG system": [
+    "rag system": [
       "ai-052"
     ],
-    "build RAG": [
+    "build rag": [
       "ai-052"
     ],
     "write prompt": [
@@ -12767,7 +12767,7 @@
       "coding-135",
       "productivity-027"
     ],
-    "evaluate LLM": [
+    "evaluate llm": [
       "ai-054"
     ],
     "evaluate": [
@@ -12780,7 +12780,7 @@
       "research-014",
       "research-041"
     ],
-    "LLM": [
+    "llm": [
       "ai-054",
       "ai-109",
       "ai-118"
@@ -13224,7 +13224,7 @@
       "ai-058",
       "ai-103"
     ],
-    "API": [
+    "api": [
       "ai-058",
       "ai-066",
       "ai-067",
@@ -13303,7 +13303,7 @@
       "productivity-048",
       "research-046"
     ],
-    "CoT": [
+    "cot": [
       "ai-059"
     ],
     "structured reasoning": [
@@ -13503,10 +13503,10 @@
     "structured output": [
       "ai-063"
     ],
-    "JSON output": [
+    "json output": [
       "ai-063"
     ],
-    "JSON": [
+    "json": [
       "ai-063",
       "ai-107"
     ],
@@ -13714,7 +13714,7 @@
       "coding-025",
       "coding-133"
     ],
-    "batch API": [
+    "batch api": [
       "ai-066"
     ],
     "process multiple": [
@@ -13761,7 +13761,7 @@
     "stream": [
       "ai-067"
     ],
-    "SSE": [
+    "sse": [
       "ai-067"
     ],
     "server-sent events": [
@@ -13786,7 +13786,7 @@
       "ai-145",
       "coding-150"
     ],
-    "streaming API": [
+    "streaming api": [
       "ai-067"
     ],
     "reduce cost": [
@@ -13796,7 +13796,7 @@
       "ai-068",
       "ai-118"
     ],
-    "API cost": [
+    "api cost": [
       "ai-068"
     ],
     "token usage": [
@@ -14066,7 +14066,7 @@
     "conversation flow": [
       "ai-071"
     ],
-    "chat UX": [
+    "chat ux": [
       "ai-071"
     ],
     "multi-turn": [
@@ -14116,7 +14116,7 @@
     "dataset": [
       "ai-072"
     ],
-    "design an AI agent": [
+    "design an ai agent": [
       "ai-101"
     ],
     "build autonomous agent": [
@@ -14258,10 +14258,10 @@
     "create system instructions": [
       "ai-103"
     ],
-    "define AI persona": [
+    "define ai persona": [
       "ai-103"
     ],
-    "set AI personality and constraints": [
+    "set ai personality and constraints": [
       "ai-103"
     ],
     "set": [
@@ -14429,7 +14429,7 @@
       "ai-104",
       "research-032"
     ],
-    "design a RAG system": [
+    "design a rag system": [
       "ai-105"
     ],
     "retrieval augmented generation": [
@@ -14446,7 +14446,7 @@
     "build knowledge retrieval pipeline": [
       "ai-105"
     ],
-    "AI with document search": [
+    "ai with document search": [
       "ai-105"
     ],
     "embed and retrieve documents": [
@@ -14467,7 +14467,7 @@
     "build a classification pipeline": [
       "ai-106"
     ],
-    "classify text with AI": [
+    "classify text with ai": [
       "ai-106"
     ],
     "design classification system": [
@@ -14531,7 +14531,7 @@
       "productivity-030",
       "productivity-043"
     ],
-    "AI text categorization": [
+    "ai text categorization": [
       "ai-106"
     ],
     "categorization": [
@@ -14557,7 +14557,7 @@
       "research-024",
       "research-028"
     ],
-    "parse document into JSON": [
+    "parse document into json": [
       "ai-107"
     ],
     "write extraction prompt": [
@@ -14580,7 +14580,7 @@
     "multi-agent system design": [
       "ai-108"
     ],
-    "multiple AI agents collaborating": [
+    "multiple ai agents collaborating": [
       "ai-108"
     ],
     "agents": [
@@ -14612,16 +14612,16 @@
       "productivity-025",
       "productivity-042"
     ],
-    "swarm of AI agents": [
+    "swarm of ai agents": [
       "ai-108"
     ],
     "swarm": [
       "ai-108"
     ],
-    "evaluate AI output quality": [
+    "evaluate ai output quality": [
       "ai-109"
     ],
-    "build LLM evaluation framework": [
+    "build llm evaluation framework": [
       "ai-109"
     ],
     "evaluation": [
@@ -14630,7 +14630,7 @@
       "ai-134",
       "productivity-033"
     ],
-    "design AI testing system": [
+    "design ai testing system": [
       "ai-109"
     ],
     "measure model output quality": [
@@ -14639,7 +14639,7 @@
     "measure": [
       "ai-109"
     ],
-    "AI quality metrics and thresholds": [
+    "ai quality metrics and thresholds": [
       "ai-109"
     ],
     "metrics": [
@@ -14656,7 +14656,7 @@
     "summarization": [
       "ai-110"
     ],
-    "AI content summarizer": [
+    "ai content summarizer": [
       "ai-110"
     ],
     "summarizer": [
@@ -14688,7 +14688,7 @@
     "content moderation system": [
       "ai-111"
     ],
-    "AI moderation pipeline": [
+    "ai moderation pipeline": [
       "ai-111"
     ],
     "detect harmful content": [
@@ -14760,7 +14760,7 @@
     "answering": [
       "ai-112"
     ],
-    "build QA over knowledge base": [
+    "build qa over knowledge base": [
       "ai-112"
     ],
     "over": [
@@ -14779,22 +14779,22 @@
       "content-021",
       "content-024"
     ],
-    "AI question answering with retrieval": [
+    "ai question answering with retrieval": [
       "ai-112"
     ],
-    "knowledge base Q&A": [
+    "knowledge base q&a": [
       "ai-112"
     ],
-    "Q&A": [
+    "q&a": [
       "ai-112"
     ],
-    "data enrichment with AI": [
+    "data enrichment with ai": [
       "ai-113"
     ],
     "enrichment": [
       "ai-113"
     ],
-    "enrich records using AI": [
+    "enrich records using ai": [
       "ai-113"
     ],
     "enrich": [
@@ -14806,13 +14806,13 @@
     "using": [
       "ai-113"
     ],
-    "AI data augmentation workflow": [
+    "ai data augmentation workflow": [
       "ai-113"
     ],
     "augmentation": [
       "ai-113"
     ],
-    "fill missing fields with AI": [
+    "fill missing fields with ai": [
       "ai-113"
     ],
     "fill": [
@@ -14825,7 +14825,7 @@
     "automated data enrichment pipeline": [
       "ai-113"
     ],
-    "AI writing assistant design": [
+    "ai writing assistant design": [
       "ai-114"
     ],
     "writing": [
@@ -14840,7 +14840,7 @@
       "ai-114",
       "coding-009"
     ],
-    "AI that helps users write": [
+    "ai that helps users write": [
       "ai-114"
     ],
     "that": [
@@ -14871,7 +14871,7 @@
     "capabilities": [
       "ai-114"
     ],
-    "design content creation AI": [
+    "design content creation ai": [
       "ai-114"
     ],
     "creation": [
@@ -14880,7 +14880,7 @@
       "productivity-012",
       "research-033"
     ],
-    "AI feedback loop design": [
+    "ai feedback loop design": [
       "ai-115"
     ],
     "feedback": [
@@ -14904,7 +14904,7 @@
     "improves": [
       "ai-115"
     ],
-    "continuous improvement for AI": [
+    "continuous improvement for ai": [
       "ai-115"
     ],
     "continuous": [
@@ -14914,13 +14914,13 @@
       "ai-115",
       "research-046"
     ],
-    "self-improving AI pipeline": [
+    "self-improving ai pipeline": [
       "ai-115"
     ],
     "self-improving": [
       "ai-115"
     ],
-    "learn from AI output ratings": [
+    "learn from ai output ratings": [
       "ai-115"
     ],
     "learn": [
@@ -14941,7 +14941,7 @@
       "ai-116",
       "automation-004"
     ],
-    "AI document ingestion workflow": [
+    "ai document ingestion workflow": [
       "ai-116"
     ],
     "ingestion": [
@@ -14964,7 +14964,7 @@
       "ai-116",
       "coding-141"
     ],
-    "AI personalization engine": [
+    "ai personalization engine": [
       "ai-117"
     ],
     "personalization": [
@@ -14974,7 +14974,7 @@
       "ai-117",
       "ai-130"
     ],
-    "personalized recommendations with AI": [
+    "personalized recommendations with ai": [
       "ai-117"
     ],
     "personalized": [
@@ -15011,14 +15011,14 @@
       "ai-117",
       "research-032"
     ],
-    "AI-driven content personalization": [
+    "ai-driven content personalization": [
       "ai-117"
     ],
-    "AI-driven": [
+    "ai-driven": [
       "ai-117",
       "ai-144"
     ],
-    "monitor AI system performance": [
+    "monitor ai system performance": [
       "ai-118"
     ],
     "monitor": [
@@ -15040,7 +15040,7 @@
       "coding-149",
       "productivity-026"
     ],
-    "AI observability system": [
+    "ai observability system": [
       "ai-118"
     ],
     "observability": [
@@ -15048,7 +15048,7 @@
       "automation-040",
       "coding-020"
     ],
-    "track LLM output quality in production": [
+    "track llm output quality in production": [
       "ai-118"
     ],
     "track": [
@@ -15067,14 +15067,14 @@
       "productivity-012",
       "productivity-041"
     ],
-    "monitor AI latency and cost": [
+    "monitor ai latency and cost": [
       "ai-118"
     ],
     "latency": [
       "ai-118",
       "coding-008"
     ],
-    "AI system health monitoring": [
+    "ai system health monitoring": [
       "ai-118"
     ],
     "health": [
@@ -15170,7 +15170,7 @@
       "ai-119",
       "coding-016"
     ],
-    "human in the loop AI": [
+    "human in the loop ai": [
       "ai-120"
     ],
     "the": [
@@ -15192,13 +15192,13 @@
       "research-036",
       "research-042"
     ],
-    "design HITL workflow": [
+    "design hitl workflow": [
       "ai-120"
     ],
-    "HITL": [
+    "hitl": [
       "ai-120"
     ],
-    "AI with human escalation": [
+    "ai with human escalation": [
       "ai-120"
     ],
     "escalation": [
@@ -15206,7 +15206,7 @@
       "ai-122",
       "productivity-035"
     ],
-    "when should AI ask a human": [
+    "when should ai ask a human": [
       "ai-120"
     ],
     "when": [
@@ -15230,7 +15230,7 @@
       "content-021",
       "content-029"
     ],
-    "human approval in AI pipeline": [
+    "human approval in ai pipeline": [
       "ai-120"
     ],
     "knowledge graph extraction pipeline": [
@@ -15260,15 +15260,15 @@
       "ai-121",
       "productivity-015"
     ],
-    "AI-powered knowledge graph": [
+    "ai-powered knowledge graph": [
       "ai-121"
     ],
-    "AI-powered": [
+    "ai-powered": [
       "ai-121",
       "ai-133",
       "ai-139"
     ],
-    "AI customer service agent": [
+    "ai customer service agent": [
       "ai-122"
     ],
     "customer": [
@@ -15308,7 +15308,7 @@
       "automation-011",
       "coding-148"
     ],
-    "AI that answers customer questions": [
+    "ai that answers customer questions": [
       "ai-122"
     ],
     "answers": [
@@ -15320,13 +15320,13 @@
     "automated customer service with escalation": [
       "ai-122"
     ],
-    "AI code review system": [
+    "ai code review system": [
       "ai-123"
     ],
-    "automated code review with AI": [
+    "automated code review with ai": [
       "ai-123"
     ],
-    "AI that reviews pull requests": [
+    "ai that reviews pull requests": [
       "ai-123"
     ],
     "reviews": [
@@ -15334,10 +15334,10 @@
       "automation-027",
       "productivity-026"
     ],
-    "design code quality AI": [
+    "design code quality ai": [
       "ai-123"
     ],
-    "AI code reviewer with blocking rules": [
+    "ai code reviewer with blocking rules": [
       "ai-123"
     ],
     "reviewer": [
@@ -15352,7 +15352,7 @@
       "coding-024",
       "content-045"
     ],
-    "AI research assistant": [
+    "ai research assistant": [
       "ai-124"
     ],
     "research": [
@@ -15365,10 +15365,10 @@
       "research-012",
       "research-028"
     ],
-    "build research tool with AI": [
+    "build research tool with ai": [
       "ai-124"
     ],
-    "AI that searches and synthesizes": [
+    "ai that searches and synthesizes": [
       "ai-124"
     ],
     "searches": [
@@ -15380,13 +15380,13 @@
     "automated research workflow": [
       "ai-124"
     ],
-    "AI research with citations": [
+    "ai research with citations": [
       "ai-124"
     ],
     "citations": [
       "ai-124"
     ],
-    "competitive intelligence AI": [
+    "competitive intelligence ai": [
       "ai-125"
     ],
     "competitive": [
@@ -15403,7 +15403,7 @@
       "automation-013",
       "automation-035"
     ],
-    "monitor competitors with AI": [
+    "monitor competitors with ai": [
       "ai-125"
     ],
     "competitors": [
@@ -15411,7 +15411,7 @@
       "automation-013",
       "research-002"
     ],
-    "AI competitive analysis reports": [
+    "ai competitive analysis reports": [
       "ai-125"
     ],
     "reports": [
@@ -15438,7 +15438,7 @@
       "content-003",
       "productivity-002"
     ],
-    "meeting intelligence AI": [
+    "meeting intelligence ai": [
       "ai-126"
     ],
     "meeting": [
@@ -15448,7 +15448,7 @@
       "productivity-004",
       "productivity-025"
     ],
-    "process meeting transcripts with AI": [
+    "process meeting transcripts with ai": [
       "ai-126"
     ],
     "transcripts": [
@@ -15468,7 +15468,7 @@
     "automated meeting summaries": [
       "ai-126"
     ],
-    "AI meeting notes and decisions": [
+    "ai meeting notes and decisions": [
       "ai-126"
     ],
     "notes": [
@@ -15482,17 +15482,17 @@
       "ai-126",
       "productivity-005"
     ],
-    "contract analysis AI": [
+    "contract analysis ai": [
       "ai-127"
     ],
     "contract": [
       "ai-127",
       "automation-015"
     ],
-    "AI contract review": [
+    "ai contract review": [
       "ai-127"
     ],
-    "flag contract risks with AI": [
+    "flag contract risks with ai": [
       "ai-127"
     ],
     "flag": [
@@ -15508,7 +15508,7 @@
     "automated contract analysis": [
       "ai-127"
     ],
-    "AI legal document review": [
+    "ai legal document review": [
       "ai-127"
     ],
     "legal": [
@@ -15517,7 +15517,7 @@
     "sentiment analysis system": [
       "ai-128"
     ],
-    "AI sentiment detection": [
+    "ai sentiment detection": [
       "ai-128"
     ],
     "analyze customer sentiment": [
@@ -15552,7 +15552,7 @@
       "ai-148",
       "automation-018"
     ],
-    "AI lead scoring system": [
+    "ai lead scoring system": [
       "ai-129"
     ],
     "lead": [
@@ -15567,7 +15567,7 @@
       "automation-029",
       "productivity-024"
     ],
-    "predict lead conversion with AI": [
+    "predict lead conversion with ai": [
       "ai-129"
     ],
     "predict": [
@@ -15602,7 +15602,7 @@
       "coding-113",
       "coding-120"
     ],
-    "AI sales lead qualification": [
+    "ai sales lead qualification": [
       "ai-129"
     ],
     "sales": [
@@ -15626,7 +15626,7 @@
     "recommendation": [
       "ai-130"
     ],
-    "AI content recommendations": [
+    "ai content recommendations": [
       "ai-130"
     ],
     "recommend articles to users": [
@@ -15654,7 +15654,7 @@
     "controls": [
       "ai-130"
     ],
-    "anomaly detection with AI": [
+    "anomaly detection with ai": [
       "ai-131"
     ],
     "anomaly": [
@@ -15673,7 +15673,7 @@
       "research-028",
       "research-049"
     ],
-    "AI anomaly alerting system": [
+    "ai anomaly alerting system": [
       "ai-131"
     ],
     "alerting": [
@@ -15693,7 +15693,7 @@
     "severity": [
       "ai-131"
     ],
-    "AI translation workflow": [
+    "ai translation workflow": [
       "ai-132"
     ],
     "translation": [
@@ -15713,7 +15713,7 @@
       "ai-132",
       "ai-147"
     ],
-    "AI translation with terminology consistency": [
+    "ai translation with terminology consistency": [
       "ai-132"
     ],
     "terminology": [
@@ -15726,7 +15726,7 @@
     "automated translation system": [
       "ai-132"
     ],
-    "AI proposal generator": [
+    "ai proposal generator": [
       "ai-133"
     ],
     "proposal": [
@@ -15739,7 +15739,7 @@
       "coding-127",
       "coding-146"
     ],
-    "generate business proposals with AI": [
+    "generate business proposals with ai": [
       "ai-133"
     ],
     "generate": [
@@ -15808,17 +15808,17 @@
       "automation-049",
       "coding-129"
     ],
-    "AI-powered RFP response": [
+    "ai-powered rfp response": [
       "ai-133"
     ],
-    "RFP": [
+    "rfp": [
       "ai-133",
       "productivity-034"
     ],
     "proposal generation workflow": [
       "ai-133"
     ],
-    "AI risk assessment system": [
+    "ai risk assessment system": [
       "ai-134"
     ],
     "risk": [
@@ -15837,25 +15837,25 @@
     "automated risk scoring": [
       "ai-134"
     ],
-    "risk analysis with AI": [
+    "risk analysis with ai": [
       "ai-134"
     ],
     "design risk evaluation workflow": [
       "ai-134"
     ],
-    "AI factor analysis for risk": [
+    "ai factor analysis for risk": [
       "ai-134"
     ],
     "factor": [
       "ai-134"
     ],
-    "voice AI assistant design": [
+    "voice ai assistant design": [
       "ai-135"
     ],
     "voice": [
       "ai-135"
     ],
-    "speech-based AI workflow": [
+    "speech-based ai workflow": [
       "ai-135"
     ],
     "speech-based": [
@@ -15867,13 +15867,13 @@
     "recognition": [
       "ai-135"
     ],
-    "design voice interface for AI": [
+    "design voice interface for ai": [
       "ai-135"
     ],
     "interface": [
       "ai-135"
     ],
-    "spoken language AI system": [
+    "spoken language ai system": [
       "ai-135"
     ],
     "spoken": [
@@ -15882,14 +15882,14 @@
     "language": [
       "ai-135"
     ],
-    "trend detection AI": [
+    "trend detection ai": [
       "ai-136"
     ],
     "trend": [
       "ai-136",
       "research-018"
     ],
-    "detect emerging trends with AI": [
+    "detect emerging trends with ai": [
       "ai-136"
     ],
     "emerging": [
@@ -15899,7 +15899,7 @@
       "ai-136",
       "research-037"
     ],
-    "AI trend monitoring system": [
+    "ai trend monitoring system": [
       "ai-136"
     ],
     "identify rising topics automatically": [
@@ -15937,7 +15937,7 @@
     "signal": [
       "ai-136"
     ],
-    "AI compliance checking": [
+    "ai compliance checking": [
       "ai-137"
     ],
     "compliance": [
@@ -15958,7 +15958,7 @@
       "automation-024",
       "research-029"
     ],
-    "validate against regulations with AI": [
+    "validate against regulations with ai": [
       "ai-137"
     ],
     "validate": [
@@ -15983,7 +15983,7 @@
       "ai-137",
       "automation-024"
     ],
-    "AI regulatory audit system": [
+    "ai regulatory audit system": [
       "ai-137"
     ],
     "audit": [
@@ -15994,7 +15994,7 @@
       "coding-111",
       "productivity-027"
     ],
-    "AI onboarding assistant": [
+    "ai onboarding assistant": [
       "ai-138"
     ],
     "onboarding": [
@@ -16007,10 +16007,10 @@
       "productivity-024",
       "productivity-042"
     ],
-    "automate user onboarding with AI": [
+    "automate user onboarding with ai": [
       "ai-138"
     ],
-    "AI that guides new users": [
+    "ai that guides new users": [
       "ai-138"
     ],
     "guides": [
@@ -16031,7 +16031,7 @@
     "design onboarding chatbot": [
       "ai-138"
     ],
-    "AI onboarding with progress tracking": [
+    "ai onboarding with progress tracking": [
       "ai-138"
     ],
     "progress": [
@@ -16052,7 +16052,7 @@
       "productivity-038",
       "productivity-042"
     ],
-    "predictive maintenance AI": [
+    "predictive maintenance ai": [
       "ai-139"
     ],
     "predictive": [
@@ -16062,7 +16062,7 @@
       "ai-139",
       "automation-020"
     ],
-    "predict equipment failure with AI": [
+    "predict equipment failure with ai": [
       "ai-139"
     ],
     "equipment": [
@@ -16073,7 +16073,7 @@
       "coding-131",
       "research-032"
     ],
-    "AI-powered asset monitoring": [
+    "ai-powered asset monitoring": [
       "ai-139"
     ],
     "asset": [
@@ -16093,7 +16093,7 @@
     "sensor": [
       "ai-139"
     ],
-    "AI inventory management": [
+    "ai inventory management": [
       "ai-140"
     ],
     "inventory": [
@@ -16101,7 +16101,7 @@
       "ai-150",
       "automation-016"
     ],
-    "demand forecasting with AI": [
+    "demand forecasting with ai": [
       "ai-140"
     ],
     "demand": [
@@ -16112,14 +16112,14 @@
       "ai-140",
       "automation-031"
     ],
-    "automated reorder with AI": [
+    "automated reorder with ai": [
       "ai-140"
     ],
     "reorder": [
       "ai-140",
       "automation-016"
     ],
-    "AI inventory optimization": [
+    "ai inventory optimization": [
       "ai-140"
     ],
     "optimization": [
@@ -16138,14 +16138,14 @@
       "ai-140",
       "research-049"
     ],
-    "financial analysis AI agent": [
+    "financial analysis ai agent": [
       "ai-141"
     ],
     "financial": [
       "ai-141",
       "automation-019"
     ],
-    "AI that analyzes financial data": [
+    "ai that analyzes financial data": [
       "ai-141"
     ],
     "analyzes": [
@@ -16154,14 +16154,14 @@
     "automated financial analysis": [
       "ai-141"
     ],
-    "design finance AI system": [
+    "design finance ai system": [
       "ai-141"
     ],
     "finance": [
       "ai-141",
       "productivity-013"
     ],
-    "AI financial reporting and calculations": [
+    "ai financial reporting and calculations": [
       "ai-141"
     ],
     "reporting": [
@@ -16173,7 +16173,7 @@
     "calculations": [
       "ai-141"
     ],
-    "social media monitoring AI": [
+    "social media monitoring ai": [
       "ai-142"
     ],
     "social": [
@@ -16203,7 +16203,7 @@
     "mentions": [
       "ai-142"
     ],
-    "AI social listening system": [
+    "ai social listening system": [
       "ai-142"
     ],
     "listening": [
@@ -16226,13 +16226,13 @@
       "ai-142",
       "automation-010"
     ],
-    "technical support AI": [
+    "technical support ai": [
       "ai-143"
     ],
     "technical": [
       "ai-143"
     ],
-    "AI for IT helpdesk": [
+    "ai for it helpdesk": [
       "ai-143"
     ],
     "helpdesk": [
@@ -16246,7 +16246,7 @@
     "troubleshooting": [
       "ai-143"
     ],
-    "design support ticket AI": [
+    "design support ticket ai": [
       "ai-143"
     ],
     "ticket": [
@@ -16254,7 +16254,7 @@
       "automation-011",
       "automation-033"
     ],
-    "AI that diagnoses technical problems": [
+    "ai that diagnoses technical problems": [
       "ai-143"
     ],
     "diagnoses": [
@@ -16263,7 +16263,7 @@
     "problems": [
       "ai-143"
     ],
-    "AI price optimization": [
+    "ai price optimization": [
       "ai-144"
     ],
     "price": [
@@ -16271,7 +16271,7 @@
       "automation-022",
       "research-040"
     ],
-    "dynamic pricing with AI": [
+    "dynamic pricing with ai": [
       "ai-144"
     ],
     "dynamic": [
@@ -16289,20 +16289,20 @@
     "competitor price monitoring for pricing": [
       "ai-144"
     ],
-    "AI-driven price changes": [
+    "ai-driven price changes": [
       "ai-144"
     ],
     "changes": [
       "ai-144",
       "automation-013"
     ],
-    "fraud detection AI": [
+    "fraud detection ai": [
       "ai-145"
     ],
     "fraud": [
       "ai-145"
     ],
-    "detect fraudulent transactions with AI": [
+    "detect fraudulent transactions with ai": [
       "ai-145"
     ],
     "fraudulent": [
@@ -16311,7 +16311,7 @@
     "transactions": [
       "ai-145"
     ],
-    "AI fraud prevention system": [
+    "ai fraud prevention system": [
       "ai-145"
     ],
     "prevention": [
@@ -16323,16 +16323,16 @@
     "real-time fraud scoring": [
       "ai-145"
     ],
-    "AI scheduling system": [
+    "ai scheduling system": [
       "ai-146"
     ],
     "scheduling": [
       "ai-146"
     ],
-    "automated scheduling with AI": [
+    "automated scheduling with ai": [
       "ai-146"
     ],
-    "AI handles calendar conflicts": [
+    "ai handles calendar conflicts": [
       "ai-146"
     ],
     "handles": [
@@ -16356,7 +16356,7 @@
     "scheduler": [
       "ai-146"
     ],
-    "AI scheduling with priorities and constraints": [
+    "ai scheduling with priorities and constraints": [
       "ai-146"
     ],
     "priorities": [
@@ -16364,19 +16364,19 @@
       "productivity-001",
       "productivity-028"
     ],
-    "AI quality control system": [
+    "ai quality control system": [
       "ai-147"
     ],
-    "automated QC with AI": [
+    "automated qc with ai": [
       "ai-147"
     ],
-    "defect detection AI": [
+    "defect detection ai": [
       "ai-147"
     ],
     "defect": [
       "ai-147"
     ],
-    "AI quality assurance inspection": [
+    "ai quality assurance inspection": [
       "ai-147"
     ],
     "assurance": [
@@ -16385,14 +16385,14 @@
     "inspection": [
       "ai-147"
     ],
-    "design AI QC with accuracy standards": [
+    "design ai qc with accuracy standards": [
       "ai-147"
     ],
     "standards": [
       "ai-147",
       "content-045"
     ],
-    "AI news aggregation system": [
+    "ai news aggregation system": [
       "ai-148"
     ],
     "news": [
@@ -16405,7 +16405,7 @@
     "curation": [
       "ai-148"
     ],
-    "AI news aggregator with bias detection": [
+    "ai news aggregator with bias detection": [
       "ai-148"
     ],
     "aggregator": [
@@ -16414,7 +16414,7 @@
     "bias": [
       "ai-148"
     ],
-    "design news feed AI": [
+    "design news feed ai": [
       "ai-148"
     ],
     "deduplicated news aggregation pipeline": [
@@ -16423,28 +16423,28 @@
     "deduplicated": [
       "ai-148"
     ],
-    "AI personalized learning system": [
+    "ai personalized learning system": [
       "ai-149"
     ],
-    "adaptive learning with AI": [
+    "adaptive learning with ai": [
       "ai-149"
     ],
     "adaptive": [
       "ai-149"
     ],
-    "AI tutoring system": [
+    "ai tutoring system": [
       "ai-149"
     ],
     "tutoring": [
       "ai-149"
     ],
-    "personalized education AI": [
+    "personalized education ai": [
       "ai-149"
     ],
     "education": [
       "ai-149"
     ],
-    "AI learning with difficulty adjustment": [
+    "ai learning with difficulty adjustment": [
       "ai-149"
     ],
     "difficulty": [
@@ -16453,23 +16453,23 @@
     "adjustment": [
       "ai-149"
     ],
-    "supply chain intelligence AI": [
+    "supply chain intelligence ai": [
       "ai-150"
     ],
     "supply": [
       "ai-150",
       "research-038"
     ],
-    "AI supply chain monitoring": [
+    "ai supply chain monitoring": [
       "ai-150"
     ],
-    "predict supply disruptions with AI": [
+    "predict supply disruptions with ai": [
       "ai-150"
     ],
     "disruptions": [
       "ai-150"
     ],
-    "AI inventory and supply optimization": [
+    "ai inventory and supply optimization": [
       "ai-150"
     ],
     "supply chain risk detection": [
@@ -16688,10 +16688,10 @@
     "data pipeline": [
       "automation-004"
     ],
-    "ETL pipeline": [
+    "etl pipeline": [
       "automation-004"
     ],
-    "ETL": [
+    "etl": [
       "automation-004"
     ],
     "ingest and transform data": [
@@ -16943,19 +16943,19 @@
       "automation-013",
       "automation-035"
     ],
-    "CRM automation": [
+    "crm automation": [
       "automation-014"
     ],
-    "CRM": [
+    "crm": [
       "automation-014"
     ],
-    "automate CRM workflows": [
+    "automate crm workflows": [
       "automation-014"
     ],
     "workflows": [
       "automation-014"
     ],
-    "CRM triggers and actions": [
+    "crm triggers and actions": [
       "automation-014"
     ],
     "triggers": [
@@ -16963,6 +16963,7 @@
     ],
     "actions": [
       "automation-014",
+      "coding-129",
       "productivity-003"
     ],
     "automate record updates": [
@@ -16974,7 +16975,7 @@
     "updates": [
       "automation-014"
     ],
-    "sales CRM automation": [
+    "sales crm automation": [
       "automation-014"
     ],
     "automate contract generation": [
@@ -17041,7 +17042,7 @@
       "automation-017",
       "productivity-022"
     ],
-    "HR onboarding workflow": [
+    "hr onboarding workflow": [
       "automation-017"
     ],
     "new employee setup automation": [
@@ -17066,10 +17067,10 @@
     "surveys": [
       "automation-018"
     ],
-    "automated NPS collection": [
+    "automated nps collection": [
       "automation-018"
     ],
-    "NPS": [
+    "nps": [
       "automation-018",
       "productivity-045"
     ],
@@ -17122,7 +17123,7 @@
       "content-042",
       "content-049"
     ],
-    "automate KB maintenance": [
+    "automate kb maintenance": [
       "automation-020"
     ],
     "knowledge base refresh workflow": [
@@ -17307,7 +17308,7 @@
     "exchange": [
       "automation-026"
     ],
-    "partner API integration workflow": [
+    "partner api integration workflow": [
       "automation-026"
     ],
     "partner data sync automation": [
@@ -17442,19 +17443,19 @@
     "moderation pipeline": [
       "automation-032"
     ],
-    "UGC moderation workflow": [
+    "ugc moderation workflow": [
       "automation-032"
     ],
-    "UGC": [
+    "ugc": [
       "automation-032"
     ],
-    "IT ticket routing automation": [
+    "it ticket routing automation": [
       "automation-033"
     ],
     "automate helpdesk routing": [
       "automation-033"
     ],
-    "IT triage automation": [
+    "it triage automation": [
       "automation-033"
     ],
     "service desk routing": [
@@ -17463,10 +17464,10 @@
     "desk": [
       "automation-033"
     ],
-    "ITSM ticket automation": [
+    "itsm ticket automation": [
       "automation-033"
     ],
-    "ITSM": [
+    "itsm": [
       "automation-033"
     ],
     "subscription management automation": [
@@ -17534,13 +17535,13 @@
     "automated research digest": [
       "automation-035"
     ],
-    "A/B testing automation": [
+    "a/b testing automation": [
       "automation-036"
     ],
-    "A/B": [
+    "a/b": [
       "automation-036"
     ],
-    "automate A/B tests": [
+    "automate a/b tests": [
       "automation-036"
     ],
     "tests": [
@@ -17579,10 +17580,10 @@
     "automated expense approval": [
       "automation-037"
     ],
-    "T&E automation": [
+    "t&e automation": [
       "automation-037"
     ],
-    "T&E": [
+    "t&e": [
       "automation-037"
     ],
     "user lifecycle automation": [
@@ -17619,16 +17620,16 @@
     "funnel": [
       "automation-038"
     ],
-    "QA automation pipeline": [
+    "qa automation pipeline": [
       "automation-039"
     ],
     "automated testing workflow": [
       "automation-039"
     ],
-    "CI test automation": [
+    "ci test automation": [
       "automation-039"
     ],
-    "automated QA pipeline": [
+    "automated qa pipeline": [
       "automation-039"
     ],
     "test automation strategy": [
@@ -17743,13 +17744,13 @@
     "scans": [
       "automation-044"
     ],
-    "SAST DAST automation": [
+    "sast dast automation": [
       "automation-044"
     ],
-    "SAST": [
+    "sast": [
       "automation-044"
     ],
-    "DAST": [
+    "dast": [
       "automation-044"
     ],
     "vulnerability scanning automation": [
@@ -17759,10 +17760,10 @@
       "automation-044",
       "coding-014"
     ],
-    "DevSecOps pipeline": [
+    "devsecops pipeline": [
       "automation-044"
     ],
-    "DevSecOps": [
+    "devsecops": [
       "automation-044"
     ],
     "vendor management automation": [
@@ -17791,10 +17792,10 @@
     "learning management automation": [
       "automation-046"
     ],
-    "LMS automation": [
+    "lms automation": [
       "automation-046"
     ],
-    "LMS": [
+    "lms": [
       "automation-046"
     ],
     "automate training assignment": [
@@ -17856,10 +17857,10 @@
     "release process automation": [
       "automation-048"
     ],
-    "CI/CD release automation": [
+    "ci/cd release automation": [
       "automation-048"
     ],
-    "CI/CD": [
+    "ci/cd": [
       "automation-048",
       "coding-026",
       "coding-129"
@@ -18254,7 +18255,7 @@
       "coding-005",
       "coding-131"
     ],
-    "design API": [
+    "design api": [
       "coding-006"
     ],
     "create endpoint": [
@@ -18266,14 +18267,14 @@
       "coding-121",
       "coding-143"
     ],
-    "REST API": [
+    "rest api": [
       "coding-006"
     ],
-    "REST": [
+    "rest": [
       "coding-006",
       "coding-108"
     ],
-    "API schema": [
+    "api schema": [
       "coding-006"
     ],
     "route design": [
@@ -18283,10 +18284,10 @@
       "coding-006",
       "coding-108"
     ],
-    "API architecture": [
+    "api architecture": [
       "coding-006"
     ],
-    "build an API": [
+    "build an api": [
       "coding-006"
     ],
     "fix this": [
@@ -18463,7 +18464,7 @@
       "content-024",
       "content-044"
     ],
-    "build UI": [
+    "build ui": [
       "coding-010"
     ],
     "add docs": [
@@ -18486,17 +18487,17 @@
     "comments": [
       "coding-011"
     ],
-    "JSDoc": [
+    "jsdoc": [
       "coding-011"
     ],
     "docstring": [
       "coding-011",
       "coding-110"
     ],
-    "README": [
+    "readme": [
       "coding-011"
     ],
-    "review PR": [
+    "review pr": [
       "coding-012"
     ],
     "review pull request": [
@@ -18508,25 +18509,25 @@
       "coding-145",
       "content-029"
     ],
-    "check PR": [
+    "check pr": [
       "coding-012"
     ],
-    "PR review": [
+    "pr review": [
       "coding-012"
     ],
-    "look at this PR": [
+    "look at this pr": [
       "coding-012"
     ],
-    "audit PR": [
+    "audit pr": [
       "coding-012"
     ],
-    "examine PR": [
+    "examine pr": [
       "coding-012"
     ],
     "examine": [
       "coding-012"
     ],
-    "PR": [
+    "pr": [
       "coding-012"
     ],
     "write query": [
@@ -18536,10 +18537,10 @@
       "coding-013",
       "coding-109"
     ],
-    "SQL query": [
+    "sql query": [
       "coding-013"
     ],
-    "SQL": [
+    "sql": [
       "coding-013",
       "coding-109"
     ],
@@ -18589,7 +18590,7 @@
       "coding-014",
       "coding-111"
     ],
-    "OWASP": [
+    "owasp": [
       "coding-014"
     ],
     "pen test": [
@@ -18899,11 +18900,11 @@
       "coding-021",
       "coding-126"
     ],
-    "JWT": [
+    "jwt": [
       "coding-021",
       "coding-126"
     ],
-    "OAuth": [
+    "oauth": [
       "coding-021"
     ],
     "session management": [
@@ -19075,10 +19076,10 @@
     "deployment config": [
       "coding-026"
     ],
-    "Docker": [
+    "docker": [
       "coding-026"
     ],
-    "Dockerfile": [
+    "dockerfile": [
       "coding-026"
     ],
     "deploy script": [
@@ -19105,10 +19106,10 @@
       "coding-106",
       "research-044"
     ],
-    "TypeScript types": [
+    "typescript types": [
       "coding-027"
     ],
-    "TypeScript": [
+    "typescript": [
       "coding-027",
       "coding-106"
     ],
@@ -19133,7 +19134,7 @@
     "a11y": [
       "coding-028"
     ],
-    "WCAG": [
+    "wcag": [
       "coding-028"
     ],
     "screen reader": [
@@ -19249,13 +19250,13 @@
     "bottleneck": [
       "coding-105"
     ],
-    "convert to TypeScript": [
+    "convert to typescript": [
       "coding-106"
     ],
-    "add TypeScript types": [
+    "add typescript types": [
       "coding-106"
     ],
-    "migrate to TypeScript": [
+    "migrate to typescript": [
       "coding-106"
     ],
     "migrate": [
@@ -19268,9 +19269,6 @@
     "typescript conversion": [
       "coding-106"
     ],
-    "typescript": [
-      "coding-106"
-    ],
     "explain this code": [
       "coding-107"
     ],
@@ -19280,22 +19278,22 @@
     "help me understand": [
       "coding-107"
     ],
-    "create an API endpoint": [
+    "create an api endpoint": [
       "coding-108"
     ],
-    "write a REST endpoint": [
+    "write a rest endpoint": [
       "coding-108"
     ],
-    "build an API route": [
+    "build an api route": [
       "coding-108"
     ],
     "new endpoint for": [
       "coding-108"
     ],
-    "add API endpoint": [
+    "add api endpoint": [
       "coding-108"
     ],
-    "slow SQL query": [
+    "slow sql query": [
       "coding-109"
     ],
     "optimize this query": [
@@ -19341,10 +19339,10 @@
     "find security issues": [
       "coding-111"
     ],
-    "build a CLI tool": [
+    "build a cli tool": [
       "coding-112"
     ],
-    "CLI": [
+    "cli": [
       "coding-112"
     ],
     "write a command line tool": [
@@ -19356,13 +19354,13 @@
     "line": [
       "coding-112"
     ],
-    "create a CLI": [
+    "create a cli": [
       "coding-112"
     ],
     "command line script": [
       "coding-112"
     ],
-    "write a CLI": [
+    "write a cli": [
       "coding-112"
     ],
     "convert to async": [
@@ -19510,22 +19508,22 @@
     "schedule this to run": [
       "coding-119"
     ],
-    "translate this to Python": [
+    "translate this to python": [
       "coding-120"
     ],
     "translate": [
       "coding-120"
     ],
-    "Python": [
+    "python": [
       "coding-120"
     ],
-    "convert this to JavaScript": [
+    "convert this to javascript": [
       "coding-120"
     ],
-    "JavaScript": [
+    "javascript": [
       "coding-120"
     ],
-    "rewrite in Go": [
+    "rewrite in go": [
       "coding-120"
     ],
     "port this code to": [
@@ -19534,10 +19532,10 @@
     "port": [
       "coding-120"
     ],
-    "translate from Ruby to": [
+    "translate from ruby to": [
       "coding-120"
     ],
-    "Ruby": [
+    "ruby": [
       "coding-120"
     ],
     "write a webhook handler": [
@@ -19589,7 +19587,7 @@
     "per": [
       "coding-122"
     ],
-    "throttle API calls": [
+    "throttle api calls": [
       "coding-122"
     ],
     "throttle": [
@@ -19622,7 +19620,7 @@
     "design a caching strategy": [
       "coding-124"
     ],
-    "what should I cache": [
+    "what should i cache": [
       "coding-124"
     ],
     "cache this data": [
@@ -19646,7 +19644,7 @@
     "build authentication": [
       "coding-126"
     ],
-    "implement JWT auth": [
+    "implement jwt auth": [
       "coding-126"
     ],
     "user login and signup": [
@@ -19717,22 +19715,19 @@
     "cursor-based": [
       "coding-128"
     ],
-    "paginate this API": [
+    "paginate this api": [
       "coding-128"
     ],
-    "write a CI/CD pipeline": [
+    "write a ci/cd pipeline": [
       "coding-129"
     ],
-    "GitHub Actions workflow": [
+    "github actions workflow": [
       "coding-129"
     ],
-    "GitHub": [
+    "github": [
       "coding-129"
     ],
-    "Actions": [
-      "coding-129"
-    ],
-    "set up CI": [
+    "set up ci": [
       "coding-129"
     ],
     "automate deployment": [
@@ -19836,13 +19831,13 @@
     "worker": [
       "coding-133"
     ],
-    "create an SDK": [
+    "create an sdk": [
       "coding-134"
     ],
-    "SDK": [
+    "sdk": [
       "coding-134"
     ],
-    "build a client SDK": [
+    "build a client sdk": [
       "coding-134"
     ],
     "client": [
@@ -19850,25 +19845,25 @@
       "content-008",
       "productivity-021"
     ],
-    "write an API wrapper": [
+    "write an api wrapper": [
       "coding-134"
     ],
     "wrapper": [
       "coding-134"
     ],
-    "SDK for my API": [
+    "sdk for my api": [
       "coding-134"
     ],
     "client library": [
       "coding-134"
     ],
-    "optimize React component": [
+    "optimize react component": [
       "coding-135"
     ],
-    "React": [
+    "react": [
       "coding-135"
     ],
-    "React re-rendering issue": [
+    "react re-rendering issue": [
       "coding-135"
     ],
     "re-rendering": [
@@ -19883,22 +19878,22 @@
     "often": [
       "coding-135"
     ],
-    "fix React performance": [
+    "fix react performance": [
       "coding-135"
     ],
-    "React is slow": [
+    "react is slow": [
       "coding-135"
     ],
     "write integration tests": [
       "coding-136"
     ],
-    "test the full API": [
+    "test the full api": [
       "coding-136"
     ],
     "integration test for": [
       "coding-136"
     ],
-    "end-to-end API test": [
+    "end-to-end api test": [
       "coding-136"
     ],
     "end-to-end": [
@@ -20119,13 +20114,13 @@
     "build a report generator": [
       "coding-146"
     ],
-    "export report as PDF": [
+    "export report as pdf": [
       "coding-146"
     ],
     "export": [
       "coding-146"
     ],
-    "PDF": [
+    "pdf": [
       "coding-146"
     ],
     "generate and email report": [
@@ -20185,7 +20180,7 @@
     "load": [
       "coding-149"
     ],
-    "load test this API": [
+    "load test this api": [
       "coding-149"
     ],
     "performance test": [
@@ -20212,10 +20207,10 @@
     "real-time dashboard": [
       "coding-150"
     ],
-    "WebSocket dashboard": [
+    "websocket dashboard": [
       "coding-150"
     ],
-    "WebSocket": [
+    "websocket": [
       "coding-150"
     ],
     "live data dashboard": [
@@ -20224,7 +20219,7 @@
     "live": [
       "coding-150"
     ],
-    "dashboard API": [
+    "dashboard api": [
       "coding-150"
     ],
     "write a twitter thread": [
@@ -20503,7 +20498,7 @@
     "media release": [
       "content-009"
     ],
-    "PR announcement": [
+    "pr announcement": [
       "content-009"
     ],
     "draft a press release": [
@@ -20704,13 +20699,13 @@
     "create a webinar": [
       "content-015"
     ],
-    "write an SEO article": [
+    "write an seo article": [
       "content-016"
     ],
-    "SEO": [
+    "seo": [
       "content-016"
     ],
-    "SEO blog post": [
+    "seo blog post": [
       "content-016"
     ],
     "keyword optimized article": [
@@ -20722,7 +20717,7 @@
     "optimized": [
       "content-016"
     ],
-    "SEO content": [
+    "seo content": [
       "content-016"
     ],
     "rank for keyword": [
@@ -20805,7 +20800,7 @@
     "products": [
       "content-019"
     ],
-    "X vs Y article": [
+    "x vs y article": [
       "content-019"
     ],
     "product comparison": [
@@ -20945,13 +20940,13 @@
       "content-023",
       "content-027"
     ],
-    "write FAQ page": [
+    "write faq page": [
       "content-024"
     ],
-    "FAQ": [
+    "faq": [
       "content-024"
     ],
-    "FAQ content": [
+    "faq content": [
       "content-024"
     ],
     "frequently asked questions": [
@@ -20963,16 +20958,16 @@
     "asked": [
       "content-024"
     ],
-    "create FAQ section": [
+    "create faq section": [
       "content-024"
     ],
     "section": [
       "content-024"
     ],
-    "write FAQ for": [
+    "write faq for": [
       "content-024"
     ],
-    "FAQ copy": [
+    "faq copy": [
       "content-024"
     ],
     "onboarding email series": [
@@ -21638,7 +21633,7 @@
     "write a crisis response": [
       "content-048"
     ],
-    "PR crisis statement": [
+    "pr crisis statement": [
       "content-048"
     ],
     "statement": [
@@ -21765,7 +21760,7 @@
     "week": [
       "productivity-002"
     ],
-    "what did I accomplish this week": [
+    "what did i accomplish this week": [
       "productivity-002"
     ],
     "did": [
@@ -21921,7 +21916,7 @@
     "brain": [
       "productivity-007"
     ],
-    "how to organize what I learn": [
+    "how to organize what i learn": [
       "productivity-007"
     ],
     "project management template": [
@@ -22122,7 +22117,7 @@
     "how to learn faster": [
       "productivity-014"
     ],
-    "retain what I learn": [
+    "retain what i learn": [
       "productivity-014"
     ],
     "retain": [
@@ -22361,10 +22356,10 @@
     "reduce customer churn": [
       "productivity-024"
     ],
-    "QBR template customer success": [
+    "qbr template customer success": [
       "productivity-024"
     ],
-    "QBR": [
+    "qbr": [
       "productivity-024"
     ],
     "team communication system": [
@@ -22452,7 +22447,7 @@
     "quarterly": [
       "productivity-028"
     ],
-    "Q1 Q2 Q3 Q4 planning": [
+    "q1 q2 q3 q4 planning": [
       "productivity-028"
     ],
     "plan my quarter": [
@@ -22597,7 +22592,7 @@
     "vendors": [
       "productivity-034"
     ],
-    "RFP process": [
+    "rfp process": [
       "productivity-034"
     ],
     "vendor comparison and decision": [
@@ -22648,10 +22643,10 @@
     "track employee training": [
       "productivity-036"
     ],
-    "OKR system": [
+    "okr system": [
       "productivity-037"
     ],
-    "OKR": [
+    "okr": [
       "productivity-037"
     ],
     "objectives and key results": [
@@ -22660,16 +22655,16 @@
     "objectives": [
       "productivity-037"
     ],
-    "how to implement OKRs": [
+    "how to implement okrs": [
       "productivity-037"
     ],
-    "OKRs": [
+    "okrs": [
       "productivity-037"
     ],
-    "OKR setting and tracking": [
+    "okr setting and tracking": [
       "productivity-037"
     ],
-    "cascade OKRs across team": [
+    "cascade okrs across team": [
       "productivity-037"
     ],
     "across": [
@@ -22853,7 +22848,7 @@
     "customer feedback loop": [
       "productivity-045"
     ],
-    "NPS and feedback process": [
+    "nps and feedback process": [
       "productivity-045"
     ],
     "customer feedback touchpoints": [
@@ -23039,16 +23034,16 @@
     "size": [
       "research-003"
     ],
-    "TAM SAM SOM": [
+    "tam sam som": [
       "research-003"
     ],
-    "TAM": [
+    "tam": [
       "research-003"
     ],
-    "SAM": [
+    "sam": [
       "research-003"
     ],
-    "SOM": [
+    "som": [
       "research-003"
     ],
     "bottom-up market sizing": [
@@ -23114,7 +23109,7 @@
     "analyze this investment": [
       "research-005"
     ],
-    "should I invest in": [
+    "should i invest in": [
       "research-005"
     ],
     "invest": [
@@ -23132,10 +23127,10 @@
     "bear": [
       "research-005"
     ],
-    "SWOT analysis": [
+    "swot analysis": [
       "research-006"
     ],
-    "SWOT": [
+    "swot": [
       "research-006"
     ],
     "strengths weaknesses opportunities threats": [
@@ -23154,13 +23149,13 @@
     "threats": [
       "research-006"
     ],
-    "deep SWOT": [
+    "deep swot": [
       "research-006"
     ],
-    "strategic SWOT": [
+    "strategic swot": [
       "research-006"
     ],
-    "run a SWOT": [
+    "run a swot": [
       "research-006"
     ],
     "first principles": [
@@ -23530,7 +23525,7 @@
     "decision framework": [
       "research-019"
     ],
-    "how should I decide": [
+    "how should i decide": [
       "research-019"
     ],
     "decide": [
@@ -23952,10 +23947,10 @@
     "done": [
       "research-035"
     ],
-    "JTBD analysis": [
+    "jtbd analysis": [
       "research-035"
     ],
-    "JTBD": [
+    "jtbd": [
       "research-035"
     ],
     "what job does this do": [
@@ -24183,10 +24178,10 @@
     "go to market analysis": [
       "research-045"
     ],
-    "GTM strategy": [
+    "gtm strategy": [
       "research-045"
     ],
-    "GTM": [
+    "gtm": [
       "research-045"
     ],
     "go to market strategy": [
@@ -24321,10 +24316,10 @@
     "valuation": [
       "research-050"
     ],
-    "M&A exit analysis": [
+    "m&a exit analysis": [
       "research-050"
     ],
-    "M&A": [
+    "m&a": [
       "research-050"
     ]
   }

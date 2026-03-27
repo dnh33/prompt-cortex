@@ -508,6 +508,32 @@ else
   fail "make + determiner not suppressed" "got suppress"
 fi
 
+# ===== Test Group: Case-Insensitive Index (v1.3 F3) =====
+echo ""
+echo "=== Case-Insensitive Index ==="
+
+# Index should have no uppercase keys
+uppercase_keys=$(jq '.inverted_index | keys | map(select(test("[A-Z]"))) | length' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index has no uppercase keys" "0" "$uppercase_keys"
+
+# "review this pr" should match a PR template, not just code review
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review this pr" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+# PR object should now score > 0 (previously missed due to case)
+confidence=$(printf '%s' "$result" | jq -r '.confidence')
+action=$(printf '%s' "$result" | jq -r '.action')
+# Should at least defer (object "pr" matches "PR" now)
+if [[ "$action" == "inject" || "$action" == "defer" ]]; then
+  pass "review this pr scores with PR object match (action=$action, conf=$confidence)"
+else
+  fail "review this pr scores with PR object match" "got action=$action confidence=$confidence"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"
