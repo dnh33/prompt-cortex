@@ -348,8 +348,9 @@ def context_filter($scored; $all_templates):
         ($tmpl.category == $s) or ($tmpl.action == $s) or ($tmpl.id == $s))
      then .confidence = .confidence - 0.15
      else . end) |
-    # Disabled templates — remove entirely
-    (if ($rules.disabled // []) | any(. == $entry.id or . == "*")
+    # Disabled templates — remove entirely (matches category, action, or ID)
+    (if ($rules.disabled // []) | any(. as $d |
+        ($d == $entry.id) or ($d == $tmpl.category) or ($d == $tmpl.action) or ($d == "*"))
      then empty
      else . end)
   ] |
