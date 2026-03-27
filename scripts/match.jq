@@ -103,7 +103,9 @@ def leave_it_alone:
     (if ($p | test("<[a-z][a-z0-9_-]*[^>]*>")) then { score: 0.50, reason: "has_xml_tags" } else null end),
 
     # Looks like a shell command
-    (if ($p | test("^(git|npm|yarn|pnpm|pip|cargo|make|docker|kubectl|cd|ls|cat|mkdir|mv|cp|rm|chmod|curl|wget|ssh|scp)\\s")) then { score: 0.60, reason: "shell_command" } else null end),
+    (if ($p | test("^(git|npm|yarn|pnpm|pip|cargo|docker|kubectl|cd|ls|cat|mkdir|mv|cp|rm|chmod|curl|wget|ssh|scp)\\s")) then { score: 0.60, reason: "shell_command" }
+     elif ($p | test("^make\\s+(test|install|build|clean|all|deploy|lint|dist|run|check|help|format)(\\s|$)")) then { score: 0.60, reason: "shell_command" }
+     else null end),
 
     # Continuation prompt
     (if ($p | test("^(ok|okay|yes|yep|yeah|sure|go ahead|do it|looks good|that works|next|also|and also|continue|proceed|perfect|great|thanks|thank you|lgtm|ship it|merge it)$")) then { score: 0.45, reason: "continuation" } else null end),

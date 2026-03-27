@@ -463,6 +463,51 @@ else
   fail "config: gold tier still matches gold template" "no injection"
 fi
 
+# ===== Test Group: Shell Command "make" Fix (v1.3 F2) =====
+echo ""
+echo "=== Shell Command Make Fix ==="
+
+# "make a new component" should NOT be suppressed
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make a new component for the dashboard" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" != "suppress" ]]; then
+  pass "make + article not suppressed (got $action)"
+else
+  fail "make + article not suppressed" "got suppress"
+fi
+
+# "make test" should still be suppressed
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make test" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+assert_eq "make test still suppressed" "suppress" "$action"
+
+# "make the code cleaner" should NOT be suppressed
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make the code cleaner" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" != "suppress" ]]; then
+  pass "make + determiner not suppressed (got $action)"
+else
+  fail "make + determiner not suppressed" "got suppress"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"
