@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "actions": [
     "create", "review", "debug", "refactor", "explain",
     "test", "document", "optimize", "design", "fix"
@@ -14,26 +14,70 @@
     "content", "productivity"
   ],
   "action_synonyms": {
-    "create": ["build", "make", "generate", "write", "implement", "add", "scaffold"],
-    "review": ["check", "audit", "look at", "examine", "inspect", "evaluate"],
-    "debug": ["fix", "troubleshoot", "investigate", "diagnose", "trace", "find bug"],
-    "refactor": ["clean up", "restructure", "reorganize", "improve", "simplify"],
-    "explain": ["what is", "how does", "why", "describe", "tell me about", "walk through"],
-    "test": ["write tests", "add tests", "test coverage", "unit test", "integration test"],
-    "document": ["add docs", "document", "write docs", "JSDoc", "README"],
-    "optimize": ["speed up", "improve performance", "make faster", "reduce", "profile"],
-    "design": ["architect", "plan", "structure", "model", "blueprint"],
-    "fix": ["resolve", "repair", "patch", "correct", "handle"]
+    "create": ["build", "make", "generate", "write", "implement", "add", "scaffold", "init", "stub", "prototype", "opret", "lav"],
+    "review": ["check", "audit", "look at", "examine", "inspect", "evaluate", "vet", "assess", "critique", "gennemgå", "tjek"],
+    "debug": ["fix", "troubleshoot", "investigate", "diagnose", "trace", "find bug", "bisect", "isolate", "reproduce"],
+    "refactor": ["clean up", "restructure", "reorganize", "improve", "simplify", "extract", "inline", "decouple", "tidy"],
+    "explain": ["what is", "how does", "why", "describe", "tell me about", "walk through", "clarify", "elaborate", "summarize", "unpack", "forklar"],
+    "test": ["write tests", "add tests", "test coverage", "unit test", "integration test", "cover", "validate", "assert"],
+    "document": ["add docs", "document", "write docs", "JSDoc", "README", "annotate", "comment"],
+    "optimize": ["speed up", "improve performance", "make faster", "reduce", "profile", "benchmark", "cache", "parallelize"],
+    "design": ["architect", "plan", "structure", "model", "blueprint", "propose"],
+    "fix": ["resolve", "repair", "patch", "correct", "handle", "hotfix", "fiks", "ret"]
   },
   "object_synonyms": {
-    "code": ["codebase", "source", "implementation", "logic"],
-    "function": ["method", "handler", "callback", "routine", "procedure"],
-    "file": ["module", "script", "source file"],
-    "component": ["widget", "element", "view", "page", "screen"],
-    "test": ["spec", "test suite", "test case", "unit test"],
-    "API": ["endpoint", "route", "REST", "GraphQL", "service"],
-    "error": ["bug", "issue", "exception", "crash", "failure"],
-    "config": ["configuration", "settings", "env", "environment"]
+    "code": ["codebase", "source", "implementation", "logic", "module", "package", "library", "repo", "repository", "monorepo", "kode"],
+    "function": ["method", "handler", "callback", "routine", "procedure", "helper", "utility", "subroutine", "closure", "lambda", "arrow function", "funktion"],
+    "file": ["module", "script", "source file", "fil"],
+    "component": ["widget", "element", "view", "page", "screen", "layout", "template", "partial", "fragment", "section"],
+    "test": ["spec", "test suite", "test case", "unit test", "teste"],
+    "PR": ["pull request", "merge request", "MR", "changeset", "diff"],
+    "commit": ["changeset", "patch", "revision", "sha"],
+    "API": ["endpoint", "route", "REST", "GraphQL", "service", "server", "middleware", "controller", "gateway", "webhook"],
+    "schema": ["type", "interface", "definition", "migration", "DDL", "table"],
+    "prompt": ["instruction", "system prompt", "template"],
+    "config": ["configuration", "settings", "env", "environment", "dotenv", "yaml", "toml", "ini", "manifest", "rc file"],
+    "error": ["bug", "issue", "exception", "crash", "failure", "fault", "defect", "regression", "stack trace", "panic", "segfault", "fejl"],
+    "architecture": ["system design", "infrastructure", "topology", "stack"],
+    "database": ["DB", "datastore", "store", "table", "collection", "index", "query", "migration", "ORM"]
+  },
+  "adjective_actions": {
+    "faster": "optimize", "quicker": "optimize", "slower": "optimize",
+    "performant": "optimize", "efficient": "optimize", "lightweight": "optimize",
+    "cleaner": "refactor", "tidier": "refactor", "simpler": "refactor",
+    "readable": "refactor", "maintainable": "refactor", "modular": "refactor",
+    "safer": "fix", "secure": "fix", "robust": "fix",
+    "stable": "fix", "reliable": "fix", "resilient": "fix",
+    "testable": "test", "tested": "test", "covered": "test",
+    "documented": "document", "typed": "document",
+    "extensible": "design", "scalable": "design",
+    "clear": "explain", "understandable": "explain",
+    "fast": "optimize", "quick": "optimize", "slow": "optimize",
+    "clean": "refactor", "tidy": "refactor", "simple": "refactor",
+    "safe": "fix",
+    "short": "refactor", "small": "optimize", "concise": "refactor",
+    "flexible": "design", "reusable": "refactor", "idiomatic": "refactor"
+  },
+  "verb_fix_map": {
+    "work": "fix", "run": "fix", "compile": "fix", "build": "fix",
+    "start": "fix", "boot": "fix", "load": "fix", "render": "fix",
+    "deploy": "fix", "pass": "fix", "connect": "fix", "respond": "fix"
+  },
+  "morphological_map": {
+    "failing": "fail", "fails": "fail", "failed": "fail", "failure": "fail",
+    "testing": "test", "tests": "test", "tested": "test", "tester": "test",
+    "reviewing": "review", "reviewed": "review", "reviewer": "review",
+    "debugging": "debug", "debugged": "debug", "debugger": "debug",
+    "creating": "create", "created": "create", "creation": "create",
+    "refactoring": "refactor", "refactored": "refactor",
+    "optimizing": "optimize", "optimized": "optimize", "optimization": "optimize",
+    "explaining": "explain", "explained": "explain", "explanation": "explain",
+    "designing": "design", "designed": "design",
+    "documenting": "document", "documented": "document", "documentation": "document",
+    "fixing": "fix", "fixed": "fix",
+    "deploying": "deploy", "deployed": "deploy", "deployment": "deploy",
+    "configuring": "configure", "configured": "configure", "configuration": "configure",
+    "implementing": "implement", "implemented": "implement", "implementation": "implement"
   },
   "domain_synonyms": {
     "web": {
