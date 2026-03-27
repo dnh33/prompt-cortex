@@ -562,6 +562,23 @@ fi
 has_kode=$(jq '.object_synonyms.code | index("kode") != null' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
 assert_eq "Danish 'kode' in code synonyms" "true" "$has_kode"
 
+# ===== Test Group: Synonym Overlap Ratio (v1.3 F8) =====
+echo ""
+echo "=== Synonym Overlap Ratio ==="
+
+# "classify" should NOT match "class" as an object synonym (62% overlap < 75%)
+# Test via a prompt where "classify" is the only relevant word
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "classify these items into categories" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+# Should skip — "classify" should not match any action/object via loose prefix
+assert_eq "classify does not false-match via prefix" "skip" "$action"
+
 # ===== Results =====
 echo ""
 echo "================================"

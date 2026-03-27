@@ -50,24 +50,28 @@ def is_action_synonym($word; $canonical):
   intents_data as $i |
   if $i == null then false
   else
-    ($i.action_synonyms[$canonical] // []) |
+    # Try both lowercase and original-case key (action_synonyms keys are lowercase)
+    ($i.action_synonyms[$canonical] // $i.action_synonyms[($canonical | ascii_upcase)] // []) |
     map(ascii_downcase) |
     any(. as $syn |
         $syn == $word or
         (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
-         (($word | startswith($syn)) or ($syn | startswith($word)))))
+         (($word | startswith($syn)) or ($syn | startswith($word))) and
+         (([($word | length), ($syn | length)] | min) / ([($word | length), ($syn | length)] | max) >= 0.75)))
   end;
 
 def is_object_synonym($word; $canonical):
   intents_data as $i |
   if $i == null then false
   else
-    ($i.object_synonyms[$canonical] // []) |
+    # Try both lowercase and original-case key (object_synonyms has mixed-case keys: "API", "PR")
+    ($i.object_synonyms[$canonical] // $i.object_synonyms[($canonical | ascii_upcase)] // []) |
     map(ascii_downcase) |
     any(. as $syn |
         $syn == $word or
         (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
-         (($word | startswith($syn)) or ($syn | startswith($word)))))
+         (($word | startswith($syn)) or ($syn | startswith($word))) and
+         (([($word | length), ($syn | length)] | min) / ([($word | length), ($syn | length)] | max) >= 0.75)))
   end;
 
 # Check if cortex is disabled via /cx off
