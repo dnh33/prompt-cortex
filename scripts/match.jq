@@ -49,14 +49,19 @@ def recently_injected($tmpl_id):
 def intents_data:
   ($intents // null) | if . == null then null elif type == "array" then .[0] else . end;
 
+def morph_map: intents_data.morphological_map // {};
+
 def is_action_synonym($word; $canonical):
   intents_data as $i |
   if $i == null then false
   else
+    (morph_map[$word] // $word) as $norm_word |
     ($i.action_synonyms[$canonical] // $i.action_synonyms[($canonical | ascii_upcase)] // []) |
     map(ascii_downcase) |
     any(. as $syn |
+        (morph_map[$syn] // $syn) as $norm_syn |
         $syn == $word or
+        $norm_word == $norm_syn or
         (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
          (($word | startswith($syn)) or ($syn | startswith($word))) and
          (([($word | length), ($syn | length)] | min) / ([($word | length), ($syn | length)] | max) >= 0.75)))
@@ -66,10 +71,13 @@ def is_object_synonym($word; $canonical):
   intents_data as $i |
   if $i == null then false
   else
+    (morph_map[$word] // $word) as $norm_word |
     ($i.object_synonyms[$canonical] // $i.object_synonyms[($canonical | ascii_upcase)] // []) |
     map(ascii_downcase) |
     any(. as $syn |
+        (morph_map[$syn] // $syn) as $norm_syn |
         $syn == $word or
+        $norm_word == $norm_syn or
         (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
          (($word | startswith($syn)) or ($syn | startswith($word))) and
          (([($word | length), ($syn | length)] | min) / ([($word | length), ($syn | length)] | max) >= 0.75)))
@@ -221,9 +229,11 @@ def keyword_candidates:
   prompt_words as $words |
   prompt_bigrams as $bigrams |
   .inverted_index as $idx |
+  morph_map as $mm |
 
-  # Look up each word and bigram in the inverted index
-  ([$words[] | . as $w | $idx[$w] // [] | .[]] +
+  # Look up each word (and its morphological root) and bigram in the inverted index
+  ([$words[] | . as $w |
+    (($idx[$w] // []) + ($idx[($mm[$w] // "")] // [])) | .[]] +
    [$bigrams[] | . as $b | $idx[$b] // [] | .[]]) |
 
   # Count occurrences per template ID (more hits = more relevant)

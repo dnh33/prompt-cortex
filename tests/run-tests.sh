@@ -1336,6 +1336,29 @@ action=$(printf '%s' "$result" | jq -r '.action')
 # Should skip — "classify" should not match any action/object via loose prefix
 assert_eq "classify does not false-match via prefix" "skip" "$action"
 
+# ===== Test Group: Morphological Matching (v1.3 F5) =====
+echo ""
+echo "=== Morphological Matching ==="
+
+# "failing" should now match templates via morph_map (failing → fail)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "the tests are failing in production" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+confidence=$(printf '%s' "$result" | jq -r '.confidence')
+if [[ "$action" == "inject" || "$action" == "defer" ]]; then
+  pass "morphological: 'failing' matches (action=$action, conf=$confidence)"
+else
+  fail "morphological: 'failing' matches" "got action=$action confidence=$confidence"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"
