@@ -75,6 +75,57 @@ When you type a prompt, prompt-cortex analyzes it in the background and — if i
 4. If confidence is medium (0.40-0.69), a hint is injected instead.
 5. If the prompt looks like it should be left alone (shell commands, continuations, already-structured prompts), cortex stays silent.
 
+## Real-world example
+
+You type:
+```
+review the changes I made to checkout
+```
+
+**Step 1 — Leave-it-alone check** (score: 0.0 → passes through)
+
+No shell command, no slash command, no continuation. The prompt proceeds to matching.
+
+**Step 2 — Preprocessor (v1.3)**
+
+P6 (filler stripper) removes `"the changes I made to"` as structural filler, inferring:
+```
+inferred_action: "review"
+cleaned_prompt:  "review the changes to checkout"
+```
+
+**Step 3 — Scoring**
+
+The cleaned prompt hits the inverted index. `coding-001` (Code Review) wins:
+
+| Signal | Score |
+|--------|-------|
+| Action match: `review` | +0.45 |
+| Object match: `checkout` → `code` | +0.35 |
+| Keyword: `changes` | +0.10 |
+| **Total** | **0.90** (≥ 0.70 → full inject) |
+
+**Step 4 — Hook payload to Claude**
+
+```json
+{
+  "additionalContext": "You are a senior software engineer performing a code review...\n\n## Review checklist\n1. Correctness — does the logic match the intent?\n2. Error handling — are edge cases covered?\n3. Security — any injection, auth, or data exposure risks?\n4. Performance — unnecessary re-renders, N+1 queries, blocking calls?\n5. Naming & readability — would a new engineer understand this in 6 months?\n\n[... template continues ...]",
+  "hookMetadata": {
+    "matched_template": "coding-001",
+    "confidence": 0.90,
+    "tier": "gold"
+  }
+}
+```
+
+**What Claude sees:**
+- **Your original prompt**: `"review the changes I made to checkout"` — unchanged
+- **additionalContext**: the full Code Review template, silently prepended to the system context
+
+You see nothing. Claude responds like a senior engineer ran the review.
+
+---
+
 ## Install
 
 ```bash
