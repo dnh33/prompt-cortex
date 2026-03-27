@@ -34,7 +34,6 @@ prompt-cortex/
     match.jq                        # Core matching engine — leave-it-alone + 3-phase scoring
     build-index.sh                  # Index compiler — YAML parser + inverted index builder
     validate-template.sh            # Template frontmatter validator
-  scripts/
     bulk-schema-upgrade.sh          # Add v1.2 fields to all templates (idempotent)
   tests/
     run-tests.sh                    # Integration test suite (116 tests)

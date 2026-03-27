@@ -455,7 +455,7 @@ if [[ -n "$silver_id" ]]; then
     --arg state "null" \
     --arg cwd "" \
     --arg min_tier "gold" \
-  --arg min_confidence_adjust "0" \
+    --arg min_confidence_adjust "0" \
     --argjson context '{}' \
     --argjson project_rules '{}' \
     --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
@@ -739,6 +739,26 @@ if [[ "$disabled_match" != "coding-001" ]]; then
   pass "project config: disabled removes template (got: ${disabled_match:-none})"
 else
   fail "project config: disabled removes template" "coding-001 still matched"
+fi
+
+# T-PC3: suppress rule reduces confidence
+result_suppress=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{"boost":[],"suppress":["review"],"disabled":[]}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_suppressed=$(printf '%s' "$result_suppress" | jq -r '.confidence')
+
+is_less=$(jq -n --arg a "$conf_suppressed" --arg b "$conf_base" '($a | tonumber) < ($b | tonumber)')
+if [[ "$is_less" == "true" ]]; then
+  pass "project config: suppress reduces confidence ($conf_base -> $conf_suppressed)"
+else
+  fail "project config: suppress reduces confidence" "base=$conf_base suppressed=$conf_suppressed"
 fi
 
 # ===== Test Group: Presets =====

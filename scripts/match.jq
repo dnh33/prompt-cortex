@@ -133,7 +133,8 @@ def effective_min_tier:
 
 def effective_threshold:
   (($min_confidence_adjust // "0") | tonumber) as $adj |
-  0.70 + ([[$adj, 0.10] | min, -0.10] | max);
+  ([$adj, 0.10] | min) as $capped_high |
+  0.70 + ([$capped_high, -0.10] | max);
 
 # ===== Phase 0: Leave-it-alone detector =====
 # Returns { score: float, reason: string }
@@ -280,8 +281,9 @@ def score_candidate($tmpl):
    ({"trivial": 1, "low": 2, "medium": 3, "high": 4, "expert": 5}) as $levels |
    ($levels[$prompt_complexity] // 3) as $prompt_level |
    ($levels[$tmpl.min_complexity // "low"] // 2) as $tmpl_level |
-   if $prompt_level < $tmpl_level then -0.15
-   elif $prompt_level > ($tmpl_level + 2) then -0.05
+   # Only penalize for large complexity gaps (>2 levels apart)
+   if ($tmpl_level - $prompt_level) > 2 then -0.15
+   elif ($prompt_level - $tmpl_level) > 2 then -0.05
    else 0 end) as $complexity_penalty |
 
   # --- Multi-turn suppression ---
@@ -313,42 +315,43 @@ def score_candidate($tmpl):
 def context_filter($scored; $all_templates):
   ($context // {}) as $ctx |
   ($project_rules // {}) as $rules |
+  # Build O(1) lookup index once (avoids O(n) scan per candidate per filter)
+  ($all_templates | map({(.id): .}) | add // {}) as $tmpl_idx |
 
-  # 1. Language filter — remove templates requiring a different language
-  [ $scored[] |
+  # 1. Language filter — skip when lang is unknown/empty (no false exclusions)
+  (if ($ctx.lang // "unknown") == "unknown" or ($ctx.lang // "") == "" then $scored
+   else [ $scored[] |
     . as $entry |
-    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
     if (($tmpl.requires // {}).language // []) | length > 0 then
-      if (($tmpl.requires.language | map(ascii_downcase)) | index($ctx.lang // "")) != null then $entry
+      if (($tmpl.requires.language | map(ascii_downcase)) | index($ctx.lang | ascii_downcase)) != null then $entry
       else empty end
     else $entry end
-  ] |
+  ] end) |
 
-  # 2. Framework filter — remove templates requiring a different framework
-  [ .[] |
+  # 2. Framework filter — skip when framework is unknown/empty
+  (if ($ctx.framework // "unknown") == "unknown" or ($ctx.framework // "") == "" then .
+   else [ .[] |
     . as $entry |
-    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
     if (($tmpl.requires // {}).framework // []) | length > 0 then
-      if (($tmpl.requires.framework | map(ascii_downcase)) | index($ctx.framework // "")) != null then $entry
+      if (($tmpl.requires.framework | map(ascii_downcase)) | index($ctx.framework | ascii_downcase)) != null then $entry
       else empty end
     else $entry end
-  ] |
+  ] end) |
 
   # 3. Boost/suppress rules from project.json + project-context.json
   [ .[] |
     . as $entry |
-    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
-    # Boost matching categories, actions, or template IDs
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
     (if ($rules.boost // []) | any(. as $b |
         ($tmpl.category == $b) or ($tmpl.action == $b) or ($tmpl.id == $b))
      then .confidence = .confidence + 0.05
      else . end) |
-    # Suppress matching categories, actions, or template IDs
     (if ($rules.suppress // []) | any(. as $s |
         ($tmpl.category == $s) or ($tmpl.action == $s) or ($tmpl.id == $s))
      then .confidence = .confidence - 0.15
      else . end) |
-    # Disabled templates — remove entirely (matches category, action, or ID)
     (if ($rules.disabled // []) | any(. as $d |
         ($d == $entry.id) or ($d == $tmpl.category) or ($d == $tmpl.action) or ($d == "*"))
      then empty
@@ -358,12 +361,12 @@ def context_filter($scored; $all_templates):
   # 4. Project affinity boost (+0.05 per matching affinity, max +0.10)
   [ .[] |
     . as $entry |
-    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
     (($tmpl.project_affinity // []) |
      map(select(. as $aff |
        ($ctx.lang == $aff) or ($ctx.framework == $aff) or
-       (($ctx.lang // "") | ascii_downcase | test($aff; "i") // false) or
-       (($ctx.framework // "") | ascii_downcase | test($aff; "i") // false)
+       (($ctx.lang // "") | ascii_downcase) == ($aff | ascii_downcase) or
+       (($ctx.framework // "") | ascii_downcase) == ($aff | ascii_downcase)
      )) | length) as $affinity_hits |
     if $affinity_hits > 0 then
       .confidence = .confidence + ([$affinity_hits * 0.05, 0.10] | min)
@@ -373,7 +376,7 @@ def context_filter($scored; $all_templates):
   # 5. Git branch context boost (+0.03 for matching action types)
   [ .[] |
     . as $entry |
-    ($all_templates | map(select(.id == $entry.id)) | .[0]) as $tmpl |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
     (if ($ctx.branch_type // "") == "feature" and ($tmpl.action == "design" or $tmpl.action == "create")
      then .confidence = .confidence + 0.03
      elif ($ctx.branch_type // "") == "fix" and ($tmpl.action == "debug" or $tmpl.action == "fix" or $tmpl.action == "test")

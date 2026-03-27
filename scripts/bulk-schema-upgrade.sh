@@ -54,7 +54,7 @@ gold_complexity_for() {
 updated=0
 skipped=0
 
-for file in $(find "$PROMPTS_DIR" -name "*.md" -type f | sort); do
+while IFS= read -r -d '' file; do
   filename=$(basename "$file")
   id="${filename%.md}"
 
@@ -104,7 +104,7 @@ for file in $(find "$PROMPTS_DIR" -name "*.md" -type f | sort); do
     ' "$file" > "$tmpfile" && mv "$tmpfile" "$file"
     updated=$((updated + 1))
   fi
-done
+done < <(find "$PROMPTS_DIR" -name "*.md" -type f -print0 | sort -z)
 
 echo ""
 echo "Updated: $updated files"

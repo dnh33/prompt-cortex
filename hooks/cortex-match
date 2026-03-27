@@ -58,14 +58,13 @@ PROJECT_JSON="${CORTEX_DIR}/project.json"
 PROJECT_CONTEXT="${CORTEX_DIR}/project-context.json"
 
 # --- Read session context (fallback if env vars not set) ---
+# Single jq call instead of 6 separate subprocesses
 SESSION_CONTEXT="${CORTEX_DIR}/session-context.json"
 if [[ -z "${CORTEX_LANG:-}" ]] && [[ -f "$SESSION_CONTEXT" ]]; then
-  export CORTEX_LANG=$(jq -r '.lang // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
-  export CORTEX_FRAMEWORK=$(jq -r '.framework // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
-  export CORTEX_TESTING=$(jq -r '.testing // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
-  export CORTEX_LINTER=$(jq -r '.linter // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
-  export CORTEX_PKGMGR=$(jq -r '.pkgmgr // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
-  export CORTEX_BRANCH_TYPE=$(jq -r '.branch_type // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+  IFS=$'\t' read -r CORTEX_LANG CORTEX_FRAMEWORK CORTEX_TESTING CORTEX_LINTER CORTEX_PKGMGR CORTEX_BRANCH_TYPE < <(
+    jq -r '[.lang // "", .framework // "", .testing // "", .linter // "", .pkgmgr // "", .branch_type // ""] | @tsv' \
+      "$SESSION_CONTEXT" 2>/dev/null || printf '\t\t\t\t\t')
+  export CORTEX_LANG CORTEX_FRAMEWORK CORTEX_TESTING CORTEX_LINTER CORTEX_PKGMGR CORTEX_BRANCH_TYPE
 fi
 
 # --- CwdChanged fallback: detect context change inline ---
@@ -74,12 +73,10 @@ if [[ -f "$SESSION_CONTEXT" ]]; then
   if [[ -n "$cwd" ]] && [[ "$cwd" != "$last_cwd" ]] && [[ -n "$last_cwd" ]]; then
     new_session_ctx="${cwd}/.cortex/session-context.json"
     if [[ -f "$new_session_ctx" ]]; then
-      export CORTEX_LANG=$(jq -r '.lang // ""' "$new_session_ctx" 2>/dev/null || echo "")
-      export CORTEX_FRAMEWORK=$(jq -r '.framework // ""' "$new_session_ctx" 2>/dev/null || echo "")
-      export CORTEX_TESTING=$(jq -r '.testing // ""' "$new_session_ctx" 2>/dev/null || echo "")
-      export CORTEX_LINTER=$(jq -r '.linter // ""' "$new_session_ctx" 2>/dev/null || echo "")
-      export CORTEX_PKGMGR=$(jq -r '.pkgmgr // ""' "$new_session_ctx" 2>/dev/null || echo "")
-      export CORTEX_BRANCH_TYPE=$(jq -r '.branch_type // ""' "$new_session_ctx" 2>/dev/null || echo "")
+      IFS=$'\t' read -r CORTEX_LANG CORTEX_FRAMEWORK CORTEX_TESTING CORTEX_LINTER CORTEX_PKGMGR CORTEX_BRANCH_TYPE < <(
+        jq -r '[.lang // "", .framework // "", .testing // "", .linter // "", .pkgmgr // "", .branch_type // ""] | @tsv' \
+          "$new_session_ctx" 2>/dev/null || printf '\t\t\t\t\t')
+      export CORTEX_LANG CORTEX_FRAMEWORK CORTEX_TESTING CORTEX_LINTER CORTEX_PKGMGR CORTEX_BRANCH_TYPE
     fi
   fi
 fi
@@ -112,10 +109,10 @@ fi
 if [[ -f "$PROJECT_CONTEXT" ]]; then
   pc_rules=$(jq '.rules // {}' "$PROJECT_CONTEXT" 2>/dev/null || echo '{}')
   project_rules_json=$(printf '%s\n%s' "$pc_rules" "$project_rules_json" | \
-    jq -s '.[0] * .[1] | {
-      boost: ((.boost // []) | unique),
-      suppress: ((.suppress // []) | unique),
-      disabled: ((.disabled // []) | unique)
+    jq -s '.[0] as $pc | .[1] as $proj | {
+      boost: (($pc.boost // []) + ($proj.boost // []) | unique),
+      suppress: (($pc.suppress // []) + ($proj.suppress // []) | unique),
+      disabled: (($pc.disabled // []) + ($proj.disabled // []) | unique)
     }')
 fi
 
@@ -184,7 +181,7 @@ else
   intents_arg=(--argjson intents "null")
 fi
 
-# min_conf_adjust set by preset loading (Task 2)
+# min_conf_adjust set by preset loading above
 match_result=$(jq -f "$MATCH_JQ" \
   --arg prompt "$user_prompt" \
   --arg state "$state_json" \
