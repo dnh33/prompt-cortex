@@ -654,6 +654,225 @@ else
   fail "code with question mark → not code_snippet" "got code_snippet"
 fi
 
+# ===== Test Group: Conversational Preprocessor (v1.3 F1) =====
+echo ""
+echo "=== Conversational Preprocessor ==="
+
+# P1: "something is wrong with the API" → debug
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "something is wrong with the API" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P1: something wrong → debug" "debug" "$pp_action"
+
+# P1 with contraction: "something's wrong with the API"
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "something's wrong with the API" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P1: something's wrong (contraction) → debug" "debug" "$pp_action"
+
+# P2: "why is the build failing" → debug
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "why is the build failing" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P2: why is build failing → debug" "debug" "$pp_action"
+
+# P2 negative: "why is the sky blue" → no match (no problem indicator)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "why is the sky blue" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P2: why is sky blue → no inferred action" "" "$pp_action"
+
+# P3: "make it faster" → optimize
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make it faster" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P3: make it faster → optimize" "optimize" "$pp_action"
+
+# P3: "make the code cleaner" → refactor
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make the code cleaner" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P3: make the code cleaner → refactor" "refactor" "$pp_action"
+
+# P4: "how does the auth flow work" → explain
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "how does the auth flow work" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P4: how does auth flow work → explain" "explain" "$pp_action"
+
+# P4 negative: "how does this look" → no match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "how does this look" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P4: how does this look → no inferred action" "" "$pp_action"
+
+# P5: "what's a closure" → explain (contraction)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "what's a closure" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P5: what's a closure → explain" "explain" "$pp_action"
+
+# P5 guard: "what are the tests I should write" → test (not explain)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "what are the tests I should write" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P5 guard: tests I should write → test" "test" "$pp_action"
+
+# P6: "review the changes I made to checkout" → review
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review the changes I made to checkout" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P6: review changes I made → review" "review" "$pp_action"
+
+# P7: "could you help me debug this" → cleaned_terms contain "debug"
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "could you help me debug this" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_debug=$(printf '%s' "$result" | jq '.preprocessed.cleaned_terms | index("debug") != null' 2>/dev/null)
+assert_eq "P7: could you debug → cleaned_terms has debug" "true" "$has_debug"
+
+# Scoring: inferred action alone cannot inject (ceiling 0.68 < 0.70)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "something is wrong with the login" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "inferred debug detected" "debug" "$pp_action"
+
+# --- Negative tests ---
+
+# P1 negative: "something is great" → no match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "something is great about this approach" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P1 negative: something is great → no pattern" "" "$pp_pattern"
+
+# P3 negative: "make it purple" → no match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make it purple" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P3 negative: make it purple → no inferred action" "" "$pp_action"
+
+# P3 multi-word: "make it a lot faster" → optimize
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make it a lot faster" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P3 multi-word: make it a lot faster → optimize" "optimize" "$pp_action"
+
+# P5/P1 priority: "what is wrong" → caught by P1 as debug
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "what is wrong" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P1/P5 priority: what is wrong → something_wrong" "something_wrong" "$pp_pattern"
+
+# P6 negative: "discuss the plan I made" → no match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "discuss the plan I made" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+if [[ "$pp_pattern" != "filler_strip" ]]; then
+  pass "P6 negative: discuss not recognized action (pattern=$pp_pattern)"
+else
+  fail "P6 negative: discuss not recognized action" "got filler_strip"
+fi
+
+# P7 minimum length: "can you help" → no match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "can you help" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P7 min-length: can you help → no pattern" "" "$pp_pattern"
+
 # ===== Results =====
 echo ""
 echo "================================"
