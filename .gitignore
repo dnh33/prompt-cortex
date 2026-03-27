@@ -13,6 +13,9 @@ desktop.ini
 *.swo
 *~
 
+# Worktrees
+.worktrees/
+
 # Temp
 *.tmp
 *.bak
