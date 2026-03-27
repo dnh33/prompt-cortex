@@ -887,6 +887,21 @@ pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""'
 assert_eq "P5 guard fix: know about testing → explain" "explain" "$pp_action"
 assert_eq "P5 guard fix: pattern is what_is_x (not what_is_guard)" "what_is_x" "$pp_pattern"
 
+# ===== Test Group: Compound Intent Telemetry (v1.3 F12) =====
+echo ""
+echo "=== Compound Intent Telemetry ==="
+
+# "fix the bug and add tests for the auth module" should have compound_intent field
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "fix the bug and add tests for the auth module" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_field=$(printf '%s' "$result" | jq 'has("compound_intent")' 2>/dev/null)
+assert_eq "compound_intent field exists" "true" "$has_field"
+
 # ===== Results =====
 echo ""
 echo "================================"

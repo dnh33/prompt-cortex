@@ -489,7 +489,8 @@ else
     if ($candidates | length) == 0 then
       { action: "skip", confidence: 0, best_match: null, candidates: [],
         leave_alone_score: $lia.score, leave_alone_reason: $lia.reason,
-        preprocessed: $pp }
+        preprocessed: $pp,
+        compound_intent: { detected: false, intents: [] } }
     else
 
       # 3. Score top candidates (limit to top 10 by hit count for performance)
@@ -514,11 +515,19 @@ else
       # Apply context filter
       context_filter($scored) as $filtered |
 
+      # Compound intent detection (telemetry only)
+      (if ($filtered | length) >= 2 and
+          ($filtered[0].confidence > 0.50) and ($filtered[1].confidence > 0.50) and
+          ($filtered[0].action != $filtered[1].action)
+       then { detected: true, intents: [$filtered[0].action, $filtered[1].action] }
+       else { detected: false, intents: [] }
+       end) as $compound |
+
       # 4. Determine action based on confidence
       if ($filtered | length) == 0 then
         { action: "skip", confidence: 0, best_match: null, candidates: [],
           leave_alone_score: $lia.score, leave_alone_reason: $lia.reason,
-          preprocessed: $pp }
+          preprocessed: $pp, compound_intent: $compound }
       else
         $filtered[0] as $best |
 
@@ -532,7 +541,8 @@ else
             candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
             leave_alone_score: $lia.score,
             leave_alone_reason: $lia.reason,
-            preprocessed: $pp }
+            preprocessed: $pp,
+            compound_intent: $compound }
         elif $best.confidence >= 0.40 then
           { action: "defer",
             confidence: $best.confidence,
@@ -540,7 +550,8 @@ else
             candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
             leave_alone_score: $lia.score,
             leave_alone_reason: $lia.reason,
-            preprocessed: $pp }
+            preprocessed: $pp,
+            compound_intent: $compound }
         else
           { action: "skip",
             confidence: $best.confidence,
@@ -548,7 +559,8 @@ else
             candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
             leave_alone_score: $lia.score,
             leave_alone_reason: $lia.reason,
-            preprocessed: $pp }
+            preprocessed: $pp,
+            compound_intent: $compound }
         end
       end
 
