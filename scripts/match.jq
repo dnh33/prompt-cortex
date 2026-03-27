@@ -132,6 +132,152 @@ def is_domain_object_synonym($word; $canonical):
     end
   end;
 
+# ===== Phase 0.5: Conversational preprocessor =====
+def strip_articles:
+  gsub("(^| )(the|a|an|this|that|my|our|your|its) "; " ") | gsub("^ +| +$"; "") | gsub(" +"; " ");
+
+def preprocess_prompt:
+  ($prompt | ascii_downcase | gsub("^\\s+|\\s+$"; "")) as $raw |
+  ($raw |
+    gsub("something's"; "something is") |
+    gsub("what's"; "what is") | gsub("what're"; "what are") |
+    gsub("there's"; "there is") |
+    gsub("it's"; "it is") | gsub("that's"; "that is") |
+    gsub("won't"; "will not") | gsub("can't"; "cannot") |
+    gsub("isn't"; "is not") | gsub("aren't"; "are not") |
+    gsub("doesn't"; "does not") | gsub("don't"; "do not") |
+    gsub("didn't"; "did not")
+  ) as $p |
+
+  intents_data as $i |
+  ($i.adjective_actions // {}) as $adj_map |
+  ($i.verb_fix_map // {}) as $vfm |
+  ($i.actions // []) as $actions |
+
+  # P1: "something is wrong" / diagnostic complaint → debug
+  if ($p | test("^(something (is |seems |looks |appears )?(wrong|broken|off|weird|messed up|not right)|there (is|are|seems to be) (a |an |some )?(problem|issue|bug|error)|(it|this|that) (is |keeps |will not stop )(not )?(working|running|loading|compiling|building|failing|crashing|breaking|erroring|responding|connecting)|what (is|went) wrong)"))
+  then
+    ($p | capture("(?:with|in|on) (?:the |my |our |this |that )?(?<obj>.+)$") // {}) as $cap |
+    { inferred_action: "debug", inferred_object: ($cap.obj // null), cleaned_terms: (["debug"] + (if $cap.obj then [$cap.obj | split(" ")[]] else [] end)), pattern_matched: "something_wrong" }
+
+  # P2: "why is X failing" → debug (with problem indicator)
+  elif ($p | test("^why (is|are|does|do|did|is not|are not|does not|do not|did not|will not|cannot|could not) ")) and ($p | test("(not |n't |wrong|broken|fail|crash|miss|slow|error|bug|hang|freeze|timeout|exception|undefined|null|stuck)"))
+  then
+    ($p | gsub("^why (?:is|are|does|do|did|is not|are not|does not|do not|did not|will not|cannot|could not) "; "") | split(" ") | map(select(length > 2 and (. as $w | ["the","not","and","but","for","with"] | index($w) == null)))) as $subject_words |
+    ($subject_words | first // null) as $obj |
+    { inferred_action: "debug", inferred_object: $obj, cleaned_terms: (["debug"] + $subject_words), pattern_matched: "why_is_x" }
+
+  # P3: "make it/the X-er" → adjective-to-action
+  elif ($p | test("^make (it|this|that|the|my|our|your|a|an) "))
+  then
+    ($p | capture("^make (?:it|this|that|the|my|our|your|a|an) (?<rest>.+)$") // {}) as $cap |
+    ($cap.rest // "" | split(" ") | reverse) as $words_rev |
+    ([$words_rev[] | . as $w | $adj_map[$w] // $vfm[$w] // null | select(. != null)] | first // null) as $mapped |
+    if $mapped != null then
+      (($cap.rest // "") | split(" ")) as $rest_words |
+      ($rest_words | to_entries | map(select(.value as $w | $adj_map[$w] // $vfm[$w] // null | . != null)) | last // null) as $match_entry |
+      (if $match_entry != null and $match_entry.key > 0
+       then ($rest_words[0:$match_entry.key] | join(" ") | strip_articles)
+       else null end) as $obj |
+      (if $obj != null and ($obj | length) > 0 and ($obj | split(" ") | map(select(. as $w | ["lot","very","really","so","too","just","quite","pretty","rather"] | index($w) == null)) | length > 0)
+       then ($obj | split(" ") | map(select(. as $w | ["lot","very","really","so","too","just","quite","pretty","rather"] | index($w) == null)) | join(" "))
+       else null end) as $final_obj |
+      { inferred_action: $mapped, inferred_object: $final_obj, cleaned_terms: ([$mapped] + (if $final_obj then [$final_obj] else [] end)), pattern_matched: "make_it_xer" }
+    else
+      { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
+    end
+
+  elif ($p | test("^make .+ more .+$"))
+  then
+    ($p | capture("^make (?<subj>.+) more (?<adj>.+)$") // {}) as $cap |
+    ($adj_map[$cap.adj] // null) as $mapped |
+    if $mapped != null then
+      { inferred_action: $mapped, inferred_object: ($cap.subj | strip_articles), cleaned_terms: [$mapped, ($cap.subj | strip_articles)], pattern_matched: "make_x_more_y" }
+    else
+      { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
+    end
+
+  # P4: "how does X work" → explain
+  elif ($p | test("^how (does|do|did|would|should|could) .+ (work|operate|run|execute|behave)$"))
+  then
+    ($p | capture("^how (?:does|do|did|would|should|could) (?<subj>.+) (?:work|operate|run|execute|behave)$") // {}) as $cap |
+    { inferred_action: "explain", inferred_object: ($cap.subj | strip_articles),
+      cleaned_terms: (["explain"] + (($cap.subj | strip_articles) | split(" "))),
+      pattern_matched: "how_does_x_work" }
+
+  # P5: "what is/are X" → explain (with first-person guard)
+  elif ($p | test("^what (is|are|was|were) "))
+  then
+    ($p | capture("^what (?:is|are|was|were) (?<rest>.+)$") // {}) as $cap |
+    ($cap.rest // "") as $remainder |
+    (["write","create","build","review","debug","fix","test","refactor","optimize","design","document"]) as $action_verbs |
+    ([$action_verbs[] | . as $v | select($remainder | test("(^|[^a-zA-Z])" + $v + "([^a-zA-Z]|$)"))] | first // null) as $found_verb |
+    ($remainder | test("(^|[^a-zA-Z])(i|my|we|our|you)([^a-zA-Z]|$)")) as $has_first_person |
+    ($remainder | test("(^|[^a-zA-Z])(should|need to|want to|have to|going to)([^a-zA-Z]|$)")) as $has_imperative |
+    if $found_verb != null and ($has_first_person or $has_imperative) then
+      ($remainder | split(" ") | map(. as $w | (morph_map[$w] // $w)) |
+       map(select(. as $w | $actions | index($w) != null)) | first // null) as $object_action |
+      (if $object_action != null then $object_action else $found_verb end) as $resolved |
+      { inferred_action: $resolved, inferred_object: ($remainder | strip_articles),
+        cleaned_terms: ([$resolved] + ($remainder | strip_articles | split(" "))),
+        pattern_matched: "what_is_guard" }
+    else
+      { inferred_action: "explain", inferred_object: ($remainder | strip_articles),
+        cleaned_terms: (["explain"] + ($remainder | strip_articles | split(" "))),
+        pattern_matched: "what_is_x" }
+    end
+
+  # P6: "[action] the Y I made/wrote" → filler stripping
+  elif ($p | split(" ") | .[0]) as $first_word |
+       ($actions | index($first_word) != null) or
+       ($actions | any(. as $act | is_action_synonym($first_word; $act)))
+  then
+    ($p | split(" ") | .[0]) as $first_word |
+    ($actions | map(select(. as $act | ($act == $first_word) or is_action_synonym($first_word; $act))) | first // $first_word) as $canonical_action |
+    ($p | gsub("\\s+(?:that )?(?:i|we|you) (?:have )?(?:made|wrote|changed|created|built|modified|updated|added|fixed|pushed|committed|submitted|drafted).*"; "")) as $cleaned |
+    if $cleaned != $p then
+      { inferred_action: $canonical_action, inferred_object: null, cleaned_terms: ($cleaned | split(" ")), pattern_matched: "filler_strip" }
+    else
+      { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
+    end
+
+  # P7: "can/could/would/will you X" → prefix strip
+  elif ($p | test("^(can|could|would|will) you "))
+  then
+    ($p | gsub("^(can|could|would|will) you (please )?(help (me |us )?(to |with )?)?"; "")) as $remainder |
+    ($remainder | split(" ") | map(select(length > 2)) | length) as $token_count |
+    if $token_count >= 2 then
+      { inferred_action: null, inferred_object: null, cleaned_terms: ($remainder | split(" ") | map(select(length > 0))), pattern_matched: "can_you_x" }
+    else
+      { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
+    end
+
+  # P8: "I need to X" → prefix strip
+  elif ($p | test("^i need to "))
+  then
+    ($p | gsub("^i need to "; "")) as $remainder |
+    ($remainder | split(" ") | map(select(length > 2)) | length) as $token_count |
+    if $token_count >= 2 then
+      { inferred_action: null, inferred_object: null, cleaned_terms: ($remainder | split(" ") | map(select(length > 0))), pattern_matched: "i_need_to_x" }
+    else
+      { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
+    end
+
+  # P9: "help me X" → prefix strip
+  elif ($p | test("^help (me |us )?(to )?(with )?"))
+  then
+    ($p | gsub("^help (me |us )?(to )?(with )?"; "")) as $remainder |
+    ($remainder | split(" ") | map(select(length > 2)) | length) as $token_count |
+    if $token_count >= 2 then
+      { inferred_action: null, inferred_object: null, cleaned_terms: ($remainder | split(" ") | map(select(length > 0))), pattern_matched: "help_me_x" }
+    else
+      { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
+    end
+
+  else
+    { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
+  end;
+
 # Check if cortex is disabled via /cx off
 def cortex_disabled:
   parsed_state as $s |
@@ -249,9 +395,25 @@ def keyword_candidates:
   map({ id: .[0], hits: length }) |
   sort_by(-.hits);
 
+def keyword_candidates_enhanced($pp):
+  prompt_words as $words |
+  prompt_bigrams as $bigrams |
+  ($pp.cleaned_terms // []) as $extra |
+  .inverted_index as $idx |
+  morph_map as $mm |
+
+  ([$words[] | . as $w |
+    (($idx[$w] // []) + ($idx[($mm[$w] // "")] // [])) | .[]] +
+   [$bigrams[] | . as $b | $idx[$b] // [] | .[]] +
+   [$extra[] | . as $e | $idx[$e] // [] | .[]]) |
+
+  group_by(.) |
+  map({ id: .[0], hits: length }) |
+  sort_by(-.hits);
+
 # ===== Phase 2: Score candidates against prompt =====
 
-def score_candidate($tmpl):
+def score_candidate($tmpl; $pp):
   prompt_lower as $p |
   prompt_words as $words |
   prompt_bigrams as $bigrams |
@@ -328,11 +490,24 @@ def score_candidate($tmpl):
   (if recently_injected($tmpl.id) then -0.40
    else 0 end) as $suppression_penalty |
 
+  # --- Inferred action bonus (v1.3 preprocessor) ---
+  (if ($pp.inferred_action != null) and ($pp.inferred_action == $action)
+   then 0.30
+   else 0 end) as $inferred_action_score |
+
+  # --- Inferred object bonus (v1.3 preprocessor) ---
+  (if ($pp.inferred_object != null) and
+      (($pp.inferred_object | ascii_downcase) as $io |
+       ($io == $object) or (is_object_synonym($io; $object)))
+   then 0.20
+   else 0 end) as $inferred_object_score |
+
   # --- Total ---
   {
     id: $tmpl.id,
     name: $tmpl.name,
-    confidence: ([$action_score + $object_score + $keyword_score + $signal_boost + $negative_penalty + $complexity_penalty + $code_snippet_penalty + $suppression_penalty, 0] | max),
+    action: $action,
+    confidence: ([([($action_score), ($inferred_action_score)] | max) + ([($object_score), ($inferred_object_score)] | max) + $keyword_score + $signal_boost + $negative_penalty + $complexity_penalty + $code_snippet_penalty + $suppression_penalty, 0] | max),
     breakdown: {
       action: $action_score,
       object: $object_score,
@@ -341,7 +516,9 @@ def score_candidate($tmpl):
       negative: $negative_penalty,
       complexity: $complexity_penalty,
       code_snippet: $code_snippet_penalty,
-      suppression: $suppression_penalty
+      suppression: $suppression_penalty,
+      inferred_action: $inferred_action_score,
+      inferred_object: $inferred_object_score
     }
   };
 
@@ -433,10 +610,12 @@ def context_filter($scored; $all_templates):
 # 0. Check escape mechanisms first
 if ($prompt | ascii_downcase | test("^--raw(\\s|$)")) then
   { action: "escape", confidence: 0, best_match: null, candidates: [],
-    leave_alone_score: 1.0, leave_alone_reason: "raw_flag" }
+    leave_alone_score: 1.0, leave_alone_reason: "raw_flag",
+    preprocessed: { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null } }
 elif cortex_disabled then
   { action: "escape", confidence: 0, best_match: null, candidates: [],
-    leave_alone_score: 1.0, leave_alone_reason: "cx_off" }
+    leave_alone_score: 1.0, leave_alone_reason: "cx_off",
+    preprocessed: { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null } }
 else
 
   # 1. Leave-it-alone detector
@@ -444,15 +623,20 @@ else
 
   if $lia.score >= 0.60 then
     { action: "suppress", confidence: 0, best_match: null, candidates: [],
-      leave_alone_score: $lia.score, leave_alone_reason: $lia.reason }
+      leave_alone_score: $lia.score, leave_alone_reason: $lia.reason,
+      preprocessed: { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null } }
   else
 
+    # Phase 0.5: Conversational preprocessor
+    preprocess_prompt as $pp |
+
     # 2. Get candidate templates from inverted index
-    keyword_candidates as $candidates |
+    keyword_candidates_enhanced($pp) as $candidates |
 
     if ($candidates | length) == 0 then
       { action: "skip", confidence: 0, best_match: null, candidates: [],
-        leave_alone_score: $lia.score, leave_alone_reason: $lia.reason }
+        leave_alone_score: $lia.score, leave_alone_reason: $lia.reason,
+        preprocessed: $pp }
     else
 
       # 3. Score top candidates (limit to top 10 by hit count for performance)
@@ -471,7 +655,7 @@ else
 
       ($tier_filtered | map(select(.id as $tid | $candidate_ids | index($tid) != null))) as $candidate_templates |
 
-      [($candidate_templates[] | score_candidate(.))] |
+      [($candidate_templates[] | score_candidate(.; $pp))] |
       sort_by(-.confidence) as $scored |
 
       # Apply context filter
@@ -480,7 +664,8 @@ else
       # 4. Determine action based on confidence
       if ($filtered | length) == 0 then
         { action: "skip", confidence: 0, best_match: null, candidates: [],
-          leave_alone_score: $lia.score, leave_alone_reason: $lia.reason }
+          leave_alone_score: $lia.score, leave_alone_reason: $lia.reason,
+          preprocessed: $pp }
       else
         $filtered[0] as $best |
 
@@ -493,21 +678,24 @@ else
             best_match: $best,
             candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
             leave_alone_score: $lia.score,
-            leave_alone_reason: $lia.reason }
+            leave_alone_reason: $lia.reason,
+            preprocessed: $pp }
         elif $best.confidence >= 0.40 then
           { action: "defer",
             confidence: $best.confidence,
             best_match: $best,
             candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
             leave_alone_score: $lia.score,
-            leave_alone_reason: $lia.reason }
+            leave_alone_reason: $lia.reason,
+            preprocessed: $pp }
         else
           { action: "skip",
             confidence: $best.confidence,
             best_match: null,
             candidates: ($filtered | .[0:3] | map({id: .id, confidence: .confidence})),
             leave_alone_score: $lia.score,
-            leave_alone_reason: $lia.reason }
+            leave_alone_reason: $lia.reason,
+            preprocessed: $pp }
         end
       end
 
