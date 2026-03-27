@@ -61,6 +61,47 @@ Example output:
 - Avg injections/day: 22
 ```
 
+## Additional v1.2 Analytics
+
+### Context Intelligence
+When displaying stats, also show:
+
+1. **Context Coverage**: What percentage of prompts had project context available (entries with a non-empty `context` or `project` field in the telemetry)
+2. **Filter Effectiveness**: How many candidate templates were filtered by Phase 3 context matching (requires language/framework mismatch). Look for entries where `filtered_count` > 0 or where the disposition indicates context filtering removed candidates.
+3. **Affinity Impact**: Average confidence boost from `project_affinity` matches. If telemetry entries include an `affinity_boost` field, compute the mean across all injected prompts.
+4. **Preset Active**: Whether a preset is currently active (check `.cortex/config.json` for `preset` field) and its impact on injection rates — compare injection % for entries with vs without a preset.
+5. **Top Filtered**: Templates most frequently removed by context filter (may indicate schema misalignment). List up to 5 templates that appear in `filtered_templates` arrays.
+
+### Cross-Project View
+If `.cortex/usage.jsonl` contains entries from multiple projects (via the `project` field), offer a per-project breakdown showing:
+- Project name/path
+- Injection count and rate per project
+- Most-used template per project
+- Which projects benefit most from context awareness (highest affinity boost averages)
+
+Example additional output:
+```
+### Context Intelligence
+| Metric | Value |
+|--------|-------|
+| Context coverage | 78% (111/142 prompts) |
+| Templates filtered by context | 34 removals across 111 prompts |
+| Avg affinity boost | +0.12 confidence |
+| Active preset | backend-api |
+
+### Top Filtered Templates
+| Template | Times Filtered | Likely Reason |
+|----------|---------------|---------------|
+| content-012 | 18 | language mismatch |
+| productivity-003 | 9 | framework mismatch |
+
+### Per-Project Breakdown
+| Project | Prompts | Injections | Rate | Top Template |
+|---------|---------|------------|------|--------------|
+| /home/user/api | 89 | 52 | 58% | coding-001 |
+| /home/user/docs | 53 | 15 | 28% | content-005 |
+```
+
 If no `usage.jsonl` exists, tell the user that no telemetry data exists yet.
 
 Implementation: Use `jq` to parse the JSONL file. Read the file line by line or use `jq -s` on the whole file. Group and aggregate as needed. All analysis is local — no data leaves the machine.

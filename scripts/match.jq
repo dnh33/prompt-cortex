@@ -4,6 +4,9 @@
 #   $prompt  — the user's raw prompt text
 #   $state   — JSON string of current session state (or "null")
 #   $cwd     — current working directory (or "")
+#   $context              — JSON object of detected project context (or {})
+#   $project_rules        — JSON object of boost/suppress/disabled rules (or {})
+#   $min_confidence_adjust — string number from preset (default "0"), capped +/-0.10
 #
 # Output: JSON with matching result
 #   { "action": "inject"|"defer"|"suppress"|"skip"|"escape",
@@ -70,6 +73,53 @@ def is_object_synonym($word; $canonical):
          (($word | startswith($syn)) or ($syn | startswith($word)))))
   end;
 
+# Domain synonym resolution
+def active_domain:
+  intents_data as $i |
+  if $i == null then null
+  else
+    ($context // {}) as $ctx |
+    (if ($ctx.framework // "") != "" then
+       ($i.framework_domain_override[$ctx.framework] // null)
+     else null end) as $fw_domain |
+    if $fw_domain != null then $fw_domain
+    elif ($ctx.lang // "") != "" then
+      ($i.domain_map[$ctx.lang] // null)
+    else null end
+  end;
+
+def is_domain_action_synonym($word; $canonical):
+  intents_data as $i |
+  if $i == null then false
+  else
+    active_domain as $domain |
+    if $domain == null then false
+    else
+      (($i.domain_synonyms[$domain] // {}).action_synonyms[$canonical] // []) |
+      map(ascii_downcase) |
+      any(. as $syn |
+          $syn == $word or
+          (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
+           (($word | startswith($syn)) or ($syn | startswith($word)))))
+    end
+  end;
+
+def is_domain_object_synonym($word; $canonical):
+  intents_data as $i |
+  if $i == null then false
+  else
+    active_domain as $domain |
+    if $domain == null then false
+    else
+      (($i.domain_synonyms[$domain] // {}).object_synonyms[$canonical] // []) |
+      map(ascii_downcase) |
+      any(. as $syn |
+          $syn == $word or
+          (($syn | contains(" ") | not) and ($word | length) >= 4 and ($syn | length) >= 4 and
+           (($word | startswith($syn)) or ($syn | startswith($word)))))
+    end
+  end;
+
 # Check if cortex is disabled via /cx off
 def cortex_disabled:
   parsed_state as $s |
@@ -80,6 +130,11 @@ def cortex_disabled:
 def effective_min_tier:
   if $min_tier == null or $min_tier == "" then "silver"
   else $min_tier end;
+
+def effective_threshold:
+  (($min_confidence_adjust // "0") | tonumber) as $adj |
+  ([$adj, 0.10] | min) as $capped_high |
+  0.70 + ([$capped_high, -0.10] | max);
 
 # ===== Phase 0: Leave-it-alone detector =====
 # Returns { score: float, reason: string }
@@ -183,6 +238,7 @@ def score_candidate($tmpl):
    elif ($words | index($tmpl.action + "ing")) != null then 0.40
    elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.action + "(s|es|ing)?(\\s|$)"))) | length > 0) then 0.20
    elif ($words | any(. as $w | is_action_synonym($w; $tmpl.action))) then 0.35
+   elif ($words | any(. as $w | is_domain_action_synonym($w; $tmpl.action))) then 0.30
    else 0 end) as $action_score |
 
   # --- Object matching (with simple plural handling) ---
@@ -191,6 +247,7 @@ def score_candidate($tmpl):
    elif ($words | index($tmpl.object + "es")) != null then 0.35
    elif ($bigrams | map(select(test("(^|\\s)" + $tmpl.object + "(s|es)?(\\s|$)"))) | length > 0) then 0.15
    elif ($words | any(. as $w | is_object_synonym($w; $tmpl.object))) then 0.25
+   elif ($words | any(. as $w | is_domain_object_synonym($w; $tmpl.object))) then 0.20
    else 0 end) as $object_score |
 
   # --- Keyword overlap with triggers ---
@@ -214,8 +271,19 @@ def score_candidate($tmpl):
      if ($p | test($sig; "i")) then -0.30 else 0 end
    ) | add // 0) as $negative_penalty |
 
-  # --- Complexity mismatch penalty ---
-  (if (prompt_word_count < 6) and ($tmpl.min_confidence > 0.7) then -0.15
+  # --- Complexity mismatch penalty (full range) ---
+  (prompt_word_count as $wc |
+   (if $wc < 6 then "trivial"
+    elif $wc < 15 then "low"
+    elif $wc < 40 then "medium"
+    elif $wc < 80 then "high"
+    else "expert" end) as $prompt_complexity |
+   ({"trivial": 1, "low": 2, "medium": 3, "high": 4, "expert": 5}) as $levels |
+   ($levels[$prompt_complexity] // 3) as $prompt_level |
+   ($levels[$tmpl.min_complexity // "low"] // 2) as $tmpl_level |
+   # Only penalize for large complexity gaps (>2 levels apart)
+   if ($tmpl_level - $prompt_level) > 2 then -0.15
+   elif ($prompt_level - $tmpl_level) > 2 then -0.05
    else 0 end) as $complexity_penalty |
 
   # --- Multi-turn suppression ---
@@ -238,10 +306,88 @@ def score_candidate($tmpl):
     }
   };
 
-# ===== Phase 3: Context filter (stub for v1.0) =====
+# ===== Phase 3: Context filter =====
+# Filters and re-scores candidates based on project context.
+# $context: { lang, framework, testing, branch_type, preset }
+# $project_rules: { boost, suppress, disabled }
+# Receives $scored array and $all_templates from main pipeline.
 
-def context_filter($scored):
-  $scored;
+def context_filter($scored; $all_templates):
+  ($context // {}) as $ctx |
+  ($project_rules // {}) as $rules |
+  # Build O(1) lookup index once (avoids O(n) scan per candidate per filter)
+  ($all_templates | map({(.id): .}) | add // {}) as $tmpl_idx |
+
+  # 1. Language filter — skip when lang is unknown/empty (no false exclusions)
+  (if ($ctx.lang // "unknown") == "unknown" or ($ctx.lang // "") == "" then $scored
+   else [ $scored[] |
+    . as $entry |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
+    if (($tmpl.requires // {}).language // []) | length > 0 then
+      if (($tmpl.requires.language | map(ascii_downcase)) | index($ctx.lang | ascii_downcase)) != null then $entry
+      else empty end
+    else $entry end
+  ] end) |
+
+  # 2. Framework filter — skip when framework is unknown/empty
+  (if ($ctx.framework // "unknown") == "unknown" or ($ctx.framework // "") == "" then .
+   else [ .[] |
+    . as $entry |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
+    if (($tmpl.requires // {}).framework // []) | length > 0 then
+      if (($tmpl.requires.framework | map(ascii_downcase)) | index($ctx.framework | ascii_downcase)) != null then $entry
+      else empty end
+    else $entry end
+  ] end) |
+
+  # 3. Boost/suppress rules from project.json + project-context.json
+  [ .[] |
+    . as $entry |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
+    (if ($rules.boost // []) | any(. as $b |
+        ($tmpl.category == $b) or ($tmpl.action == $b) or ($tmpl.id == $b))
+     then .confidence = .confidence + 0.05
+     else . end) |
+    (if ($rules.suppress // []) | any(. as $s |
+        ($tmpl.category == $s) or ($tmpl.action == $s) or ($tmpl.id == $s))
+     then .confidence = .confidence - 0.15
+     else . end) |
+    (if ($rules.disabled // []) | any(. as $d |
+        ($d == $entry.id) or ($d == $tmpl.category) or ($d == $tmpl.action) or ($d == "*"))
+     then empty
+     else . end)
+  ] |
+
+  # 4. Project affinity boost (+0.05 per matching affinity, max +0.10)
+  [ .[] |
+    . as $entry |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
+    (($tmpl.project_affinity // []) |
+     map(select(. as $aff |
+       ($ctx.lang == $aff) or ($ctx.framework == $aff) or
+       (($ctx.lang // "") | ascii_downcase) == ($aff | ascii_downcase) or
+       (($ctx.framework // "") | ascii_downcase) == ($aff | ascii_downcase)
+     )) | length) as $affinity_hits |
+    if $affinity_hits > 0 then
+      .confidence = .confidence + ([$affinity_hits * 0.05, 0.10] | min)
+    else . end
+  ] |
+
+  # 5. Git branch context boost (+0.03 for matching action types)
+  [ .[] |
+    . as $entry |
+    ($tmpl_idx[$entry.id] // {}) as $tmpl |
+    (if ($ctx.branch_type // "") == "feature" and ($tmpl.action == "design" or $tmpl.action == "create")
+     then .confidence = .confidence + 0.03
+     elif ($ctx.branch_type // "") == "fix" and ($tmpl.action == "debug" or $tmpl.action == "fix" or $tmpl.action == "test")
+     then .confidence = .confidence + 0.03
+     elif ($ctx.branch_type // "") == "refactor" and ($tmpl.action == "refactor" or $tmpl.action == "review")
+     then .confidence = .confidence + 0.03
+     else . end)
+  ] |
+
+  # Re-sort by confidence
+  sort_by(-.confidence);
 
 # ===== Main pipeline =====
 
@@ -290,7 +436,7 @@ else
       sort_by(-.confidence) as $scored |
 
       # Apply context filter
-      context_filter($scored) as $filtered |
+      context_filter($scored; $all_templates) as $filtered |
 
       # 4. Determine action based on confidence
       if ($filtered | length) == 0 then
@@ -302,7 +448,7 @@ else
         # Check per-template min_confidence
         ($all_templates | map(select(.id == $best.id)) | .[0].min_confidence // 0.7) as $min_conf |
 
-        if $best.confidence >= ([0.70, $min_conf] | max) then
+        if $best.confidence >= ([effective_threshold, $min_conf] | max) then
           { action: "inject",
             confidence: $best.confidence,
             best_match: $best,

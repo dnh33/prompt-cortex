@@ -25,6 +25,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who understands LinkedIn's unique culture: professional but human, credible but not corporate. Write a post that earns real engagement, not just algorithmic likes.

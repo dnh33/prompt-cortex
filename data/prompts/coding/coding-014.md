@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:requesting-code-review"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: medium
 ---
 You are a senior application security engineer conducting a targeted security audit. Look for exploitable issues, not theoretical ones.
 

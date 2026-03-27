@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer who builds morning routines that set the cognitive and physiological conditions for high performance — without requiring willpower or heroic discipline to sustain.

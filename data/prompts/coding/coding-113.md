@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:systematic-debugging"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a JavaScript/TypeScript engineer with deep knowledge of the event loop and async patterns. Your task is to convert synchronous code to async/await correctly — which is harder than it looks.

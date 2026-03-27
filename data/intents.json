@@ -1,40 +1,17 @@
 {
-  "version": 1,
+  "version": 2,
   "actions": [
-    "create",
-    "review",
-    "debug",
-    "refactor",
-    "explain",
-    "test",
-    "document",
-    "optimize",
-    "design",
-    "fix"
+    "create", "review", "debug", "refactor", "explain",
+    "test", "document", "optimize", "design", "fix"
   ],
   "objects": [
-    "code",
-    "function",
-    "file",
-    "component",
-    "test",
-    "PR",
-    "commit",
-    "API",
-    "schema",
-    "prompt",
-    "config",
-    "error",
-    "architecture",
-    "database"
+    "code", "function", "file", "component", "test", "PR",
+    "commit", "API", "schema", "prompt", "config", "error",
+    "architecture", "database"
   ],
   "categories": [
-    "coding",
-    "ai-workflows",
-    "research",
-    "automation",
-    "content",
-    "productivity"
+    "coding", "ai-workflows", "research", "automation",
+    "content", "productivity"
   ],
   "action_synonyms": {
     "create": ["build", "make", "generate", "write", "implement", "add", "scaffold"],
@@ -57,5 +34,54 @@
     "API": ["endpoint", "route", "REST", "GraphQL", "service"],
     "error": ["bug", "issue", "exception", "crash", "failure"],
     "config": ["configuration", "settings", "env", "environment"]
+  },
+  "domain_synonyms": {
+    "web": {
+      "action_synonyms": {
+        "create": ["scaffold", "bootstrap", "init"],
+        "optimize": ["lighthouse", "lazy load", "code split"]
+      },
+      "object_synonyms": {
+        "component": ["page", "layout", "route"],
+        "API": ["endpoint", "handler", "middleware"]
+      }
+    },
+    "data": {
+      "action_synonyms": {
+        "optimize": ["vectorize", "batch", "cache", "index"],
+        "create": ["pipeline", "etl", "ingest"]
+      },
+      "object_synonyms": {
+        "database": ["table", "collection", "index", "query"],
+        "schema": ["model", "migration", "seed"]
+      }
+    },
+    "devops": {
+      "action_synonyms": {
+        "create": ["provision", "deploy", "spin up"],
+        "debug": ["triage", "incident", "on-call"]
+      },
+      "object_synonyms": {
+        "config": ["dockerfile", "compose", "helm", "terraform"]
+      }
+    }
+  },
+  "domain_map": {
+    "typescript": "web",
+    "javascript": "web",
+    "python": "data",
+    "go": "devops",
+    "rust": "devops",
+    "java": "web"
+  },
+  "framework_domain_override": {
+    "nextjs": "web",
+    "react": "web",
+    "vue": "web",
+    "svelte": "web",
+    "express": "web",
+    "fastapi": "web",
+    "django": "web",
+    "flask": "web"
   }
 }

@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a backend engineer who knows that offset pagination breaks at scale. You implement cursor-based pagination by default and explain why.

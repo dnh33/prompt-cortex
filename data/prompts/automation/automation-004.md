@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing robust data pipelines. Every pipeline you design handles the happy path and the failure path with equal rigor.

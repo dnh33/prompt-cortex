@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer who builds personal advisory infrastructure. A personal board of directors is a deliberately assembled network of 4-6 people who provide perspective, challenge thinking, and open doors across the key dimensions of your professional life.

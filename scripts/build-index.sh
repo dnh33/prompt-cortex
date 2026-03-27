@@ -84,6 +84,37 @@ parse_yaml_frontmatter() {
         continue
       fi
 
+      # Inline bracket array: key: [item1, "item2", item3]
+      if [[ "$val" =~ ^\[.*\]$ ]]; then
+        # Parse inline array: strip brackets, split on comma, build JSON array
+        local inner="${val#\[}"
+        inner="${inner%\]}"
+        local inline_arr=""
+        if [[ -n "$inner" ]]; then
+          # Split on comma and trim/quote each element
+          IFS=',' read -ra elems <<< "$inner"
+          for elem in "${elems[@]}"; do
+            # Trim whitespace
+            elem="${elem#"${elem%%[![:space:]]*}"}"
+            elem="${elem%"${elem##*[![:space:]]}"}"
+            # Strip surrounding quotes
+            elem="${elem#\"}"
+            elem="${elem%\"}"
+            elem="${elem#\'}"
+            elem="${elem%\'}"
+            if [[ -n "$inline_arr" ]]; then
+              inline_arr="${inline_arr},\"${elem}\""
+            else
+              inline_arr="\"${elem}\""
+            fi
+          done
+        fi
+        if ! $first; then json+=","; fi
+        first=false
+        json+="\"${key}\":[${inline_arr}]"
+        continue
+      fi
+
       # Strip surrounding quotes
       val="${val#\"}"
       val="${val%\"}"
@@ -207,7 +238,13 @@ for file in "${template_files[@]}"; do
       composition_role: ($tmpl.composition_role // "primary"),
       conflicts_with: ($tmpl.conflicts_with // []),
       intent_signals: ($tmpl.intent_signals // []),
-      negative_signals: ($tmpl.negative_signals // [])
+      negative_signals: ($tmpl.negative_signals // []),
+      requires: {
+        language: ($tmpl.requires_language // []),
+        framework: ($tmpl.requires_framework // [])
+      },
+      project_affinity: ($tmpl.project_affinity // []),
+      min_complexity: ($tmpl.min_complexity // "low")
     }]')
 done
 

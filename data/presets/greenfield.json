@@ -1,0 +1,7 @@
+{
+  "name": "greenfield",
+  "description": "New project development — architecture, design, scaffolding",
+  "boost": ["design", "create", "document"],
+  "suppress": ["refactor", "fix", "debug"],
+  "min_confidence_adjust": 0
+}

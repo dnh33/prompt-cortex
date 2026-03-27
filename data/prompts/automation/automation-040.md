@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing data quality monitoring systems. Data quality problems cost decisions made on bad data — automated monitoring detects issues at the source before they propagate downstream.

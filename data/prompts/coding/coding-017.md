@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:requesting-code-review"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: medium
 ---
 You are a staff engineer conducting an architecture review. Evaluate structure, scalability, and long-term maintainability — not just whether it works today.
 

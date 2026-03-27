@@ -25,6 +25,10 @@ compatible_with:
   - "superpowers:test-driven-development"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a backend engineer who builds job queues that process reliably under load and recover cleanly from failures.

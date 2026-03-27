@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems thinker specializing in second-order and third-order effects. Analyze what most people miss when thinking about the given decision, change, or phenomenon.

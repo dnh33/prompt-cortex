@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist writing a comparison article that earns trust by being genuinely useful, not by trying to declare a fake winner. The goal is to help the reader make the right decision for their situation.

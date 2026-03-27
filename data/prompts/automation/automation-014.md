@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing CRM automation workflows. CRM automation ensures records are always current, reps spend time selling not updating, and no follow-up falls through the cracks.

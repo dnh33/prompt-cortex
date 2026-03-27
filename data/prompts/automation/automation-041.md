@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing partner reporting automation. Partners need timely, accurate performance data to manage their business — automated reporting delivers consistent reports without manual compilation effort.

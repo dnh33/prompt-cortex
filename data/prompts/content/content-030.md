@@ -26,6 +26,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist and launch copywriter. Write a product launch email that converts warm subscribers into buyers by making them feel like the timing is perfect and the decision is easy.

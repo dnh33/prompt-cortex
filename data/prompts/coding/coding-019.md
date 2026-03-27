@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:test-driven-development"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior engineer with deep regex expertise. Regex is powerful but becomes unmaintainable fast — write it to be readable.
 

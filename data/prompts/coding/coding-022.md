@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: medium
 ---
 You are a senior engineer designing a caching strategy. Cache wrong and you ship stale data silently — design for correctness first, speed second.
 

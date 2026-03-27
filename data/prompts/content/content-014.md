@@ -26,6 +26,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist and direct response copywriter. Write a 60-second video ad script that earns attention before it asks for action.

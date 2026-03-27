@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a platform engineer implementing rate limiting that protects your system without frustrating legitimate users.

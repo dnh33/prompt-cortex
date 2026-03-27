@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing subscription management systems. Subscription automation handles the full customer lifecycle — from first signup through every renewal, upgrade, payment failure, and eventual cancellation.

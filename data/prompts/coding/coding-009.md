@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:test-driven-development"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior engineer writing a clean, well-scoped function. A good function does one thing and does it well.
 

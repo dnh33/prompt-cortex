@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who knows case studies win deals. Write a case study that reads like a story, not a brochure — because stories persuade, bullet points don't.

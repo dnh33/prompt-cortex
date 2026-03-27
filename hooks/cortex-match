@@ -53,6 +53,124 @@ if [[ -f "$CONFIG_FILE" ]]; then
   transparent_mode=$(jq -r '.transparent // false' "$CONFIG_FILE" 2>/dev/null || echo "false")
 fi
 
+# --- Define project config paths (used by preset loading + rules loading) ---
+PROJECT_JSON="${CORTEX_DIR}/project.json"
+PROJECT_CONTEXT="${CORTEX_DIR}/project-context.json"
+
+# --- Read session context (fallback if env vars not set) ---
+# Single jq call instead of 6 separate subprocesses
+SESSION_CONTEXT="${CORTEX_DIR}/session-context.json"
+if [[ -z "${CORTEX_LANG:-}" ]] && [[ -f "$SESSION_CONTEXT" ]]; then
+  IFS=$'\t' read -r CORTEX_LANG CORTEX_FRAMEWORK CORTEX_TESTING CORTEX_LINTER CORTEX_PKGMGR CORTEX_BRANCH_TYPE < <(
+    jq -r '[.lang // "", .framework // "", .testing // "", .linter // "", .pkgmgr // "", .branch_type // ""] | @tsv' \
+      "$SESSION_CONTEXT" 2>/dev/null || printf '\t\t\t\t\t')
+  export CORTEX_LANG CORTEX_FRAMEWORK CORTEX_TESTING CORTEX_LINTER CORTEX_PKGMGR CORTEX_BRANCH_TYPE
+fi
+
+# --- CwdChanged fallback: detect context change inline ---
+if [[ -f "$SESSION_CONTEXT" ]]; then
+  last_cwd=$(jq -r '.last_cwd // ""' "$SESSION_CONTEXT" 2>/dev/null || echo "")
+  if [[ -n "$cwd" ]] && [[ "$cwd" != "$last_cwd" ]] && [[ -n "$last_cwd" ]]; then
+    new_session_ctx="${cwd}/.cortex/session-context.json"
+    if [[ -f "$new_session_ctx" ]]; then
+      IFS=$'\t' read -r CORTEX_LANG CORTEX_FRAMEWORK CORTEX_TESTING CORTEX_LINTER CORTEX_PKGMGR CORTEX_BRANCH_TYPE < <(
+        jq -r '[.lang // "", .framework // "", .testing // "", .linter // "", .pkgmgr // "", .branch_type // ""] | @tsv' \
+          "$new_session_ctx" 2>/dev/null || printf '\t\t\t\t\t')
+      export CORTEX_LANG CORTEX_FRAMEWORK CORTEX_TESTING CORTEX_LINTER CORTEX_PKGMGR CORTEX_BRANCH_TYPE
+    fi
+  fi
+fi
+
+# --- Build context from env vars ---
+context_json=$(jq -n \
+  --arg lang "${CORTEX_LANG:-unknown}" \
+  --arg framework "${CORTEX_FRAMEWORK:-unknown}" \
+  --arg testing "${CORTEX_TESTING:-}" \
+  --arg linter "${CORTEX_LINTER:-}" \
+  --arg pkgmgr "${CORTEX_PKGMGR:-}" \
+  --arg branch_type "${CORTEX_BRANCH_TYPE:-}" \
+  --arg preset "${CORTEX_PRESET:-}" \
+  '{lang: $lang, framework: $framework, testing: $testing,
+    linter: $linter, pkgmgr: $pkgmgr,
+    branch_type: $branch_type, preset: $preset}')
+
+# --- Load project rules ---
+project_rules_json='{}'
+
+if [[ -f "$PROJECT_JSON" ]]; then
+  project_rules_json=$(jq '{
+    boost: (.boost // []),
+    suppress: (.suppress // []),
+    disabled: (.disabled // [])
+  }' "$PROJECT_JSON" 2>/dev/null || echo '{}')
+fi
+
+# Merge project-context.json rules (lower precedence — project.json overwrites)
+if [[ -f "$PROJECT_CONTEXT" ]]; then
+  pc_rules=$(jq '.rules // {}' "$PROJECT_CONTEXT" 2>/dev/null || echo '{}')
+  project_rules_json=$(printf '%s\n%s' "$pc_rules" "$project_rules_json" | \
+    jq -s '.[0] as $pc | .[1] as $proj | {
+      boost: (($pc.boost // []) + ($proj.boost // []) | unique),
+      suppress: (($pc.suppress // []) + ($proj.suppress // []) | unique),
+      disabled: (($pc.disabled // []) + ($proj.disabled // []) | unique)
+    }')
+fi
+
+# --- Load preset ---
+active_preset=""
+PRESETS_DIR="${PLUGIN_ROOT}/data/presets"
+
+# Preset from project.json takes priority
+if [[ -f "$PROJECT_JSON" ]]; then
+  active_preset=$(jq -r '.preset // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+fi
+
+# Fallback to config.json preset
+if [[ -z "$active_preset" ]] && [[ -f "$CONFIG_FILE" ]]; then
+  active_preset=$(jq -r '.preset // ""' "$CONFIG_FILE" 2>/dev/null || echo "")
+fi
+
+# Load preset and merge with project_rules (preset first, project.json overwrites)
+if [[ -n "$active_preset" ]]; then
+  preset_file="${PRESETS_DIR}/${active_preset}.json"
+  custom_preset="${CORTEX_DIR}/presets/${active_preset}.json"
+
+  # Check custom presets first, then built-in
+  if [[ -f "$custom_preset" ]]; then
+    preset_file="$custom_preset"
+  fi
+
+  if [[ -f "$preset_file" ]]; then
+    preset_rules=$(jq '{
+      boost: (.boost // []),
+      suppress: (.suppress // [])
+    }' "$preset_file" 2>/dev/null || echo '{}')
+
+    # Merge: preset as base, project_rules overwrites
+    project_rules_json=$(printf '%s\n%s' "$preset_rules" "$project_rules_json" | \
+      jq -s '.[0] as $preset | .[1] as $proj | {
+        boost: (($preset.boost // []) + ($proj.boost // []) | unique),
+        suppress: (($preset.suppress // []) + ($proj.suppress // []) | unique),
+        disabled: ($proj.disabled // [])
+      }')
+
+    # Extract min_confidence_adjust (capped at +/-0.10)
+    min_conf_adjust=$(jq -r '.min_confidence_adjust // 0' "$preset_file" 2>/dev/null || echo "0")
+
+    # Export preset name for context
+    export CORTEX_PRESET="$active_preset"
+  fi
+fi
+
+# Default min_confidence_adjust if no preset
+min_conf_adjust="${min_conf_adjust:-0}"
+
+# --- project.json min_tier override (rank 2, higher than config.json rank 6) ---
+if [[ -f "$PROJECT_JSON" ]]; then
+  project_min_tier=$(jq -r '.min_tier // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+  if [[ -n "$project_min_tier" ]]; then min_tier="$project_min_tier"; fi
+fi
+
 # --- Run matching engine ---
 INTENTS="${PLUGIN_ROOT}/data/intents.json"
 
@@ -63,11 +181,15 @@ else
   intents_arg=(--argjson intents "null")
 fi
 
+# min_conf_adjust set by preset loading above
 match_result=$(jq -f "$MATCH_JQ" \
   --arg prompt "$user_prompt" \
   --arg state "$state_json" \
   --arg cwd "$cwd" \
   --arg min_tier "$min_tier" \
+  --arg min_confidence_adjust "${min_conf_adjust:-0}" \
+  --argjson context "$context_json" \
+  --argjson project_rules "$project_rules_json" \
   "${intents_arg[@]}" \
   "$INDEX" 2>/dev/null) || {
   # jq failed — silent degradation

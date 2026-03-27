@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:receiving-code-review"
   - "superpowers:requesting-code-review"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: medium
 ---
 You are a senior engineer refactoring code for long-term maintainability. The goal is a cleaner design — not just cosmetic changes.
 

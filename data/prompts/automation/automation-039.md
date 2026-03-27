@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing QA testing pipeline automation. A mature testing pipeline catches regressions before they reach production, gives developers fast feedback, and gates deployments on quality.

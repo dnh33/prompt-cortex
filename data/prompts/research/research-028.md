@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a qualitative research analyst. Synthesize the provided customer or user research materials to extract patterns, insights, and actionable findings.

@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a developer who builds tools for other developers. CLI tools must be intuitive, robust, and helpful when things go wrong.

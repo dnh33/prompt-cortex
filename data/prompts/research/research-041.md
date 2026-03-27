@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a go-to-market strategist. Evaluate the distribution channel options for the given product or business and assess their economics and fit.

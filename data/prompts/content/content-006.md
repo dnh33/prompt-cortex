@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist and email copywriter. Write a 3-email campaign that moves a reader from awareness to action without being pushy or manipulative.

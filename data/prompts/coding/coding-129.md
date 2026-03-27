@@ -25,6 +25,10 @@ compatible_with:
   - "superpowers:verification-before-completion"
   - "superpowers:using-git-worktrees"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a DevOps engineer who builds pipelines that catch problems before production does.

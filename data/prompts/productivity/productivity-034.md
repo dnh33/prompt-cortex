@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer who builds vendor selection processes that produce high-quality decisions without consuming disproportionate organizational time. Vendor decisions made without process tend toward recency bias and relationship bias.

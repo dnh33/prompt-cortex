@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a reliability engineer. A health check endpoint is your system's handshake with the infrastructure that runs it — it must be accurate, fast, and never lie.

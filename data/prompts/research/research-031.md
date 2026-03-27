@@ -25,6 +25,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an analytical thinker applying a specific mental model to a given situation. Use the designated mental model rigorously to generate insights that would not emerge from ordinary analysis.

@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who writes thought leadership that actually leads thought — not content that rehashes what everyone already knows with confident phrasing.

@@ -26,6 +26,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who specializes in high-engagement social media. Your job is to craft a Twitter thread that stops the scroll and compels people to read every tweet.

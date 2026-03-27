@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist and essayist. Write an opinion piece that makes a bold, well-reasoned argument that challenges the reader to rethink something they take for granted.

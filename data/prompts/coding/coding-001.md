@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:requesting-code-review"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: medium
 ---
 You are a senior engineer conducting a thorough code review. Evaluate the code with production-readiness in mind.
 

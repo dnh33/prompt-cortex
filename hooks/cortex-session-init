@@ -28,54 +28,59 @@ else
 fi
 
 # --- Detect project context ---
-# Try to determine language and framework from common files
-detect_project() {
-  local project_dir="${CLAUDE_PROJECT_DIR:-.}"
-  local language="unknown"
-  local framework="unknown"
+# Source shared detection library
+source "$(cd "$(dirname "$0")" && pwd)/lib/detect-project.sh"
 
-  # Language detection
-  if [[ -f "${project_dir}/package.json" ]]; then
-    language="javascript"
-    # Check for TypeScript
-    if [[ -f "${project_dir}/tsconfig.json" ]]; then
-      language="typescript"
-    fi
-    # Framework detection
-    if grep -q '"react"' "${project_dir}/package.json" 2>/dev/null; then
-      framework="react"
-    elif grep -q '"next"' "${project_dir}/package.json" 2>/dev/null; then
-      framework="nextjs"
-    elif grep -q '"vue"' "${project_dir}/package.json" 2>/dev/null; then
-      framework="vue"
-    elif grep -q '"svelte"' "${project_dir}/package.json" 2>/dev/null; then
-      framework="svelte"
-    elif grep -q '"express"' "${project_dir}/package.json" 2>/dev/null; then
-      framework="express"
-    fi
-  elif [[ -f "${project_dir}/requirements.txt" ]] || [[ -f "${project_dir}/pyproject.toml" ]]; then
-    language="python"
-    if grep -q 'django' "${project_dir}/requirements.txt" 2>/dev/null; then
-      framework="django"
-    elif grep -q 'fastapi' "${project_dir}/requirements.txt" 2>/dev/null; then
-      framework="fastapi"
-    elif grep -q 'flask' "${project_dir}/requirements.txt" 2>/dev/null; then
-      framework="flask"
-    fi
-  elif [[ -f "${project_dir}/Cargo.toml" ]]; then
-    language="rust"
-  elif [[ -f "${project_dir}/go.mod" ]]; then
-    language="go"
-  elif [[ -f "${project_dir}/build.gradle" ]] || [[ -f "${project_dir}/pom.xml" ]]; then
-    language="java"
-  fi
+project_context=$(detect_project "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null || echo "unknown|unknown|||||")
+project_lang=$(echo "$project_context" | awk -F'|' '{print $1}')
+project_framework=$(echo "$project_context" | awk -F'|' '{print $2}')
+project_testing=$(echo "$project_context" | awk -F'|' '{print $3}')
+project_linter=$(echo "$project_context" | awk -F'|' '{print $4}')
+project_pkgmgr=$(echo "$project_context" | awk -F'|' '{print $5}')
+project_monorepo=$(echo "$project_context" | awk -F'|' '{print $6}')
+project_branch_type=$(echo "$project_context" | awk -F'|' '{print $7}')
 
-  printf '%s %s' "$language" "$framework"
-}
+# --- Load project.json overrides ---
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
+PROJECT_JSON="${PROJECT_DIR}/.cortex/project.json"
 
-project_context=$(detect_project 2>/dev/null || echo "unknown unknown")
-project_lang=$(echo "$project_context" | cut -d' ' -f1)
-project_framework=$(echo "$project_context" | cut -d' ' -f2)
+if [[ -f "$PROJECT_JSON" ]]; then
+  override_lang=$(jq -r '.tech_stack.language // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+  override_fw=$(jq -r '.tech_stack.framework // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+  if [[ -n "$override_lang" ]]; then project_lang="$override_lang"; fi
+  if [[ -n "$override_fw" ]]; then project_framework="$override_fw"; fi
+fi
+
+# --- Write context to session-context.json (env var fallback) ---
+CORTEX_DIR="${PROJECT_DIR}/.cortex"
+mkdir -p "$CORTEX_DIR" 2>/dev/null || true
+
+jq -n \
+  --arg lang "$project_lang" \
+  --arg framework "$project_framework" \
+  --arg testing "$project_testing" \
+  --arg linter "$project_linter" \
+  --arg pkgmgr "$project_pkgmgr" \
+  --arg monorepo "$project_monorepo" \
+  --arg branch_type "$project_branch_type" \
+  --arg last_cwd "${PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-.}}" \
+  '{lang: $lang, framework: $framework, testing: $testing,
+    linter: $linter, pkgmgr: $pkgmgr, monorepo: $monorepo,
+    branch_type: $branch_type, last_cwd: $last_cwd}' \
+  > "${CORTEX_DIR}/session-context.json" 2>/dev/null || true
+
+# Write CLAUDE_ENV_FILE if available
+if [[ -n "${CLAUDE_ENV_FILE:-}" ]]; then
+  {
+    printf 'CORTEX_LANG=%s\n' "$project_lang"
+    printf 'CORTEX_FRAMEWORK=%s\n' "$project_framework"
+    printf 'CORTEX_TESTING=%s\n' "$project_testing"
+    printf 'CORTEX_LINTER=%s\n' "$project_linter"
+    printf 'CORTEX_PKGMGR=%s\n' "$project_pkgmgr"
+    printf 'CORTEX_MONOREPO=%s\n' "$project_monorepo"
+    printf 'CORTEX_BRANCH_TYPE=%s\n' "$project_branch_type"
+  } > "$CLAUDE_ENV_FILE" 2>/dev/null || true
+fi
 
 # --- Clean stale state files (>24 hours old) ---
 cleanup_stale_state() {
@@ -95,8 +100,38 @@ health_check() {
 }
 health_check
 
+# --- Determine active preset ---
+active_preset=""
+if [[ -f "$PROJECT_JSON" ]]; then
+  active_preset=$(jq -r '.preset // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+fi
+
+preset_note=""
+if [[ -n "$active_preset" ]]; then
+  preset_note="\\nPreset: ${active_preset}"
+fi
+
+project_json_note=""
+if [[ -f "$PROJECT_JSON" ]]; then
+  project_json_note="\\nProject config: .cortex/project.json loaded"
+fi
+
+# --- CLAUDE.md staleness detection ---
+PROJECT_CONTEXT="${CORTEX_DIR}/project-context.json"
+staleness_note=""
+
+if [[ -f "$PROJECT_CONTEXT" ]] && [[ -f "${PROJECT_DIR}/CLAUDE.md" ]]; then
+  stored_hash=$(jq -r '.claude_md_hash // ""' "$PROJECT_CONTEXT" 2>/dev/null || echo "")
+  if [[ -n "$stored_hash" ]]; then
+    current_hash=$(cksum "${PROJECT_DIR}/CLAUDE.md" 2>/dev/null | cut -d' ' -f1 | head -c 8)
+    if [[ "$current_hash" != "$stored_hash" ]]; then
+      staleness_note="\\n[cortex] CLAUDE.md has changed since last /cortex:suggest scan. Run /cortex:suggest --refresh to update project context."
+    fi
+  fi
+fi
+
 # --- Build session context message ---
-context_msg="<prompt-cortex-init>\\nprompt-cortex v1.0 active. ${template_count} templates loaded.\\nProject: ${project_lang}/${project_framework}\\nEscape: prefix any prompt with --raw to skip enhancement.\\n</prompt-cortex-init>"
+context_msg="<prompt-cortex-init>\\nprompt-cortex v1.2 active. ${template_count} templates loaded.\\nProject: ${project_lang}/${project_framework}${preset_note}${project_json_note}${staleness_note}\\nEscape: prefix any prompt with --raw to skip enhancement.\\n</prompt-cortex-init>"
 
 # --- Output ---
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then

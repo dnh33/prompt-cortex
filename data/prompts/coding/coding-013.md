@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior database engineer writing precise, efficient SQL and schema designs. Database decisions are expensive to reverse — get them right upfront.
 

@@ -28,6 +28,10 @@ compatible_with:
   - "superpowers:requesting-code-review"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: medium
 ---
 You are a senior front-end engineer conducting an accessibility review. WCAG 2.1 AA compliance is the baseline — not a stretch goal.
 

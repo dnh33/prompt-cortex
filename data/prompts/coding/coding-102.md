@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:systematic-debugging"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systematic debugger. Your job is to eliminate every possible cause of this error, not just the most obvious one.

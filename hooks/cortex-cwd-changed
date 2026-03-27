@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# cortex-cwd-changed — CwdChanged hook for prompt-cortex
+# Re-detects project context when the working directory changes.
+#
+# Stdin: { session_id, cwd }
+# Stdout: { hookSpecificOutput: { hookEventName, additionalContext } }
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
+
+# Read stdin
+input=$(cat)
+new_cwd=$(printf '%s' "$input" | jq -r '.cwd // ""')
+session_id=$(printf '%s' "$input" | jq -r '.session_id // "default"')
+
+if [[ -z "$new_cwd" ]]; then
+  echo '{}'
+  exit 0
+fi
+
+# Source shared detection library
+source "${SCRIPT_DIR}/lib/detect-project.sh"
+
+project_context=$(detect_project "$new_cwd" 2>/dev/null || echo "unknown|unknown|||||")
+project_lang=$(echo "$project_context" | awk -F'|' '{print $1}')
+project_framework=$(echo "$project_context" | awk -F'|' '{print $2}')
+project_testing=$(echo "$project_context" | awk -F'|' '{print $3}')
+project_linter=$(echo "$project_context" | awk -F'|' '{print $4}')
+project_pkgmgr=$(echo "$project_context" | awk -F'|' '{print $5}')
+project_monorepo=$(echo "$project_context" | awk -F'|' '{print $6}')
+project_branch_type=$(echo "$project_context" | awk -F'|' '{print $7}')
+
+# Load project.json overrides
+PROJECT_JSON="${new_cwd}/.cortex/project.json"
+if [[ -f "$PROJECT_JSON" ]]; then
+  override_lang=$(jq -r '.tech_stack.language // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+  override_fw=$(jq -r '.tech_stack.framework // ""' "$PROJECT_JSON" 2>/dev/null || echo "")
+  if [[ -n "$override_lang" ]]; then project_lang="$override_lang"; fi
+  if [[ -n "$override_fw" ]]; then project_framework="$override_fw"; fi
+fi
+
+# Write updated session context
+CORTEX_DIR="${new_cwd}/.cortex"
+mkdir -p "$CORTEX_DIR" 2>/dev/null || true
+
+jq -n \
+  --arg lang "$project_lang" \
+  --arg framework "$project_framework" \
+  --arg testing "$project_testing" \
+  --arg linter "$project_linter" \
+  --arg pkgmgr "$project_pkgmgr" \
+  --arg monorepo "$project_monorepo" \
+  --arg branch_type "$project_branch_type" \
+  --arg last_cwd "$new_cwd" \
+  '{lang: $lang, framework: $framework, testing: $testing,
+    linter: $linter, pkgmgr: $pkgmgr, monorepo: $monorepo,
+    branch_type: $branch_type, last_cwd: $last_cwd}' \
+  > "${CORTEX_DIR}/session-context.json" 2>/dev/null || true
+
+# Write CLAUDE_ENV_FILE if available
+if [[ -n "${CLAUDE_ENV_FILE:-}" ]]; then
+  {
+    printf 'CORTEX_LANG=%s\n' "$project_lang"
+    printf 'CORTEX_FRAMEWORK=%s\n' "$project_framework"
+    printf 'CORTEX_TESTING=%s\n' "$project_testing"
+    printf 'CORTEX_LINTER=%s\n' "$project_linter"
+    printf 'CORTEX_PKGMGR=%s\n' "$project_pkgmgr"
+    printf 'CORTEX_MONOREPO=%s\n' "$project_monorepo"
+    printf 'CORTEX_BRANCH_TYPE=%s\n' "$project_branch_type"
+  } > "$CLAUDE_ENV_FILE" 2>/dev/null || true
+fi
+
+# Output context update
+context_msg="<cortex-context-update>Project re-detected: ${project_lang}/${project_framework}</cortex-context-update>"
+
+printf '{"hookSpecificOutput":{"hookEventName":"CwdChanged","additionalContext":"%s"}}\n' "$context_msg"
+
+exit 0

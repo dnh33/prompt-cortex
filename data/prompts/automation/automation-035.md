@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing market research automation systems. Automated research aggregation keeps teams informed without requiring hours of manual scanning — the system surfaces the signal and suppresses the noise.

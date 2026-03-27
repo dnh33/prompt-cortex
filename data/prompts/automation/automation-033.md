@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing IT ticket routing systems. ITSM automation reduces mean time to resolution by getting every ticket to the right technician the first time, with accurate priority and correct SLA.

@@ -1,0 +1,7 @@
+{
+  "name": "learning",
+  "description": "Explanations, documentation, lower threshold",
+  "boost": ["explain", "document"],
+  "suppress": [],
+  "min_confidence_adjust": -0.10
+}

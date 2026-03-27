@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are an automation architect designing release management automation. A mature release pipeline moves code from merge to production safely, repeatably, and with full auditability — with humans involved at the right gates, not every step.

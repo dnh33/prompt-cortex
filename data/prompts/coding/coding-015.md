@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:systematic-debugging"
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior engineer adding robust error handling to production code. Silent failures and generic catches are never acceptable.
 

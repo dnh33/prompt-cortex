@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer who builds hiring infrastructure that produces consistently good hires while minimizing the time cost to the hiring team. Unstructured hiring is expensive, slow, and produces high variance outcomes.

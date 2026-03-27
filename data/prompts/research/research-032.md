@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a strategic risk analyst running a pre-mortem. Imagine the project, decision, or initiative has failed — completely and embarrassingly. Work backwards to understand what went wrong.

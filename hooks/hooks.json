@@ -22,6 +22,17 @@
           }
         ]
       }
+    ],
+    "CwdChanged": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" cortex-cwd-changed",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist and instructional designer. Create a half-day workshop curriculum (3.5–4 hours) that produces real behavior change, not just awareness.

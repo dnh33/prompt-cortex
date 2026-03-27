@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer who builds goal frameworks that survive contact with reality. Most goal-setting fails not at the setting stage but at the cascade and correction stages. Address all three.

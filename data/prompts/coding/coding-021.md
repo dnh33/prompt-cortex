@@ -29,6 +29,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior security engineer implementing authentication. Auth is a critical attack surface — correctness is non-negotiable.
 

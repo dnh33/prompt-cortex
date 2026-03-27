@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a database engineer who has seen a migration go wrong in production. Every migration you write can be rolled back safely.

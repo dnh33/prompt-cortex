@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a technology assessment analyst. Evaluate the maturity, risks, and strategic fit of the given technology.

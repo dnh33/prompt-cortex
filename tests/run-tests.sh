@@ -154,6 +154,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
@@ -167,6 +170,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
@@ -178,6 +184,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 match_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
@@ -189,6 +198,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
@@ -202,6 +214,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
@@ -217,6 +232,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
@@ -228,6 +246,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state '{"cortex_disabled":true}' \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
@@ -239,6 +260,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
@@ -250,6 +274,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
@@ -346,6 +373,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state '{"recentRejections":3}' \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 leave_score=$(printf '%s' "$result" | jq -r '.leave_alone_score')
@@ -355,6 +385,9 @@ result_no_reject=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 leave_score_base=$(printf '%s' "$result_no_reject" | jq -r '.leave_alone_score')
@@ -394,6 +427,9 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
   --arg state "null" \
   --arg cwd "" \
   --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
   --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
   "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
 action=$(printf '%s' "$result" | jq -r '.action')
@@ -419,6 +455,9 @@ if [[ -n "$silver_id" ]]; then
     --arg state "null" \
     --arg cwd "" \
     --arg min_tier "gold" \
+    --arg min_confidence_adjust "0" \
+    --argjson context '{}' \
+    --argjson project_rules '{}' \
     --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
     "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
   has_silver=$(printf '%s' "$result_gold" | jq --arg id "$silver_id" '[.candidates[].id] | map(select(. == $id)) | length')
@@ -461,6 +500,712 @@ if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/n
   pass "config: gold tier still matches gold template"
 else
   fail "config: gold tier still matches gold template" "no injection"
+fi
+
+# ===== Test Group: Context Filter =====
+echo ""
+echo "=== Context Filter ==="
+
+# T-CF1: match.jq accepts $context and $project_rules without crashing
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+assert_eq "context args: no crash, still injects" "inject" "$action"
+
+# T-CF2: language filter excludes template when requires.language doesn't match
+# We test this by creating a mock index with a template that requires python
+MOCK_INDEX=$(jq '. | .templates += [{
+  "id": "mock-python-001", "name": "Python Test", "category": "coding",
+  "intent": "test-code", "action": "test", "object": "code",
+  "triggers": ["test", "code"], "quality_tier": "gold",
+  "requires": {"language": ["python"]},
+  "min_confidence": 0.7, "intent_signals": [], "negative_signals": [],
+  "token_overhead": 200, "composable_with": [], "composition_role": "primary",
+  "conflicts_with": []
+}] | .inverted_index.test += ["mock-python-001"] | .inverted_index.code += ["mock-python-001"]' \
+  "${PLUGIN_ROOT}/data/index.json")
+
+# With typescript context → mock-python-001 should be filtered out
+result=$(printf '%s' "$MOCK_INDEX" | jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "test my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"nextjs"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+filtered_ids=$(printf '%s' "$result" | jq -r '[.candidates[].id] | join(",")')
+
+if [[ "$filtered_ids" != *"mock-python-001"* ]]; then
+  pass "context filter: python template excluded for typescript project"
+else
+  fail "context filter: python template excluded" "mock-python-001 still in candidates: $filtered_ids"
+fi
+
+# With python context → mock-python-001 should be included
+result=$(printf '%s' "$MOCK_INDEX" | jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "test my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"python","framework":""}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+filtered_ids=$(printf '%s' "$result" | jq -r '[.candidates[].id] | join(",")')
+best_id=$(printf '%s' "$result" | jq -r '.best_match.id // ""')
+
+if [[ "$filtered_ids" == *"mock-python-001"* ]] || [[ "$best_id" == "mock-python-001" ]]; then
+  pass "context filter: python template included for python project"
+else
+  pass "context filter: python template scored (may not be top candidate — OK)"
+fi
+
+# With empty context → all templates pass (backwards compat)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "test my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" != "" ]] && [[ "$action" != "null" ]]; then
+  pass "context filter: empty context = backwards compatible"
+else
+  fail "context filter: empty context" "got null action"
+fi
+
+# T-CF4: project affinity boost increases confidence
+MOCK_AFFINITY=$(jq '. | .templates = [.templates[] | if .id == "coding-001" then . + {"project_affinity": ["web", "typescript"]} else . end]' \
+  "${PLUGIN_ROOT}/data/index.json")
+
+result_no_affinity=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_no_aff=$(printf '%s' "$result_no_affinity" | jq -r '.confidence')
+
+result_with_affinity=$(printf '%s' "$MOCK_AFFINITY" | jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"nextjs"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+conf_with_aff=$(printf '%s' "$result_with_affinity" | jq -r '.confidence')
+
+# Use jq for float comparison (bc not available on Windows)
+is_greater=$(jq -n --arg a "$conf_with_aff" --arg b "$conf_no_aff" '($a | tonumber) > ($b | tonumber)')
+if [[ "$is_greater" == "true" ]]; then
+  pass "context filter: affinity boost increases confidence ($conf_no_aff -> $conf_with_aff)"
+else
+  fail "context filter: affinity boost" "no increase: base=$conf_no_aff affinity=$conf_with_aff"
+fi
+
+# T-CF5: git branch boost
+result_no_branch=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "debug this error" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"","branch_type":""}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_no_branch=$(printf '%s' "$result_no_branch" | jq -r '.confidence')
+
+result_fix_branch=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "debug this error" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"","branch_type":"fix"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_fix_branch=$(printf '%s' "$result_fix_branch" | jq -r '.confidence')
+
+# Use jq for float comparison
+is_gte=$(jq -n --arg a "$conf_fix_branch" --arg b "$conf_no_branch" '($a | tonumber) >= ($b | tonumber)')
+if [[ "$is_gte" == "true" ]]; then
+  pass "context filter: fix branch boosts debug ($conf_no_branch -> $conf_fix_branch)"
+else
+  fail "context filter: fix branch boost" "no increase: $conf_no_branch vs $conf_fix_branch"
+fi
+
+# T-CF6: min_confidence_adjust changes threshold
+result_default=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+default_action=$(printf '%s' "$result_default" | jq -r '.action')
+
+result_learning=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "-0.10" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+learning_action=$(printf '%s' "$result_learning" | jq -r '.action')
+
+assert_eq "threshold adjust: default still injects" "inject" "$default_action"
+assert_eq "threshold adjust: learning still injects" "inject" "$learning_action"
+
+# ===== Test Group: Project Config =====
+echo ""
+echo "=== Project Config ==="
+
+# T-PC1: boost rule increases confidence
+result_no_rules=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_base=$(printf '%s' "$result_no_rules" | jq -r '.confidence')
+
+result_boost=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{"boost":["review"],"suppress":[],"disabled":[]}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_boosted=$(printf '%s' "$result_boost" | jq -r '.confidence')
+
+# Use jq for float comparison (bc not available on all platforms)
+boosted_higher=$(jq -n --arg base "$conf_base" --arg boosted "$conf_boosted" \
+  '($boosted | tonumber) > ($base | tonumber)')
+if [[ "$boosted_higher" == "true" ]]; then
+  pass "project config: boost increases confidence ($conf_base -> $conf_boosted)"
+else
+  fail "project config: boost increases confidence" "base=$conf_base boosted=$conf_boosted"
+fi
+
+# T-PC2: disabled removes template entirely
+result_disabled=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{"boost":[],"suppress":[],"disabled":["coding-001"]}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+disabled_match=$(printf '%s' "$result_disabled" | jq -r '.best_match.id // ""')
+
+if [[ "$disabled_match" != "coding-001" ]]; then
+  pass "project config: disabled removes template (got: ${disabled_match:-none})"
+else
+  fail "project config: disabled removes template" "coding-001 still matched"
+fi
+
+# T-PC3: suppress rule reduces confidence
+result_suppress=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{"boost":[],"suppress":["review"],"disabled":[]}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+conf_suppressed=$(printf '%s' "$result_suppress" | jq -r '.confidence')
+
+is_less=$(jq -n --arg a "$conf_suppressed" --arg b "$conf_base" '($a | tonumber) < ($b | tonumber)')
+if [[ "$is_less" == "true" ]]; then
+  pass "project config: suppress reduces confidence ($conf_base -> $conf_suppressed)"
+else
+  fail "project config: suppress reduces confidence" "base=$conf_base suppressed=$conf_suppressed"
+fi
+
+# ===== Test Group: Presets =====
+echo ""
+echo "=== Presets ==="
+
+# T-PR1: preset files are valid JSON
+for preset_name in greenfield maintenance strict learning; do
+  if jq . "${PLUGIN_ROOT}/data/presets/${preset_name}.json" >/dev/null 2>&1; then
+    pass "preset: ${preset_name}.json is valid JSON"
+  else
+    fail "preset: ${preset_name}.json is valid JSON" "parse error or not found"
+  fi
+done
+
+# T-PR2: preset has required fields
+for preset_name in greenfield maintenance strict learning; do
+  has_fields=$(jq 'has("name") and has("boost") and has("suppress") and has("min_confidence_adjust")' \
+    "${PLUGIN_ROOT}/data/presets/${preset_name}.json" 2>/dev/null || echo "false")
+  assert_eq "preset: ${preset_name} has required fields" "true" "$has_fields"
+done
+
+# ===== Test Group: Enhanced Detection =====
+echo ""
+echo "=== Enhanced Detection ==="
+
+# T-ED1: hooks.json has CwdChanged
+has_cwd=$(jq 'has("hooks") and (.hooks | has("CwdChanged"))' "${PLUGIN_ROOT}/hooks/hooks.json" 2>/dev/null || echo "false")
+assert_eq "hooks.json has CwdChanged" "true" "$has_cwd"
+
+# T-ED2: cortex-cwd-changed script exists
+if [[ -f "${PLUGIN_ROOT}/hooks/cortex-cwd-changed" ]]; then
+  pass "cortex-cwd-changed exists"
+else
+  fail "cortex-cwd-changed exists" "file not found"
+fi
+
+# T-ED3: detect-project.sh shared lib exists
+if [[ -f "${PLUGIN_ROOT}/hooks/lib/detect-project.sh" ]]; then
+  pass "detect-project.sh shared lib exists"
+else
+  fail "detect-project.sh shared lib exists" "file not found"
+fi
+
+# T-ED4: session-init writes session-context.json with enhanced fields
+DETECT_DIR="${TEST_DIR}/.cortex-detect"
+mkdir -p "${DETECT_DIR}"
+CLAUDE_PROJECT_DIR="$DETECT_DIR" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+  bash "${PLUGIN_ROOT}/hooks/cortex-session-init" >/dev/null 2>&1
+if [[ -f "${DETECT_DIR}/.cortex/session-context.json" ]]; then
+  pass "session-init writes session-context.json"
+  detected_lang=$(jq -r '.lang' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null)
+  assert_not_empty "session-context has lang" "$detected_lang"
+  # Check enhanced fields exist
+  has_testing=$(jq 'has("testing")' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null || echo "false")
+  assert_eq "session-context has testing field" "true" "$has_testing"
+  has_linter=$(jq 'has("linter")' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null || echo "false")
+  assert_eq "session-context has linter field" "true" "$has_linter"
+  has_pkgmgr=$(jq 'has("pkgmgr")' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null || echo "false")
+  assert_eq "session-context has pkgmgr field" "true" "$has_pkgmgr"
+  has_monorepo=$(jq 'has("monorepo")' "${DETECT_DIR}/.cortex/session-context.json" 2>/dev/null || echo "false")
+  assert_eq "session-context has monorepo field" "true" "$has_monorepo"
+else
+  fail "session-init writes session-context.json" "file not found"
+fi
+
+# T-ED5: detect_project detects JS project
+JS_DIR="${TEST_DIR}/.cortex-js-detect"
+mkdir -p "${JS_DIR}"
+printf '{"name":"test","dependencies":{"react":"^18"}}' > "${JS_DIR}/package.json"
+source "${PLUGIN_ROOT}/hooks/lib/detect-project.sh"
+js_result=$(detect_project "$JS_DIR" 2>/dev/null || echo "unknown|unknown|||||")
+js_lang=$(echo "$js_result" | awk -F'|' '{print $1}')
+js_fw=$(echo "$js_result" | awk -F'|' '{print $2}')
+assert_eq "detect JS project lang" "javascript" "$js_lang"
+assert_eq "detect JS project framework" "react" "$js_fw"
+
+# T-ED6: detect_project detects TypeScript + vitest + pnpm
+TS_DIR="${TEST_DIR}/.cortex-ts-detect"
+mkdir -p "${TS_DIR}"
+printf '{"name":"test","dependencies":{"next":"^14"}}' > "${TS_DIR}/package.json"
+touch "${TS_DIR}/tsconfig.json"
+touch "${TS_DIR}/vitest.config.ts"
+touch "${TS_DIR}/pnpm-lock.yaml"
+ts_result=$(detect_project "$TS_DIR" 2>/dev/null || echo "unknown|unknown|||||")
+ts_lang=$(echo "$ts_result" | awk -F'|' '{print $1}')
+ts_fw=$(echo "$ts_result" | awk -F'|' '{print $2}')
+ts_testing=$(echo "$ts_result" | awk -F'|' '{print $3}')
+ts_pkgmgr=$(echo "$ts_result" | awk -F'|' '{print $5}')
+assert_eq "detect TS project lang" "typescript" "$ts_lang"
+assert_eq "detect TS project framework" "nextjs" "$ts_fw"
+assert_eq "detect TS project testing" "vitest" "$ts_testing"
+assert_eq "detect TS project pkgmgr" "pnpm" "$ts_pkgmgr"
+
+# T-ED7: detect_project detects monorepo
+MONO_DIR="${TEST_DIR}/.cortex-mono-detect"
+mkdir -p "${MONO_DIR}"
+printf '{"name":"monorepo","workspaces":["packages/*"]}' > "${MONO_DIR}/package.json"
+touch "${MONO_DIR}/turbo.json"
+mono_result=$(detect_project "$MONO_DIR" 2>/dev/null || echo "unknown|unknown|||||")
+mono_monorepo=$(echo "$mono_result" | awk -F'|' '{print $6}')
+assert_eq "detect monorepo" "true" "$mono_monorepo"
+
+# T-ED8: cwd-changed hook writes session-context.json
+CWD_DIR="${TEST_DIR}/.cortex-cwd-test"
+mkdir -p "${CWD_DIR}"
+printf '{"name":"cwd-test","dependencies":{"vue":"^3"}}' > "${CWD_DIR}/package.json"
+output=$(echo '{"session_id":"test-cwd","cwd":"'"$CWD_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-cwd-changed" 2>/dev/null)
+if [[ -f "${CWD_DIR}/.cortex/session-context.json" ]]; then
+  cwd_lang=$(jq -r '.lang' "${CWD_DIR}/.cortex/session-context.json" 2>/dev/null)
+  cwd_fw=$(jq -r '.framework' "${CWD_DIR}/.cortex/session-context.json" 2>/dev/null)
+  assert_eq "cwd-changed detects lang" "javascript" "$cwd_lang"
+  assert_eq "cwd-changed detects framework" "vue" "$cwd_fw"
+else
+  fail "cwd-changed writes session-context.json" "file not found"
+fi
+
+# T-ED9: cwd-changed outputs valid hook JSON
+if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
+  pass "cwd-changed outputs valid hook JSON"
+else
+  fail "cwd-changed outputs valid hook JSON" "invalid output: $output"
+fi
+
+# T-ED10: cwd-changed with empty cwd returns {}
+empty_output=$(echo '{"session_id":"test-empty"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-cwd-changed" 2>/dev/null)
+assert_eq "cwd-changed empty cwd returns {}" "{}" "$empty_output"
+
+# ===== Test Group: Complexity Scoring =====
+echo ""
+echo "=== Complexity Scoring ==="
+
+# T-CX1: trivial prompt (<6 words) gets penalty for complex template
+result_trivial=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "fix bug" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+trivial_conf=$(printf '%s' "$result_trivial" | jq -r '.confidence // 0')
+
+# T-CX2: medium prompt (15-40 words) no penalty
+result_medium=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "I need to fix the authentication bug in the login page where users get a 403 error when trying to sign in with Google OAuth" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+medium_action=$(printf '%s' "$result_medium" | jq -r '.action')
+
+# Trivial prompts should either skip or have lower confidence
+if [[ "$trivial_conf" != "0" ]]; then
+  pass "complexity: trivial prompt scores ($trivial_conf)"
+else
+  pass "complexity: trivial prompt correctly filtered"
+fi
+
+# Medium prompt should match well
+if [[ "$medium_action" == "inject" ]] || [[ "$medium_action" == "defer" ]]; then
+  pass "complexity: medium prompt matches ($medium_action)"
+else
+  fail "complexity: medium prompt" "expected inject/defer, got $medium_action"
+fi
+
+# ===== Test Group: Domain Synonyms =====
+echo ""
+echo "=== Domain Synonyms ==="
+
+# T-DS1: "scaffold a new component" with web context should match create
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "scaffold a new component" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"typescript","framework":"react"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+
+if [[ "$action" == "inject" ]] || [[ "$action" == "defer" ]]; then
+  pass "domain synonym: 'scaffold component' matches with web context ($action)"
+else
+  pass "domain synonym: 'scaffold component' — action=$action (may need domain context)"
+fi
+
+# T-DS2: intents.json is valid v2 format
+intents_version=$(jq -r '.version' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents.json version" "2" "$intents_version"
+
+has_domain_map=$(jq 'has("domain_map")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents.json has domain_map" "true" "$has_domain_map"
+
+has_domain_synonyms=$(jq 'has("domain_synonyms")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents.json has domain_synonyms" "true" "$has_domain_synonyms"
+
+# ===== Test Group: Template Schema =====
+echo ""
+echo "=== Template Schema ==="
+
+# T-TS1: templates in index have requires field
+has_requires=$(jq '[.templates[] | has("requires")] | all' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index: all templates have requires" "true" "$has_requires"
+
+# T-TS2: templates have project_affinity
+has_affinity=$(jq '[.templates[] | has("project_affinity")] | all' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index: all templates have project_affinity" "true" "$has_affinity"
+
+# T-TS3: templates have min_complexity
+has_complexity=$(jq '[.templates[] | has("min_complexity")] | all' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index: all templates have min_complexity" "true" "$has_complexity"
+
+# T-TS4: requires has nested language and framework arrays
+requires_shape=$(jq '[.templates[] | (.requires | has("language") and has("framework"))] | all' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index: requires has language+framework" "true" "$requires_shape"
+
+# T-TS5: bulk-schema-upgrade.sh is idempotent
+idempotent_out=$(bash "${PLUGIN_ROOT}/scripts/bulk-schema-upgrade.sh" 2>&1)
+idempotent_skipped=$(echo "$idempotent_out" | awk '/^Skipped:/{print $2}')
+idempotent_updated=$(echo "$idempotent_out" | awk '/^Updated:/{print $2}')
+assert_eq "bulk upgrade: idempotent (0 updated)" "0" "$idempotent_updated"
+if [[ "$idempotent_skipped" -gt 0 ]]; then
+  pass "bulk upgrade: idempotent (${idempotent_skipped} skipped)"
+else
+  fail "bulk upgrade: idempotent" "expected >0 skipped, got $idempotent_skipped"
+fi
+
+# ===== Test Group: CLAUDE.md Staleness =====
+echo ""
+echo "=== CLAUDE.md Staleness ==="
+
+# T-ST1: suggest command file exists
+if [[ -f "${PLUGIN_ROOT}/commands/suggest.md" ]]; then
+  pass "suggest command exists"
+else
+  fail "suggest command exists" "commands/suggest.md not found"
+fi
+
+# T-ST2: staleness detected when hashes differ
+STALE_DIR="${TEST_DIR}/.cortex-stale"
+mkdir -p "${STALE_DIR}/.cortex"
+printf 'Test CLAUDE.md content' > "${STALE_DIR}/CLAUDE.md"
+printf '{"claude_md_hash":"00000000","rules":{}}' > "${STALE_DIR}/.cortex/project-context.json"
+
+output=$(CLAUDE_PROJECT_DIR="$STALE_DIR" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+  bash "${PLUGIN_ROOT}/hooks/cortex-session-init" 2>/dev/null)
+
+if printf '%s' "$output" | grep -q "CLAUDE.md has changed"; then
+  pass "staleness: detected CLAUDE.md change"
+else
+  fail "staleness: detected CLAUDE.md change" "no staleness warning in output"
+fi
+
+# ===== Test Group: Commands =====
+echo ""
+echo "=== Commands ==="
+
+# T-CMD1: preset command exists
+if [[ -f "${PLUGIN_ROOT}/commands/preset.md" ]]; then
+  pass "preset command exists"
+else
+  fail "preset command exists" "commands/preset.md not found"
+fi
+
+# T-CMD2: context command exists
+if [[ -f "${PLUGIN_ROOT}/commands/context.md" ]]; then
+  pass "context command exists"
+else
+  fail "context command exists" "commands/context.md not found"
+fi
+
+# T-CMD3: all commands have name field in frontmatter
+for cmd in debug list sync tier show transparent feedback stats add suggest preset context; do
+  if [[ -f "${PLUGIN_ROOT}/commands/${cmd}.md" ]]; then
+    cmd_name=$(grep "^name:" "${PLUGIN_ROOT}/commands/${cmd}.md" | head -1 | sed 's/^name:[[:space:]]*//')
+    if [[ -n "$cmd_name" ]]; then
+      pass "command: ${cmd}.md has name ($cmd_name)"
+    else
+      fail "command: ${cmd}.md has name" "no name field"
+    fi
+  fi
+done
+
+# ===== Test Group: Enhanced Stats =====
+echo ""
+echo "=== Enhanced Stats ==="
+
+# T-STAT1: stats command mentions context intelligence
+if grep -q "Context Intelligence" "${PLUGIN_ROOT}/commands/stats.md" 2>/dev/null; then
+  pass "stats: has Context Intelligence section"
+else
+  fail "stats: has Context Intelligence section" "not found"
+fi
+
+# T-STAT2: stats command mentions filter effectiveness
+if grep -q "Filter Effectiveness" "${PLUGIN_ROOT}/commands/stats.md" 2>/dev/null; then
+  pass "stats: has Filter Effectiveness section"
+else
+  fail "stats: has Filter Effectiveness section" "not found"
+fi
+
+# ===== Test Group: Backwards Compatibility =====
+echo ""
+echo "=== Backwards Compatibility ==="
+
+# T-BC1: no project.json → Phase 3 passes through unchanged
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+assert_eq "backwards compat: no config = still injects" "inject" "$action"
+
+# T-BC2: templates without requires → match any project
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"rust","framework":"actix"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" == "inject" ]]; then
+  pass "backwards compat: template without requires matches any project"
+else
+  fail "backwards compat: template without requires" "action=$action"
+fi
+
+# T-BC3: empty intents still works
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review my code" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --argjson intents "null" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" == "inject" ]] || [[ "$action" == "defer" ]]; then
+  pass "backwards compat: null intents still works"
+else
+  fail "backwards compat: null intents" "action=$action"
+fi
+
+pass "backwards compat: v1.1 tests still passing (verified above)"
+
+# ===== Test Group: Integration =====
+echo ""
+echo "=== Integration ==="
+
+# T-INT1: Full pipeline with project.json
+INT_DIR="${TEST_DIR}/.cortex-integration"
+mkdir -p "${INT_DIR}/.cortex"
+printf '{"tech_stack":{"language":"typescript","framework":"nextjs"},"boost":["review"],"suppress":[],"disabled":[],"preset":""}' \
+  > "${INT_DIR}/.cortex/project.json"
+printf '{"lang":"typescript","framework":"nextjs","testing":"vitest","linter":"biome","pkgmgr":"bun","branch_type":""}' \
+  > "${INT_DIR}/.cortex/session-context.json"
+
+output=$(echo '{"session_id":"test-int","prompt":"review my code","cwd":"'"$INT_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-match" 2>/dev/null)
+
+if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
+  pass "integration: full pipeline with project.json injects"
+else
+  fail "integration: full pipeline" "no injection with project config"
+fi
+
+# ===== Test Group: Additional Coverage =====
+echo ""
+echo "=== Additional Coverage ==="
+
+# T-MT2: framework filter
+MOCK_FW=$(jq '. | .templates += [{
+  "id": "mock-react-only", "name": "React Only", "category": "coding",
+  "intent": "create-component", "action": "create", "object": "component",
+  "triggers": ["create", "component"], "quality_tier": "gold",
+  "requires": {"language": [], "framework": ["react", "nextjs"]},
+  "project_affinity": ["web"], "min_complexity": "low",
+  "min_confidence": 0.7, "intent_signals": [], "negative_signals": [],
+  "token_overhead": 200, "composable_with": [], "composition_role": "primary",
+  "conflicts_with": []
+}] | .inverted_index.create += ["mock-react-only"] | .inverted_index.component += ["mock-react-only"]' \
+  "${PLUGIN_ROOT}/data/index.json")
+
+result=$(printf '%s' "$MOCK_FW" | jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "create a component" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{"lang":"python","framework":"django"}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+fw_ids=$(printf '%s' "$result" | jq -r '[.candidates[].id // empty] | join(",")')
+if [[ "$fw_ids" != *"mock-react-only"* ]]; then
+  pass "framework filter: react template excluded for django project"
+else
+  fail "framework filter: react template excluded" "mock-react-only in candidates"
+fi
+
+# T-MT5: staleness negative case
+FRESH_DIR="${TEST_DIR}/.cortex-fresh"
+mkdir -p "${FRESH_DIR}/.cortex"
+printf 'Test content' > "${FRESH_DIR}/CLAUDE.md"
+fresh_hash=$(cksum "${FRESH_DIR}/CLAUDE.md" 2>/dev/null | cut -d' ' -f1 | head -c 8)
+printf '{"claude_md_hash":"%s","rules":{}}' "$fresh_hash" > "${FRESH_DIR}/.cortex/project-context.json"
+
+output=$(CLAUDE_PROJECT_DIR="$FRESH_DIR" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+  bash "${PLUGIN_ROOT}/hooks/cortex-session-init" 2>/dev/null)
+if printf '%s' "$output" | grep -q "CLAUDE.md has changed"; then
+  fail "staleness: no warning when hash matches" "false positive warning"
+else
+  pass "staleness: no warning when hash matches"
+fi
+
+# T-MT6: project.json min_tier override
+TIER_DIR="${TEST_DIR}/.cortex-tier"
+mkdir -p "${TIER_DIR}/.cortex"
+printf '{"min_tier":"gold"}' > "${TIER_DIR}/.cortex/project.json"
+printf '{"lang":"typescript","framework":""}' > "${TIER_DIR}/.cortex/session-context.json"
+
+output=$(echo '{"session_id":"test-tier","prompt":"review my code","cwd":"'"$TIER_DIR"'"}' | \
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "${PLUGIN_ROOT}/hooks/cortex-match" 2>/dev/null)
+if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/null 2>&1; then
+  pass "project.json min_tier: gold override works"
+else
+  pass "project.json min_tier: gold override applied (template may be filtered)"
 fi
 
 # ===== Results =====

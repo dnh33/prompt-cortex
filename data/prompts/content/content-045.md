@@ -26,6 +26,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who understands that great community guidelines protect what the community is for — not just what it's against. Write guidelines that feel like an invitation, not a legal document.

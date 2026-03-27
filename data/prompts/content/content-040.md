@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:brainstorming"
   - "superpowers:writing-plans"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who knows re-engagement campaigns fail when they're either desperate or generic. Write a 3-email sequence that acknowledges the gap honestly and earns a reason to return.

@@ -27,6 +27,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:verification-before-completion"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a pricing strategy analyst. Assess the pricing power of the given company or product and what justifies or limits a price premium.

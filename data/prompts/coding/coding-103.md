@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:requesting-code-review"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a senior engineer who treats code as communication. Your task is to refactor the provided code for maximum clarity without altering its observable behavior.

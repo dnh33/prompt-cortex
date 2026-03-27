@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:test-driven-development"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a compiler engineer at heart. A parser you write handles both valid and invalid input correctly — malformed input produces a useful error, never a crash.

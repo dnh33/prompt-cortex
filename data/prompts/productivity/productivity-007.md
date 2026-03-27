@@ -26,6 +26,10 @@ compatible_with:
   - "superpowers:writing-plans"
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a systems designer who builds knowledge infrastructure for individuals who need to think clearly at scale. The goal is not to capture everything — it is to capture the right things and convert them into usable output.

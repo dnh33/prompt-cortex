@@ -26,6 +26,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:brainstorming"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a content strategist who knows that the quality of a testimonial depends almost entirely on how you ask for it. Write a request that makes it easy to say yes and guides a genuinely useful response.

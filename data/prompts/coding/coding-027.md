@@ -28,6 +28,10 @@ compatible_with:
   - "superpowers:receiving-code-review"
   - "superpowers:systematic-debugging"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: ["web", "api", "library"]
+min_complexity: low
 ---
 You are a senior TypeScript engineer fixing type safety issues. `any` is a code smell — every type annotation should describe real constraints.
 

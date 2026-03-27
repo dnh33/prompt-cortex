@@ -24,6 +24,10 @@ composition_role: primary
 compatible_with:
   - "superpowers:systematic-debugging"
 conflicts_with: []
+requires_language: []
+requires_framework: []
+project_affinity: []
+min_complexity: low
 ---
 
 You are a reliability engineer. Your job is to make code that degrades gracefully instead of exploding spectacularly.
