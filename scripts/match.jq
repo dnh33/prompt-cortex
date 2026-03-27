@@ -190,6 +190,14 @@ def leave_it_alone:
     # Already specifies output format
     (if ($p | test("(format|output|respond|reply|answer)(\\s+)(as|in|with|using)(\\s+)(json|yaml|markdown|csv|table|list|bullet)")) then { score: 0.10, reason: "specifies_format" } else null end),
 
+    # Code snippet detection (high programming punctuation density, no question mark)
+    (($p | [scan("[;{}()\\[\\]=<>]")] | length) as $punct_count |
+     if $punct_count > 0 and ($wc > 0) and
+        ($punct_count / $wc > 0.125) and
+        ($p | test("\\?") | not)
+     then { score: 0.40, reason: "code_snippet" }
+     else null end),
+
     # Long + structured (>80 words AND >=2 structural markers)
     (if ($wc > 80) and (
         [ ($p | test("(^|\\n)[0-9]+\\.")),
@@ -308,6 +316,14 @@ def score_candidate($tmpl):
      else 0 end
    end) as $complexity_penalty |
 
+  # --- Code snippet penalty (v1.3 F6) ---
+  ((prompt_lower | [scan("[;{}()\\[\\]=<>]")] | length) as $pc |
+   if $pc > 0 and (prompt_word_count > 0) and
+      ($pc / prompt_word_count > 0.125) and
+      (prompt_lower | test("\\?") | not)
+   then -0.20
+   else 0 end) as $code_snippet_penalty |
+
   # --- Multi-turn suppression ---
   (if recently_injected($tmpl.id) then -0.40
    else 0 end) as $suppression_penalty |
@@ -316,7 +332,7 @@ def score_candidate($tmpl):
   {
     id: $tmpl.id,
     name: $tmpl.name,
-    confidence: ([$action_score + $object_score + $keyword_score + $signal_boost + $negative_penalty + $complexity_penalty + $suppression_penalty, 0] | max),
+    confidence: ([$action_score + $object_score + $keyword_score + $signal_boost + $negative_penalty + $complexity_penalty + $code_snippet_penalty + $suppression_penalty, 0] | max),
     breakdown: {
       action: $action_score,
       object: $object_score,
@@ -324,6 +340,7 @@ def score_candidate($tmpl):
       signal_boost: $signal_boost,
       negative: $negative_penalty,
       complexity: $complexity_penalty,
+      code_snippet: $code_snippet_penalty,
       suppression: $suppression_penalty
     }
   };
