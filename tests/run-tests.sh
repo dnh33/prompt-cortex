@@ -873,6 +873,20 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
 pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
 assert_eq "P7 min-length: can you help → no pattern" "" "$pp_pattern"
 
+# P5 guard fix: "what are the patterns I should know about testing" → explain (not test)
+# "know" is not in the action verb list, so first-person guard should NOT trigger
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "what are the patterns I should know about testing" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P5 guard fix: know about testing → explain" "explain" "$pp_action"
+assert_eq "P5 guard fix: pattern is what_is_x (not what_is_guard)" "what_is_x" "$pp_pattern"
+
 # ===== Results =====
 echo ""
 echo "================================"

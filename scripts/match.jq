@@ -113,7 +113,10 @@ def preprocess_prompt:
   # P2: "why is X failing" → debug (with problem indicator)
   elif ($p | test("^why (is|are|does|do|did|is not|are not|does not|do not|did not|will not|cannot|could not) ")) and ($p | test("(not |n't |wrong|broken|fail|crash|miss|slow|error|bug|hang|freeze|timeout|exception|undefined|null|stuck)"))
   then
-    { inferred_action: "debug", inferred_object: null, cleaned_terms: ["debug"], pattern_matched: "why_is_x" }
+    # Extract subject words between "why [aux]" and the problem indicator
+    ($p | gsub("^why (?:is|are|does|do|did|is not|are not|does not|do not|did not|will not|cannot|could not) "; "") | split(" ") | map(select(length > 2 and (. as $w | ["the","not","and","but","for","with"] | index($w) == null)))) as $subject_words |
+    ($subject_words | first // null) as $obj |
+    { inferred_action: "debug", inferred_object: $obj, cleaned_terms: (["debug"] + $subject_words), pattern_matched: "why_is_x" }
 
   # P3: "make it/the X-er" → adjective-to-action
   elif ($p | test("^make (it|this|that|the|my|our|your|a|an) "))
@@ -122,7 +125,14 @@ def preprocess_prompt:
     ($cap.rest // "" | split(" ") | reverse) as $words_rev |
     ([$words_rev[] | . as $w | $adj_map[$w] // $vfm[$w] // null | select(. != null)] | first // null) as $mapped |
     if $mapped != null then
-      { inferred_action: $mapped, inferred_object: null, cleaned_terms: [$mapped], pattern_matched: "make_it_xer" }
+      # Extract object: words before the matched word in rest
+      (($cap.rest // "") | split(" ")) as $rest_words |
+      ($rest_words | to_entries | map(select(.value as $w | $adj_map[$w] // $vfm[$w] // null | . != null)) | last // null) as $match_entry |
+      (if $match_entry != null and $match_entry.key > 0
+       then ($rest_words[0:$match_entry.key] | join(" ") | strip_articles)
+       else null end) as $obj |
+      (if $obj != null and ($obj | length) > 0 then $obj else null end) as $final_obj |
+      { inferred_action: $mapped, inferred_object: $final_obj, cleaned_terms: ([$mapped] + (if $final_obj then [$final_obj] else [] end)), pattern_matched: "make_it_xer" }
     else
       { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
     end
@@ -151,7 +161,7 @@ def preprocess_prompt:
     ($p | capture("^what (?:is|are|was|were) (?<rest>.+)$") // {}) as $cap |
     ($cap.rest // "") as $remainder |
     (["write","create","build","review","debug","fix","test","refactor","optimize","design","document"]) as $action_verbs |
-    ([$action_verbs[] | select($remainder | test("(^|[^a-zA-Z])" + . + "([^a-zA-Z]|$)"))] | first // null) as $found_verb |
+    ([$action_verbs[] | . as $v | select($remainder | test("(^|[^a-zA-Z])" + $v + "([^a-zA-Z]|$)"))] | first // null) as $found_verb |
     ($remainder | test("(^|[^a-zA-Z])(i|my|we|our|you)([^a-zA-Z]|$)")) as $has_first_person |
     ($remainder | test("(^|[^a-zA-Z])(should|need to|want to|have to|going to)([^a-zA-Z]|$)")) as $has_imperative |
     if $found_verb != null and ($has_first_person or $has_imperative) then
