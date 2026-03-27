@@ -617,6 +617,43 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
 action=$(printf '%s' "$result" | jq -r '.action')
 assert_eq "single word 'test' skips" "skip" "$action"
 
+# ===== Test Group: Code Snippet Detector (v1.3 F6) =====
+echo ""
+echo "=== Code Snippet Detector ==="
+
+# Code snippet with action words as identifiers should not match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "const review = (code) => { return test(code); }" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+# Should skip (code_snippet score 0.40 weakens match confidence)
+# The code has high punctuation density and no question mark
+if [[ "$action" == "skip" || "$action" == "suppress" ]]; then
+  pass "code snippet with identifiers → skip/suppress (got $action)"
+else
+  fail "code snippet with identifiers → skip/suppress" "got $action"
+fi
+
+# Code WITH a question mark should still be matchable
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "why does this.review(code) throw an error?" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+lia_reason=$(printf '%s' "$result" | jq -r '.leave_alone_reason')
+# Should NOT trigger code_snippet (has question mark)
+if [[ "$lia_reason" != "code_snippet" ]]; then
+  pass "code with question mark → not code_snippet (reason=$lia_reason)"
+else
+  fail "code with question mark → not code_snippet" "got code_snippet"
+fi
+
 # ===== Results =====
 echo ""
 echo "================================"
