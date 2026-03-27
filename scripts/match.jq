@@ -1,9 +1,11 @@
 # match.jq — Core matching engine for prompt-cortex
 # Input: index.json (via file)
 # Arguments:
-#   $prompt  — the user's raw prompt text
-#   $state   — JSON string of current session state (or "null")
-#   $cwd     — current working directory (or "")
+#   $prompt    — the user's raw prompt text (--arg)
+#   $state     — JSON string of current session state or "null" (--arg)
+#   $cwd       — current working directory or "" (--arg)
+#   $min_tier  — minimum quality tier: "gold"|"silver"|"all" (--arg)
+#   $intents   — intents.json data (--slurpfile)
 #
 # Output: JSON with matching result
 #   { "action": "inject"|"defer"|"suppress"|"skip"|"escape",
