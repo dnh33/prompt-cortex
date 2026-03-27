@@ -233,7 +233,9 @@ def score_candidate($tmpl):
    ) | add // 0) as $negative_penalty |
 
   # --- Complexity mismatch penalty ---
-  (if (prompt_word_count < 6) and ($tmpl.min_confidence > 0.7) then -0.15
+  # v1.3: unconditional -0.30 for ultra-short prompts (<3 words)
+  (if (prompt_word_count < 3) then -0.30
+   elif (prompt_word_count < 6) and ($tmpl.min_confidence > 0.7) then -0.15
    else 0 end) as $complexity_penalty |
 
   # --- Multi-turn suppression ---
