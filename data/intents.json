@@ -19,7 +19,7 @@
     "debug": ["fix", "troubleshoot", "investigate", "diagnose", "trace", "find bug", "bisect", "isolate", "reproduce"],
     "refactor": ["clean up", "restructure", "reorganize", "improve", "simplify", "extract", "inline", "decouple", "tidy"],
     "explain": ["what is", "how does", "why", "describe", "tell me about", "walk through", "clarify", "elaborate", "summarize", "unpack", "forklar"],
-    "test": ["write tests", "add tests", "test coverage", "unit test", "integration test", "cover", "validate", "assert", "test"],
+    "test": ["write tests", "add tests", "test coverage", "unit test", "integration test", "cover", "validate", "assert"],
     "document": ["add docs", "document", "write docs", "JSDoc", "README", "annotate", "comment"],
     "optimize": ["speed up", "improve performance", "make faster", "reduce", "profile", "benchmark", "cache", "parallelize"],
     "design": ["architect", "plan", "structure", "model", "blueprint", "propose"],
@@ -54,7 +54,7 @@
     "clear": "explain", "understandable": "explain",
     "fast": "optimize", "quick": "optimize", "slow": "optimize",
     "clean": "refactor", "tidy": "refactor", "simple": "refactor",
-    "safe": "fix", "reliable": "fix",
+    "safe": "fix",
     "short": "refactor", "small": "optimize", "concise": "refactor",
     "flexible": "design", "reusable": "refactor", "idiomatic": "refactor"
   },

@@ -8,10 +8,12 @@
 # Output: JSON with matching result
 #   { "action": "inject"|"defer"|"suppress"|"skip"|"escape",
 #     "confidence": <float>,
-#     "best_match": { template object } | null,
+#     "best_match": { id, name, action, confidence, breakdown } | null,
 #     "candidates": [ { id, confidence } ],
 #     "leave_alone_score": <float>,
-#     "leave_alone_reason": "<reason>" }
+#     "leave_alone_reason": "<reason>",
+#     "preprocessed": { inferred_action, inferred_object, cleaned_terms, pattern_matched },
+#     "compound_intent": { detected: bool, intents: [string] } }
 
 # ===== Helper functions =====
 
@@ -131,7 +133,10 @@ def preprocess_prompt:
       (if $match_entry != null and $match_entry.key > 0
        then ($rest_words[0:$match_entry.key] | join(" ") | strip_articles)
        else null end) as $obj |
-      (if $obj != null and ($obj | length) > 0 then $obj else null end) as $final_obj |
+      # Filter out stop-word-only objects (e.g. "lot" from "a lot faster")
+      (if $obj != null and ($obj | length) > 0 and ($obj | split(" ") | map(select(. as $w | ["lot","very","really","so","too","just","quite","pretty","rather"] | index($w) == null)) | length > 0)
+       then ($obj | split(" ") | map(select(. as $w | ["lot","very","really","so","too","just","quite","pretty","rather"] | index($w) == null)) | join(" "))
+       else null end) as $final_obj |
       { inferred_action: $mapped, inferred_object: $final_obj, cleaned_terms: ([$mapped] + (if $final_obj then [$final_obj] else [] end)), pattern_matched: "make_it_xer" }
     else
       { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
@@ -182,6 +187,7 @@ def preprocess_prompt:
        ($actions | index($first_word) != null) or
        ($actions | any(. as $act | is_action_synonym($first_word; $act)))
   then
+    # Note: $first_word from elif is not in scope in then body (jq scoping)
     ($p | split(" ") | .[0]) as $first_word |
     ($actions | map(select(. as $act | ($act == $first_word) or is_action_synonym($first_word; $act))) | first // $first_word) as $canonical_action |
     ($p | gsub("\\s+(?:that )?(?:i|we|you) (?:have )?(?:made|wrote|changed|created|built|modified|updated|added|fixed|pushed|committed|submitted|drafted).*"; "")) as $cleaned |
@@ -263,6 +269,7 @@ def leave_it_alone:
     # Looks like a shell command
     (if ($p | test("^(git|npm|yarn|pnpm|pip|cargo|docker|kubectl|cd|ls|cat|mkdir|mv|cp|rm|chmod|curl|wget|ssh|scp)\\s")) then { score: 0.60, reason: "shell_command" }
      elif ($p | test("^make\\s+(test|install|build|clean|all|deploy|lint|dist|run|check|help|format)(\\s|$)")) then { score: 0.60, reason: "shell_command" }
+     elif ($p | test("^make\\s+(-[a-zA-Z]|[A-Z_]+=)")) then { score: 0.60, reason: "shell_command" }
      else null end),
 
     # Continuation prompt
@@ -322,22 +329,6 @@ def leave_it_alone:
   end;
 
 # ===== Phase 1: Keyword extraction + inverted index lookup =====
-
-def keyword_candidates:
-  prompt_words as $words |
-  prompt_bigrams as $bigrams |
-  .inverted_index as $idx |
-  morph_map as $mm |
-
-  # Look up each word, its morphological root, and bigrams in the inverted index
-  ([$words[] | . as $w |
-    (($idx[$w] // []) + ($idx[($mm[$w] // "")] // [])) | .[]] +
-   [$bigrams[] | . as $b | $idx[$b] // [] | .[]]) |
-
-  # Count occurrences per template ID
-  group_by(.) |
-  map({ id: .[0], hits: length }) |
-  sort_by(-.hits);
 
 def keyword_candidates_enhanced($pp):
   prompt_words as $words |
