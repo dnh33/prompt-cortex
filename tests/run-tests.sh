@@ -534,6 +534,34 @@ else
   fail "review this pr scores with PR object match" "got action=$action confidence=$confidence"
 fi
 
+# ===== Test Group: intents.json v3 (v1.3 F4) =====
+echo ""
+echo "=== intents.json v3 ==="
+
+intents_version=$(jq '.version' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents.json version is 3" "3" "$intents_version"
+
+has_adj=$(jq 'has("adjective_actions")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents has adjective_actions" "true" "$has_adj"
+
+has_verb=$(jq 'has("verb_fix_map")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents has verb_fix_map" "true" "$has_verb"
+
+has_morph=$(jq 'has("morphological_map")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents has morphological_map" "true" "$has_morph"
+
+# PR should now have synonyms
+pr_syns=$(jq '.object_synonyms.PR // [] | length' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+if [[ "$pr_syns" -ge 3 ]]; then
+  pass "PR has object synonyms ($pr_syns entries)"
+else
+  fail "PR has object synonyms" "expected >= 3, got $pr_syns"
+fi
+
+# Danish: "kode" should be in code synonyms
+has_kode=$(jq '.object_synonyms.code | index("kode") != null' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "Danish 'kode' in code synonyms" "true" "$has_kode"
+
 # ===== Results =====
 echo ""
 echo "================================"
