@@ -1,6 +1,6 @@
 {
   "name": "prompt-cortex",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "Invisible prompt intelligence layer for Claude Code. Matches user input against proven prompt patterns and silently injects optimal framing as context.",
   "author": {
     "name": "Daniel Hjermitslev",
