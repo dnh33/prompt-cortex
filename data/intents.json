@@ -16,7 +16,7 @@
   "action_synonyms": {
     "create": ["build", "make", "generate", "write", "implement", "add", "scaffold", "init", "stub", "prototype", "opret", "lav"],
     "review": ["check", "audit", "look at", "examine", "inspect", "evaluate", "vet", "assess", "critique", "gennemgå", "tjek"],
-    "debug": ["fix", "troubleshoot", "investigate", "diagnose", "trace", "find bug", "bisect", "isolate", "reproduce"],
+    "debug": ["fix", "troubleshoot", "investigate", "diagnose", "trace", "find bug", "bisect", "isolate", "reproduce", "track down", "root cause", "narrow down"],
     "refactor": ["clean up", "restructure", "reorganize", "improve", "simplify", "extract", "inline", "decouple", "tidy"],
     "explain": ["what is", "how does", "why", "describe", "tell me about", "walk through", "clarify", "elaborate", "summarize", "unpack", "forklar"],
     "test": ["write tests", "add tests", "test coverage", "unit test", "integration test", "cover", "validate", "assert"],
@@ -34,7 +34,7 @@
     "PR": ["pull request", "merge request", "MR", "changeset", "diff"],
     "commit": ["changeset", "patch", "revision", "sha"],
     "API": ["endpoint", "route", "REST", "GraphQL", "service", "server", "middleware", "controller", "gateway", "webhook"],
-    "schema": ["type", "interface", "definition", "migration", "DDL", "table"],
+    "schema": ["type", "interface", "definition", "migration", "DDL", "table", "model"],
     "prompt": ["instruction", "system prompt", "template"],
     "config": ["configuration", "settings", "env", "environment", "dotenv", "yaml", "toml", "ini", "manifest", "rc file"],
     "error": ["bug", "issue", "exception", "crash", "failure", "fault", "defect", "regression", "stack trace", "panic", "segfault", "fejl"],

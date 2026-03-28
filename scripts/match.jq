@@ -379,22 +379,6 @@ def leave_it_alone:
 
 # ===== Phase 1: Keyword extraction + inverted index lookup =====
 
-def keyword_candidates:
-  prompt_words as $words |
-  prompt_bigrams as $bigrams |
-  .inverted_index as $idx |
-  morph_map as $mm |
-
-  # Look up each word (and its morphological root) and bigram in the inverted index
-  ([$words[] | . as $w |
-    (($idx[$w] // []) + ($idx[($mm[$w] // "")] // [])) | .[]] +
-   [$bigrams[] | . as $b | $idx[$b] // [] | .[]]) |
-
-  # Count occurrences per template ID (more hits = more relevant)
-  group_by(.) |
-  map({ id: .[0], hits: length }) |
-  sort_by(-.hits);
-
 def keyword_candidates_enhanced($pp):
   prompt_words as $words |
   prompt_bigrams as $bigrams |

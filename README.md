@@ -85,8 +85,7 @@ Prompt: **"review the changes I made to checkout"**
  │    13 signals checked → score 0.0 → passes through             │
  ├─────────────────────────────────────────────────────────────────┤
  │ 2. Preprocessor (v1.3)                                         │
- │    P6 detects "review" as known action                         │
- │    P4 strips filler "I made"                                   │
+ │    P6 detects "review" as known action, strips filler "I made" │
  │    → inferred_action: "review"                                 │
  │    → cleaned_terms: ["review", "changes", "checkout"]          │
  ├─────────────────────────────────────────────────────────────────┤
@@ -118,7 +117,7 @@ Before v1.3, matching relied on exact keyword hits. Natural phrasing — filler 
 | "something is wrong with the API" | skip (no action match) | inject debug template (P3 infers `debug` from "wrong") |
 | "make it faster" | skip ("make" suppressed as shell cmd) | inject optimize template (P5 infers `optimize` from "faster") |
 | "how does the auth flow work" | inject explain (weak) | inject explain (strong, +0.30 from inferred action) |
-| "can you help me debug this" | defer (weak prefix match) | inject debug (P4 strips "can you help me", clean terms boost) |
+| "can you help me debug this" | defer (weak prefix match) | inject debug (P7 strips "can you help me", clean terms boost) |
 
 ## Install
 

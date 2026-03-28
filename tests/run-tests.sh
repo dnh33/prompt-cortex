@@ -1631,6 +1631,36 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
 has_field=$(printf '%s' "$result" | jq 'has("compound_intent")' 2>/dev/null)
 assert_eq "compound_intent field exists on suppress" "true" "$has_field"
 
+# P6 positive: "review the changes I made to checkout" → filler_strip
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review the changes I made to checkout" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P6 positive: review changes I made → filler_strip" "filler_strip" "$pp_pattern"
+
+# P8 positive: "I need to refactor the auth module" → i_need_to_x
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "I need to refactor the auth module" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P8 positive: I need to refactor → i_need_to_x" "i_need_to_x" "$pp_pattern"
+
+# P9 positive: "help me optimize the database queries" → help_me_x
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "help me optimize the database queries" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P9 positive: help me optimize → help_me_x" "help_me_x" "$pp_pattern"
+
 # ===== Results =====
 echo ""
 echo "================================"
