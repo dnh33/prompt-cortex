@@ -150,7 +150,13 @@ def preprocess_prompt:
     gsub("won't"; "will not") | gsub("can't"; "cannot") |
     gsub("isn't"; "is not") | gsub("aren't"; "are not") |
     gsub("doesn't"; "does not") | gsub("don't"; "do not") |
-    gsub("didn't"; "did not")
+    gsub("didn't"; "did not") |
+    gsub("i'm"; "i am") | gsub("we're"; "we are") |
+    gsub("you're"; "you are") | gsub("they're"; "they are") |
+    gsub("he's"; "he is") | gsub("she's"; "she is") |
+    gsub("couldn't"; "could not") | gsub("wouldn't"; "would not") |
+    gsub("shouldn't"; "should not") |
+    gsub("hasn't"; "has not") | gsub("haven't"; "have not")
   ) as $p |
 
   intents_data as $i |
@@ -171,7 +177,18 @@ def preprocess_prompt:
     ($subject_words | first // null) as $obj |
     { inferred_action: "debug", inferred_object: $obj, cleaned_terms: (["debug"] + $subject_words), pattern_matched: "why_is_x" }
 
-  # P3: "make it/the X-er" → adjective-to-action
+  # P3a: "make X more Y" → adjective-to-action (must precede P3b to avoid "make the X more Y" mis-parsing)
+  elif ($p | test("^make .+ more .+$"))
+  then
+    ($p | capture("^make (?<subj>.+) more (?<adj>.+)$") // {}) as $cap |
+    ($adj_map[$cap.adj] // null) as $mapped |
+    if $mapped != null then
+      { inferred_action: $mapped, inferred_object: ($cap.subj | strip_articles), cleaned_terms: [$mapped, ($cap.subj | strip_articles)], pattern_matched: "make_x_more_y" }
+    else
+      { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
+    end
+
+  # P3b: "make it/the X-er" → adjective-to-action
   elif ($p | test("^make (it|this|that|the|my|our|your|a|an) "))
   then
     ($p | capture("^make (?:it|this|that|the|my|our|your|a|an) (?<rest>.+)$") // {}) as $cap |
@@ -187,16 +204,6 @@ def preprocess_prompt:
        then ($obj | split(" ") | map(select(. as $w | ["lot","very","really","so","too","just","quite","pretty","rather"] | index($w) == null)) | join(" "))
        else null end) as $final_obj |
       { inferred_action: $mapped, inferred_object: $final_obj, cleaned_terms: ([$mapped] + (if $final_obj then [$final_obj] else [] end)), pattern_matched: "make_it_xer" }
-    else
-      { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
-    end
-
-  elif ($p | test("^make .+ more .+$"))
-  then
-    ($p | capture("^make (?<subj>.+) more (?<adj>.+)$") // {}) as $cap |
-    ($adj_map[$cap.adj] // null) as $mapped |
-    if $mapped != null then
-      { inferred_action: $mapped, inferred_object: ($cap.subj | strip_articles), cleaned_terms: [$mapped, ($cap.subj | strip_articles)], pattern_matched: "make_x_more_y" }
     else
       { inferred_action: null, inferred_object: null, cleaned_terms: [], pattern_matched: null }
     end

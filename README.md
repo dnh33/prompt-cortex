@@ -77,7 +77,7 @@ When you type a prompt, prompt-cortex analyzes it in the background and — if i
 
 ### Full pipeline example
 
-Prompt: **"review the changes I made to checkout"**
+Prompt: **"review my code"**
 
 ```
  ┌─────────────────────────────────────────────────────────────────┐
@@ -85,25 +85,24 @@ Prompt: **"review the changes I made to checkout"**
  │    13 signals checked → score 0.0 → passes through             │
  ├─────────────────────────────────────────────────────────────────┤
  │ 2. Preprocessor (v1.3)                                         │
- │    P6 detects "review" as known action, strips filler "I made" │
- │    → inferred_action: "review"                                 │
- │    → cleaned_terms: ["review", "changes", "checkout"]          │
+ │    No pattern matched — direct action word, no preprocessing   │
  ├─────────────────────────────────────────────────────────────────┤
  │ 3. Keyword lookup                                              │
- │    "review", "changes", "checkout" hit inverted index           │
+ │    "review", "my", "code" hit inverted index                   │
  │    → coding-001 "Code Review" is top candidate                 │
  ├─────────────────────────────────────────────────────────────────┤
  │ 4. Scoring                                                     │
  │    action  0.45  (exact match: review)                         │
  │    object  0.35  (match: code)                                 │
  │    signal  0.10  (intent signal hit)                           │
- │    total   0.90  confidence                                    │
+ │    keyword 0.02  (index key hit)                               │
+ │    total   0.92  confidence                                    │
  ├─────────────────────────────────────────────────────────────────┤
  │ 5. Context filter                                              │
  │    No language/framework restrictions → passes                 │
  ├─────────────────────────────────────────────────────────────────┤
  │ 6. Result                                                      │
- │    action: "inject" at 0.90                                    │
+ │    action: "inject" at 0.92                                    │
  │    coding-001 body → additionalContext                         │
  └─────────────────────────────────────────────────────────────────┘
 ```

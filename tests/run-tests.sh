@@ -1661,6 +1661,16 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
 pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
 assert_eq "P9 positive: help me optimize → help_me_x" "help_me_x" "$pp_pattern"
 
+# P3 ordering: "make the API more reliable" should use make_x_more_y, not make_it_xer
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make the API more reliable" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P3 ordering: make X more Y fires before make it X-er" "make_x_more_y" "$pp_pattern"
+
 # ===== Results =====
 echo ""
 echo "================================"
