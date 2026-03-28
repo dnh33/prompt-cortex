@@ -956,9 +956,9 @@ else
   pass "domain synonym: 'scaffold component' — action=$action (may need domain context)"
 fi
 
-# T-DS2: intents.json is valid v2 format
+# T-DS2: intents.json is valid v3 format (upgraded from v2 in v1.3)
 intents_version=$(jq -r '.version' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
-assert_eq "intents.json version" "2" "$intents_version"
+assert_eq "intents.json version" "3" "$intents_version"
 
 has_domain_map=$(jq 'has("domain_map")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
 assert_eq "intents.json has domain_map" "true" "$has_domain_map"
@@ -1207,6 +1207,469 @@ if printf '%s' "$output" | jq -e '.hookSpecificOutput.additionalContext' >/dev/n
 else
   pass "project.json min_tier: gold override applied (template may be filtered)"
 fi
+
+# ===== Test Group: Shell Command "make" Fix (v1.3 F2) =====
+echo ""
+echo "=== Shell Command Make Fix ==="
+
+# "make a new component" should NOT be suppressed
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make a new component for the dashboard" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" != "suppress" ]]; then
+  pass "make + article not suppressed (got $action)"
+else
+  fail "make + article not suppressed" "got suppress"
+fi
+
+# "make test" should still be suppressed
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make test" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+assert_eq "make test still suppressed" "suppress" "$action"
+
+# "make the code cleaner" should NOT be suppressed
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make the code cleaner" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" != "suppress" ]]; then
+  pass "make + determiner not suppressed (got $action)"
+else
+  fail "make + determiner not suppressed" "got suppress"
+fi
+
+# ===== Test Group: Case-Insensitive Index (v1.3 F3) =====
+echo ""
+echo "=== Case-Insensitive Index ==="
+
+# Index should have no uppercase keys
+uppercase_keys=$(jq '.inverted_index | keys | map(select(test("[A-Z]"))) | length' "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+assert_eq "index has no uppercase keys" "0" "$uppercase_keys"
+
+# "review this pr" should match a PR template
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review this pr" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+confidence=$(printf '%s' "$result" | jq -r '.confidence')
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" == "inject" || "$action" == "defer" ]]; then
+  pass "review this pr scores with PR object match (action=$action, conf=$confidence)"
+else
+  fail "review this pr scores with PR object match" "got action=$action confidence=$confidence"
+fi
+
+# ===== Test Group: intents.json v3 (v1.3 F4) =====
+echo ""
+echo "=== intents.json v3 ==="
+
+intents_version=$(jq '.version' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents.json version is 3" "3" "$intents_version"
+
+has_adj=$(jq 'has("adjective_actions")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents has adjective_actions" "true" "$has_adj"
+
+has_verb=$(jq 'has("verb_fix_map")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents has verb_fix_map" "true" "$has_verb"
+
+has_morph=$(jq 'has("morphological_map")' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "intents has morphological_map" "true" "$has_morph"
+
+# PR should now have synonyms
+pr_syns=$(jq '.object_synonyms.PR // [] | length' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+if [[ "$pr_syns" -ge 3 ]]; then
+  pass "PR has object synonyms ($pr_syns entries)"
+else
+  fail "PR has object synonyms" "expected >= 3, got $pr_syns"
+fi
+
+# Danish: "kode" should be in code synonyms
+has_kode=$(jq '.object_synonyms.code | index("kode") != null' "${PLUGIN_ROOT}/data/intents.json" 2>/dev/null)
+assert_eq "Danish 'kode' in code synonyms" "true" "$has_kode"
+
+# ===== Test Group: Synonym Overlap Ratio (v1.3 F8) =====
+echo ""
+echo "=== Synonym Overlap Ratio ==="
+
+# "classify" should NOT match "class" as an object synonym (62% overlap < 75%)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "classify these items into categories" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+# Should skip — "classify" should not match any action/object via loose prefix
+assert_eq "classify does not false-match via prefix" "skip" "$action"
+
+# ===== Test Group: Morphological Matching (v1.3 F5) =====
+echo ""
+echo "=== Morphological Matching ==="
+
+# "failing" should now match templates via morph_map (failing → fail)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "the tests are failing in production" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+confidence=$(printf '%s' "$result" | jq -r '.confidence')
+if [[ "$action" == "inject" || "$action" == "defer" ]]; then
+  pass "morphological: 'failing' matches (action=$action, conf=$confidence)"
+else
+  fail "morphological: 'failing' matches" "got action=$action confidence=$confidence"
+fi
+
+# ===== Test Group: Single-Word Penalty (v1.3 F9) =====
+echo ""
+echo "=== Single-Word Penalty ==="
+
+# Single word "test" should skip (not defer)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "test" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+assert_eq "single word 'test' skips" "skip" "$action"
+
+# ===== Test Group: Code Snippet Detector (v1.3 F6) =====
+echo ""
+echo "=== Code Snippet Detector ==="
+
+# Code snippet with action words as identifiers should not match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "const review = (code) => { return test(code); }" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+action=$(printf '%s' "$result" | jq -r '.action')
+if [[ "$action" == "skip" || "$action" == "suppress" ]]; then
+  pass "code snippet with identifiers → skip/suppress (got $action)"
+else
+  fail "code snippet with identifiers → skip/suppress" "got $action"
+fi
+
+# Code WITH a question mark should still be matchable
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "why does this.review(code) throw an error?" \
+  --arg state "null" \
+  --arg cwd "" \
+  --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" \
+  --argjson context '{}' \
+  --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+lia_reason=$(printf '%s' "$result" | jq -r '.leave_alone_reason')
+if [[ "$lia_reason" != "code_snippet" ]]; then
+  pass "code with question mark → not code_snippet (reason=$lia_reason)"
+else
+  fail "code with question mark → not code_snippet" "got code_snippet"
+fi
+
+# ===== Test Group: Conversational Preprocessor (v1.3 F1) =====
+echo ""
+echo "=== Conversational Preprocessor ==="
+
+# P1: "something is wrong with the API" → debug
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "something is wrong with the API" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P1: something wrong → debug" "debug" "$pp_action"
+
+# P1 contraction: "something's wrong with the API"
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "something's wrong with the API" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P1: something's wrong (contraction) → debug" "debug" "$pp_action"
+
+# P2: "why is the build failing" → debug
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "why is the build failing" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P2: why is build failing → debug" "debug" "$pp_action"
+
+# P2 negative: "why is the sky blue" → no match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "why is the sky blue" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P2: why is sky blue → no inferred action" "" "$pp_action"
+
+# P3: "make it faster" → optimize
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make it faster" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P3: make it faster → optimize" "optimize" "$pp_action"
+
+# P3: "make the code cleaner" → refactor
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make the code cleaner" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P3: make the code cleaner → refactor" "refactor" "$pp_action"
+
+# P4: "how does the auth flow work" → explain
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "how does the auth flow work" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P4: how does auth flow work → explain" "explain" "$pp_action"
+
+# P4 negative: "how does this look" → no match
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "how does this look" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P4: how does this look → no inferred action" "" "$pp_action"
+
+# P5: "what's a closure" → explain
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "what's a closure" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P5: what's a closure → explain" "explain" "$pp_action"
+
+# P5 guard: "what are the tests I should write" → test
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "what are the tests I should write" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P5 guard: tests I should write → test" "test" "$pp_action"
+
+# P7: "could you help me debug this" → cleaned_terms has debug
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "could you help me debug this" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_debug=$(printf '%s' "$result" | jq '.preprocessed.cleaned_terms | index("debug") != null' 2>/dev/null)
+assert_eq "P7: could you debug → cleaned_terms has debug" "true" "$has_debug"
+
+# P1 negative: "something is great" → no pattern
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "something is great about this approach" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P1 negative: something is great → no pattern" "" "$pp_pattern"
+
+# P3 negative: "make it purple" → no inferred action
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make it purple" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P3 negative: make it purple → no inferred action" "" "$pp_action"
+
+# P3: "make it a lot faster" → optimize
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make it a lot faster" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_action=$(printf '%s' "$result" | jq -r '.preprocessed.inferred_action // ""')
+assert_eq "P3 multi-word: make it a lot faster → optimize" "optimize" "$pp_action"
+
+# P1/P5 priority: "what is wrong" → P1 (something_wrong), not P5
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "what is wrong" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P1/P5 priority: what is wrong → something_wrong" "something_wrong" "$pp_pattern"
+
+# P6 negative: "discuss the plan I made" → no filler_strip
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "discuss the plan I made" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+if [[ "$pp_pattern" != "filler_strip" ]]; then
+  pass "P6 negative: discuss not recognized action (pattern=$pp_pattern)"
+else
+  fail "P6 negative: discuss not recognized action" "got filler_strip"
+fi
+
+# P7 minimum length: "can you help" → no pattern
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "can you help" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P7 min-length: can you help → no pattern" "" "$pp_pattern"
+
+# ===== Test Group: Compound Intent Telemetry (v1.3 F12) =====
+echo ""
+echo "=== Compound Intent Telemetry ==="
+
+# Verify compound_intent field exists in output
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "fix the bug and add tests for the auth module" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_field=$(printf '%s' "$result" | jq 'has("compound_intent")' 2>/dev/null)
+assert_eq "compound_intent field exists" "true" "$has_field"
+
+# Verify compound_intent field exists on escape path (--raw)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "--raw just do it" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_field=$(printf '%s' "$result" | jq 'has("compound_intent")' 2>/dev/null)
+assert_eq "compound_intent field exists on escape" "true" "$has_field"
+detected=$(printf '%s' "$result" | jq '.compound_intent.detected' 2>/dev/null)
+assert_eq "compound_intent not detected on escape" "false" "$detected"
+
+# Verify compound_intent field exists on suppress path
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "/help" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_field=$(printf '%s' "$result" | jq 'has("compound_intent")' 2>/dev/null)
+assert_eq "compound_intent field exists on suppress" "true" "$has_field"
+
+# P6 positive: "review the changes I made to checkout" → filler_strip
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "review the changes I made to checkout" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P6 positive: review changes I made → filler_strip" "filler_strip" "$pp_pattern"
+
+# P8 positive: "I need to refactor the auth module" → i_need_to_x
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "I need to refactor the auth module" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P8 positive: I need to refactor → i_need_to_x" "i_need_to_x" "$pp_pattern"
+
+# P9 positive: "help me optimize the database queries" → help_me_x
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "help me optimize the database queries" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P9 positive: help me optimize → help_me_x" "help_me_x" "$pp_pattern"
+
+# P3 ordering: "make the API more reliable" should use make_x_more_y, not make_it_xer
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "make the API more reliable" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
+assert_eq "P3 ordering: make X more Y fires before make it X-er" "make_x_more_y" "$pp_pattern"
 
 # ===== Results =====
 echo ""

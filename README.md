@@ -75,6 +75,49 @@ When you type a prompt, prompt-cortex analyzes it in the background and — if i
 4. If confidence is medium (0.40-0.69), a hint is injected instead.
 5. If the prompt looks like it should be left alone (shell commands, continuations, already-structured prompts), cortex stays silent.
 
+### Full pipeline example
+
+Prompt: **"review my code"**
+
+```
+ ┌─────────────────────────────────────────────────────────────────┐
+ │ 1. Leave-it-alone detector                                     │
+ │    13 signals checked → score 0.0 → passes through             │
+ ├─────────────────────────────────────────────────────────────────┤
+ │ 2. Preprocessor (v1.3)                                         │
+ │    No pattern matched — direct action word, no preprocessing   │
+ ├─────────────────────────────────────────────────────────────────┤
+ │ 3. Keyword lookup                                              │
+ │    "review", "my", "code" hit inverted index                   │
+ │    → coding-001 "Code Review" is top candidate                 │
+ ├─────────────────────────────────────────────────────────────────┤
+ │ 4. Scoring                                                     │
+ │    action  0.45  (exact match: review)                         │
+ │    object  0.35  (match: code)                                 │
+ │    signal  0.10  (intent signal hit)                           │
+ │    keyword 0.02  (index key hit)                               │
+ │    total   0.92  confidence                                    │
+ ├─────────────────────────────────────────────────────────────────┤
+ │ 5. Context filter                                              │
+ │    No language/framework restrictions → passes                 │
+ ├─────────────────────────────────────────────────────────────────┤
+ │ 6. Result                                                      │
+ │    action: "inject" at 0.92                                    │
+ │    coding-001 body → additionalContext                         │
+ └─────────────────────────────────────────────────────────────────┘
+```
+
+### Conversational NLP (v1.3)
+
+Before v1.3, matching relied on exact keyword hits. Natural phrasing — filler words, implicit actions, pronouns — degraded scores or caused misses. The v1.3 preprocessor strips noise and infers intent from conversational patterns before scoring begins.
+
+| Prompt | Before v1.3 | After v1.3 |
+|--------|-------------|------------|
+| "something is wrong with the API" | skip (no action match) | **defer** — preprocessor infers `debug`, boosts candidates (conf 0.35 skip, but preprocessor extracts intent) |
+| "make it faster" | skip ("make" suppressed as shell cmd) | **defer** — preprocessor maps "faster" → `optimize` via adjective_actions (conf 0.35 skip, intent extracted) |
+| "how does the auth flow work" | skip (conceptual question suppressed) | **defer** — preprocessor extracts `explain` + subject "auth flow" (conf 0.40) |
+| "can you help me debug this" | defer (weak prefix match) | **defer** — "can you help me" stripped, clean `debug` term boosts match (conf 0.47) |
+
 ## Install
 
 ```bash
