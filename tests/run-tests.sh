@@ -1595,6 +1595,42 @@ result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
 pp_pattern=$(printf '%s' "$result" | jq -r '.preprocessed.pattern_matched // ""')
 assert_eq "P7 min-length: can you help → no pattern" "" "$pp_pattern"
 
+# ===== Test Group: Compound Intent Telemetry (v1.3 F12) =====
+echo ""
+echo "=== Compound Intent Telemetry ==="
+
+# Verify compound_intent field exists in output
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "fix the bug and add tests for the auth module" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_field=$(printf '%s' "$result" | jq 'has("compound_intent")' 2>/dev/null)
+assert_eq "compound_intent field exists" "true" "$has_field"
+
+# Verify compound_intent field exists on escape path (--raw)
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "--raw just do it" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_field=$(printf '%s' "$result" | jq 'has("compound_intent")' 2>/dev/null)
+assert_eq "compound_intent field exists on escape" "true" "$has_field"
+detected=$(printf '%s' "$result" | jq '.compound_intent.detected' 2>/dev/null)
+assert_eq "compound_intent not detected on escape" "false" "$detected"
+
+# Verify compound_intent field exists on suppress path
+result=$(jq -f "${PLUGIN_ROOT}/scripts/match.jq" \
+  --arg prompt "/help" \
+  --arg state "null" --arg cwd "" --arg min_tier "silver" \
+  --arg min_confidence_adjust "0" --argjson context '{}' --argjson project_rules '{}' \
+  --slurpfile intents "${PLUGIN_ROOT}/data/intents.json" \
+  "${PLUGIN_ROOT}/data/index.json" 2>/dev/null)
+has_field=$(printf '%s' "$result" | jq 'has("compound_intent")' 2>/dev/null)
+assert_eq "compound_intent field exists on suppress" "true" "$has_field"
+
 # ===== Results =====
 echo ""
 echo "================================"
