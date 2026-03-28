@@ -65,21 +65,20 @@ All v1.3 features implemented on 2026-03-28. Full spec: `docs/superpowers/specs/
 
 **Final test count:** 158 tests, 0 failures.
 
-## v1.4 — TBD (PLANNING)
+## v1.4 — Feedback Loop & Scoring Refinement (DESIGN COMPLETE)
 
+Design spec: `docs/superpowers/specs/2026-03-28-v1.4-feedback-loop-design.md`
 Research brief: `docs/superpowers/v1.4-research-brief.md`
+Scoped by 5-agent AI council brainstorm.
 
-Candidates (to be scoped by AI council brainstorm):
-- [ ] **Context-aware object inference** — Infer "code" from project context when prompt has no object
-- [ ] **Implicit object defaults** — Default object for preprocessor-detected prompts without explicit objects
-- [ ] **More preprocessor patterns** — Imperative forms ("document X", "deploy X") not covered by P1-P9
-- [ ] **Adaptive confidence** — Track feedback, adjust template confidence over time
-- [ ] **Multi-template composition** — Compose templates for multi-intent prompts
-- [ ] **Preset auto-detection** — Infer preset from project signals
-- [ ] **Negative feedback learning** — Bad feedback → confidence penalty within session
-- [ ] **Prompt history** — `/cortex:history` command
-- [ ] **P6 filler refinement** — Strip only filler phrase, preserve trailing context
-- [ ] **`/cx off` persistence** — Fix hardcoded cortex_disabled: false
+- [ ] F1: Per-action thresholds — debug 0.62, fix 0.63, explain 0.64, ..., design 0.73
+- [ ] F2: P6 direct imperative extraction + filler tail preservation
+- [ ] F3: P11 subject-predicate diagnostic ("X is broken") + P2 expansion
+- [ ] F4: Session-immediate negative feedback penalty + acknowledgment
+- [ ] F5: `/cx off` persistence fix
+- [ ] F6: Defer visibility in transparent mode
+
+**Deferred to v2.0:** Cross-session adaptive confidence, multi-template composition, marketplace, preset auto-detection, prompt history, P12+ patterns.
 
 ## v2.0 — The Brain (Layer 2)
 
