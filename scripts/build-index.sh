@@ -263,18 +263,22 @@ jq '
     . as $idx |
     ($tmpl.triggers // []) as $triggers |
     reduce $triggers[] as $trigger ($idx;
-      # Add the full trigger phrase
-      .[$trigger] = ((.[$trigger] // []) + [$tmpl.id]) |
-      # Also add individual words from multi-word triggers
+      # Add the full trigger phrase (lowercased)
+      ($trigger | ascii_downcase) as $lc_trigger |
+      .[$lc_trigger] = ((.[$lc_trigger] // []) + [$tmpl.id]) |
+      # Also add individual words from multi-word triggers (lowercased)
       reduce ($trigger | split(" ")[]) as $word (.;
         if ($word | length) > 2 then
-          .[$word] = ((.[$word] // []) + [$tmpl.id])
+          ($word | ascii_downcase) as $lc_word |
+          .[$lc_word] = ((.[$lc_word] // []) + [$tmpl.id])
         else . end
       )
     ) |
-    # Also index by action and object
-    .[$tmpl.action] = ((.[$tmpl.action] // []) + [$tmpl.id]) |
-    .[$tmpl.object] = ((.[$tmpl.object] // []) + [$tmpl.id])
+    # Also index by action and object (lowercased)
+    ($tmpl.action | ascii_downcase) as $lc_action |
+    ($tmpl.object | ascii_downcase) as $lc_object |
+    .[$lc_action] = ((.[$lc_action] // []) + [$tmpl.id]) |
+    .[$lc_object] = ((.[$lc_object] // []) + [$tmpl.id])
   ) |
   # Deduplicate arrays
   with_entries(.value |= unique)
