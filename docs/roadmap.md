@@ -50,14 +50,36 @@ All v1.2 features implemented on 2026-03-27. Full spec: `docs/superpowers/specs/
 
 **Final test count:** 116 tests, 0 failures.
 
-## v1.3 — Refinement & Feedback Loop
+## v1.3 — NLP Improvements (SHIPPED)
 
-- [ ] **Adaptive confidence**: Track which templates produce good feedback, adjust confidence scores over time
-- [ ] **Multi-template composition**: Compose 2-3 templates for complex prompts that span multiple intents
-- [ ] **Preset auto-detection**: Infer preset from project signals (e.g., fresh repo = greenfield, many open issues = maintenance)
-- [ ] **Template pack marketplace**: Community-contributed packs with install/update via `/cortex:pack install <name>`
-- [ ] **Prompt history analysis**: `/cortex:history` — show recent prompt→template matches with confidence scores
-- [ ] **Negative feedback learning**: Templates with repeated bad feedback get confidence penalty within session
+All v1.3 features implemented on 2026-03-28. Full spec: `docs/superpowers/specs/2026-03-27-v1.3-nlp-improvements-design.md`
+
+- [x] Conversational preprocessor — 9 patterns (P1-P9) extract intent from natural language
+- [x] Morphological matching — 48-entry curated map, root-form index lookup
+- [x] Synonym improvements — 75% overlap ratio guard, expanded synonyms (29 action, 40+ object)
+- [x] Danish language support — action + object synonyms
+- [x] intents.json v3 — adjective_actions, verb_fix_map, morphological_map
+- [x] Safety heuristics — code snippet detector, ultra-short penalty, shell "make" regex fix
+- [x] Case-insensitive index keys and scoring
+- [x] Compound intent telemetry for v2.0 planning
+
+**Final test count:** 158 tests, 0 failures.
+
+## v1.4 — TBD (PLANNING)
+
+Research brief: `docs/superpowers/v1.4-research-brief.md`
+
+Candidates (to be scoped by AI council brainstorm):
+- [ ] **Context-aware object inference** — Infer "code" from project context when prompt has no object
+- [ ] **Implicit object defaults** — Default object for preprocessor-detected prompts without explicit objects
+- [ ] **More preprocessor patterns** — Imperative forms ("document X", "deploy X") not covered by P1-P9
+- [ ] **Adaptive confidence** — Track feedback, adjust template confidence over time
+- [ ] **Multi-template composition** — Compose templates for multi-intent prompts
+- [ ] **Preset auto-detection** — Infer preset from project signals
+- [ ] **Negative feedback learning** — Bad feedback → confidence penalty within session
+- [ ] **Prompt history** — `/cortex:history` command
+- [ ] **P6 filler refinement** — Strip only filler phrase, preserve trailing context
+- [ ] **`/cx off` persistence** — Fix hardcoded cortex_disabled: false
 
 ## v2.0 — The Brain (Layer 2)
 
