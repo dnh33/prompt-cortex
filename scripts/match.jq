@@ -7,6 +7,8 @@
 #   $context              — JSON object of detected project context (or {})
 #   $project_rules        — JSON object of boost/suppress/disabled rules (or {})
 #   $min_confidence_adjust — string number from preset (default "0"), capped +/-0.10
+#   $min_tier  — minimum quality tier: "gold"|"silver"|"all" (--arg)
+#   $intents   — intents.json data (--slurpfile, array wrapped)
 #
 # Output: JSON with matching result
 #   { "action": "inject"|"defer"|"suppress"|"skip"|"escape",
@@ -14,7 +16,9 @@
 #     "best_match": { template object } | null,
 #     "candidates": [ { id, confidence } ],
 #     "leave_alone_score": <float>,
-#     "leave_alone_reason": "<reason>" }
+#     "leave_alone_reason": "<reason>",
+#     "preprocessed": { inferred_action, inferred_object, cleaned_terms, pattern_matched },
+#     "compound_intent": { detected: bool, intents: [string] } }
 
 # ===== Helper functions =====
 
@@ -132,7 +136,7 @@ def is_domain_object_synonym($word; $canonical):
     end
   end;
 
-# ===== Phase 0.5: Conversational preprocessor =====
+# ===== Preprocessor: Conversational intent extraction =====
 def strip_articles:
   gsub("(^| )(the|a|an|this|that|my|our|your|its) "; " ") | gsub("^ +| +$"; "") | gsub(" +"; " ");
 
@@ -614,7 +618,7 @@ else
       compound_intent: { detected: false, intents: [] } }
   else
 
-    # Phase 0.5: Conversational preprocessor
+    # Preprocessor: extract intent from conversational phrasing
     preprocess_prompt as $pp |
 
     # 2. Get candidate templates from inverted index
@@ -649,11 +653,11 @@ else
       # Apply context filter
       context_filter($scored; $all_templates) as $filtered |
 
-      # Compound intent detection (telemetry only)
-      (if ($filtered | length) >= 2 and
-          ($filtered[0].confidence > 0.50) and ($filtered[1].confidence > 0.50) and
-          ($filtered[0].action != $filtered[1].action)
-       then { detected: true, intents: [$filtered[0].action, $filtered[1].action] }
+      # Compound intent detection (telemetry only, uses pre-filter scores)
+      (if ($scored | length) >= 2 and
+          ($scored[0].confidence > 0.50) and ($scored[1].confidence > 0.50) and
+          ($scored[0].action != $scored[1].action)
+       then { detected: true, intents: [$scored[0].action, $scored[1].action] }
        else { detected: false, intents: [] }
        end) as $compound |
 

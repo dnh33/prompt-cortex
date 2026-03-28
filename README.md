@@ -114,10 +114,10 @@ Before v1.3, matching relied on exact keyword hits. Natural phrasing — filler 
 
 | Prompt | Before v1.3 | After v1.3 |
 |--------|-------------|------------|
-| "something is wrong with the API" | skip (no action match) | inject debug template (P3 infers `debug` from "wrong") |
-| "make it faster" | skip ("make" suppressed as shell cmd) | inject optimize template (P5 infers `optimize` from "faster") |
-| "how does the auth flow work" | inject explain (weak) | inject explain (strong, +0.30 from inferred action) |
-| "can you help me debug this" | defer (weak prefix match) | inject debug (P7 strips "can you help me", clean terms boost) |
+| "something is wrong with the API" | skip (no action match) | **defer** — preprocessor infers `debug`, boosts candidates (conf 0.35 skip, but preprocessor extracts intent) |
+| "make it faster" | skip ("make" suppressed as shell cmd) | **defer** — preprocessor maps "faster" → `optimize` via adjective_actions (conf 0.35 skip, intent extracted) |
+| "how does the auth flow work" | skip (conceptual question suppressed) | **defer** — preprocessor extracts `explain` + subject "auth flow" (conf 0.40) |
+| "can you help me debug this" | defer (weak prefix match) | **defer** — "can you help me" stripped, clean `debug` term boosts match (conf 0.47) |
 
 ## Install
 
